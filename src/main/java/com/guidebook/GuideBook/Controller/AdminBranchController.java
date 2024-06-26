@@ -7,19 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:3000/" )
 @RestController
-@RequestMapping("/api/branches")
+@RequestMapping("/api/v1/admin/")
 public class AdminBranchController {
     @Autowired
     private AdminBranchService adminBranchService;
 
-    @GetMapping
+    @GetMapping("/branches")
     public List<Branch> getAllBranches() {
         return adminBranchService.getAllBranches();
     }
 
-    @PostMapping
+    @PostMapping("/addBranch")
     public Branch addBranch(@RequestBody Branch branch) {
         return adminBranchService.saveBranch(branch);
     }

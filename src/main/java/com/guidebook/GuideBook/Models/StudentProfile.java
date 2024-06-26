@@ -18,7 +18,7 @@ public class StudentProfile {
     private Long studentProfileId;
 
     @OneToOne(fetch = FetchType.LAZY) //LAZY fetching meaning -fetches only when needed
-    @JoinColumn(name = "studentId", referencedColumnName = "id")
+    @JoinColumn(name = "studentId", referencedColumnName = "studentId")
     private Student student;
 
     // Additional profile attributes (resume, work history, skills, etc.)

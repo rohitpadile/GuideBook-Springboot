@@ -24,7 +24,8 @@ public class AdminCollegeService {
         College existingCollege = collegeRepository.findById(collegeId)
                 .orElseThrow(() -> new EntityNotFoundException("College not found with id: " + collegeId));
 
-        existingCollege.setName(collegeDetails.getName());
+        existingCollege.setCollegeName(collegeDetails.getCollegeName());
+
         // Update other fields as needed
 
         return collegeRepository.save(existingCollege);
