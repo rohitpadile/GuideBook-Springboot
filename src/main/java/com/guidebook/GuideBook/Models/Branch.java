@@ -9,10 +9,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class College {
-
+public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long collegeId;
-    private String collegeName;
+    private Long branchId;
+
+    private String branchName;
+
+    // Relationship with College entity
+    @ManyToOne
+    @JoinColumn(name = "collegeId")
+    private College college;
+
+    // Getters and setters
 }
+
