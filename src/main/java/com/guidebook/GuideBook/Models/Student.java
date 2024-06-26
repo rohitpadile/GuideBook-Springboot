@@ -22,4 +22,6 @@ public class Student {
     @JoinColumn(name = "branchId")
     private Branch branch;
 
+    //SY, TY, DSY like info will be in the StudentProfile as they are not significant like branch and college.
+    //It is handled by student himself or by us
 }

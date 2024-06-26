@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,11 +17,14 @@ public class StudentProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long studentProfileId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY) //LAZY fetching meaning -fetches only when needed
     @JoinColumn(name = "studentId", referencedColumnName = "id")
     private Student student;
 
     // Additional profile attributes (resume, work history, skills, etc.)
+//        TAKE THIS INFO DIRECTLY FROM THE FORM FILLED FOR PROFILE DETAILS
+    private String studentYear;
+
     @Column(length = 1000) // Example length for resume
     private String resume;
 
@@ -28,7 +32,9 @@ public class StudentProfile {
     private String workHistory;
 
     @ElementCollection // Use ElementCollection for a collection of basic types (e.g., skills)
-    private List<String> skills;
+    private List<String> skills = new ArrayList<>(); //mapped to another table handled by JPA
+
+
 
     //Add more File, images references link in more columns later
 }
