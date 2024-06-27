@@ -15,7 +15,10 @@ public class Branch {
     private Long branchId;
 
     private String branchName;
-//
-//    // Getters and setters
+
+//    @ManyToOne
+//    @JoinColumn(name = "collegeId")
+//    private College college;
+////    // Getters and setters
 }
 

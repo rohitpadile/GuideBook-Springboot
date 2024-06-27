@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,5 +20,6 @@ public class College {
     private String collegeName;
 
     @ElementCollection
-    private List<Branch> collegeBranches;
+    private List<Long> collegeBranchIds = new ArrayList<>();
+
 }
