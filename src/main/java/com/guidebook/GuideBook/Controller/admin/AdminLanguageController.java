@@ -8,7 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@RestController
+@RequestMapping("/api/v1/admin")
 public class AdminLanguageController {
 
     private AdminLanguageService adminLanguageService;
@@ -17,18 +18,39 @@ public class AdminLanguageController {
         this.adminLanguageService = adminLanguageService;
     }
 
-    @GetMapping
+    @GetMapping("/languages")
     public List<Language> getAllLanguages() {
         return adminLanguageService.getAllLanguages();
     }
 
-    @PostMapping
-    public ResponseEntity<Language> createLanguage(@RequestBody Language language) {
-        Language savedLanguage = adminLanguageService.saveOrUpdateLanguage(language);
+    @GetMapping("/languages/{id}")
+    public ResponseEntity<Language> getLanguageById(@PathVariable Long id) {
+        Language language = adminLanguageService.getLanguageById(id);
+        if (language != null) {
+            return ResponseEntity.ok(language);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/addLanguage")
+    public ResponseEntity<Language> addLanguage(@RequestBody Language language) {
+        Language savedLanguage = adminLanguageService.addLanguage(language);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedLanguage);
     }
 
-    @DeleteMapping("/{id}")
+    @PutMapping("/updateLanguage/{id}")
+    public ResponseEntity<Language> updateLanguageById(@PathVariable Long id, @RequestBody Language language) {
+        language.setLanguageId(id);
+        Language updatedLanguage = adminLanguageService.updateLanguageById(id, language);
+        if(updatedLanguage!=null){
+            return ResponseEntity.ok(updatedLanguage);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("deleteLanguage/{id}")
     public ResponseEntity<Void> deleteLanguage(@PathVariable Long id) {
         adminLanguageService.deleteLanguageById(id);
         return ResponseEntity.noContent().build();

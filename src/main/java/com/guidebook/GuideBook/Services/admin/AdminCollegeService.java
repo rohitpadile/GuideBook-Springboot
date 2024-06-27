@@ -29,8 +29,6 @@ public class AdminCollegeService {
         existingCollege.setCollegeName(collegeDetails.getCollegeName());
         existingCollege.setCollegeBranchIds(collegeDetails.getCollegeBranchIds());
 
-        // Update other fields as needed
-
         return collegeRepository.save(existingCollege);
     }
 

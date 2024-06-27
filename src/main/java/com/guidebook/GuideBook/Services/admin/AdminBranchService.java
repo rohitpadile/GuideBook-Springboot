@@ -32,7 +32,6 @@ public class AdminBranchService {
 
         branch.setBranchName(branchDetails.getBranchName());
 
-
         return branchRepository.save(branch);
     }
 

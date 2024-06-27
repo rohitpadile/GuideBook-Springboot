@@ -25,7 +25,17 @@ public class AdminBranchController {
 
     @PostMapping("/addBranch")
     public Branch addBranch(@RequestBody Branch branch) {
-        return adminBranchService.addBranch(branch);
+        Branch savedBranch = adminBranchService.addBranch(branch);
+        return ResponseEntity.ok(savedBranch).getBody();
+    }
+
+    @PostMapping("/addBranchList")
+    public Branch addBranch(@RequestBody List<Branch> branchList) {
+        Branch savedBranch = null;
+        for(Branch branch : branchList){
+            savedBranch = adminBranchService.addBranch(branch);
+        }
+        return ResponseEntity.ok(savedBranch).getBody();
     }
     // Update an existing branch by branchId
     @PutMapping("/updateBranch/{branchId}")
