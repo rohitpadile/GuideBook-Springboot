@@ -1,4 +1,4 @@
-package com.guidebook.GuideBook.Services;
+package com.guidebook.GuideBook.Services.admin;
 
 import com.guidebook.GuideBook.Models.Branch;
 import com.guidebook.GuideBook.Repository.BranchRepository;
@@ -10,8 +10,13 @@ import java.util.List;
 
 @Service
 public class AdminBranchService {
-    @Autowired
+
     private BranchRepository branchRepository;
+
+    @Autowired
+    AdminBranchService(BranchRepository branchRepository){
+        this.branchRepository = branchRepository;
+    }
 
     public List<Branch> getAllBranches() {
         return branchRepository.findAll();

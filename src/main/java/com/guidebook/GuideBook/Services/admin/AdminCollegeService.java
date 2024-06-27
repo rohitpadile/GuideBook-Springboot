@@ -1,4 +1,4 @@
-package com.guidebook.GuideBook.Services;
+package com.guidebook.GuideBook.Services.admin;
 
 import com.guidebook.GuideBook.Models.College;
 import com.guidebook.GuideBook.Repository.CollegeRepository;
@@ -10,9 +10,11 @@ import java.util.List;
 
 @Service
 public class AdminCollegeService {
-
-    @Autowired
     private CollegeRepository collegeRepository;
+    @Autowired
+    AdminCollegeService(CollegeRepository collegeRepository){
+        this.collegeRepository = collegeRepository;
+    }
 
     // Method to save a new college
     public College save(College college) {

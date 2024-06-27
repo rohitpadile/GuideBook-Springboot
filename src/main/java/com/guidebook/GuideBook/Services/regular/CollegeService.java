@@ -1,4 +1,4 @@
-package com.guidebook.GuideBook.Services;
+package com.guidebook.GuideBook.Services.regular;
 
 import com.guidebook.GuideBook.Models.College;
 import com.guidebook.GuideBook.Repository.CollegeRepository;

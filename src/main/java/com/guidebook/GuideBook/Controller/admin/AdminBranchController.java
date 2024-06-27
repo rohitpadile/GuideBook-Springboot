@@ -1,8 +1,7 @@
-package com.guidebook.GuideBook.Controller;
+package com.guidebook.GuideBook.Controller.admin;
 
 import com.guidebook.GuideBook.Models.Branch;
-import com.guidebook.GuideBook.Services.AdminBranchService;
-import com.guidebook.GuideBook.Services.AdminCollegeService;
+import com.guidebook.GuideBook.Services.admin.AdminBranchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +11,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/admin/")
 public class AdminBranchController {
-    @Autowired
     private AdminBranchService adminBranchService;
+
+    @Autowired
+    AdminBranchController(AdminBranchService adminBranchService){
+        this.adminBranchService = adminBranchService;
+    }
 
     @GetMapping("/branches")
     public List<Branch> getAllBranches() {

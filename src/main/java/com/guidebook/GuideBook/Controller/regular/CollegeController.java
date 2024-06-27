@@ -1,7 +1,7 @@
-package com.guidebook.GuideBook.Controller;
+package com.guidebook.GuideBook.Controller.regular;
 
 import com.guidebook.GuideBook.Models.College;
-import com.guidebook.GuideBook.Services.CollegeService;
+import com.guidebook.GuideBook.Services.regular.CollegeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/")
 public class CollegeController {
-
-    @Autowired
     private CollegeService collegeService;
-
+    @Autowired
+    CollegeController(CollegeService collegeService){
+        this.collegeService = collegeService;
+    }
     @GetMapping("/colleges")
     public List<College> getAllColleges() {
         return collegeService.getAllColleges();

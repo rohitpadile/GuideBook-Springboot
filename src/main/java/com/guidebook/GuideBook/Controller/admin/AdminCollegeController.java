@@ -1,8 +1,7 @@
-package com.guidebook.GuideBook.Controller;
+package com.guidebook.GuideBook.Controller.admin;
 
 import com.guidebook.GuideBook.Models.College;
-import com.guidebook.GuideBook.Services.AdminCollegeService;
-import com.guidebook.GuideBook.Services.CollegeService;
+import com.guidebook.GuideBook.Services.admin.AdminCollegeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +12,12 @@ import java.util.List;
 @RequestMapping("/api/v1/admin/")
 public class AdminCollegeController {
 
-    @Autowired
+
     private AdminCollegeService adminCollegeService;
+    @Autowired
+    AdminCollegeController(AdminCollegeService adminCollegeService){
+        this.adminCollegeService = adminCollegeService;
+    }
 
     // Endpoint to add a new college
     @PostMapping("/addCollege")
