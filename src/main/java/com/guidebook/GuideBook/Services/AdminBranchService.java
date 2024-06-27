@@ -16,7 +16,7 @@ public class AdminBranchService {
         return branchRepository.findAll();
     }
 
-    public Branch saveBranch(Branch branch) {
+    public Branch addBranch(Branch branch) {
         return branchRepository.save(branch);
     }
 }

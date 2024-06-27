@@ -21,6 +21,6 @@ public class AdminBranchController {
 
     @PostMapping("/addBranch")
     public Branch addBranch(@RequestBody Branch branch) {
-        return adminBranchService.saveBranch(branch);
+        return adminBranchService.addBranch(branch);
     }
 }

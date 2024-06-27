@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,4 +17,7 @@ public class College {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long collegeId;
     private String collegeName;
+
+    @ElementCollection
+    private List<Branch> collegeBranches;
 }

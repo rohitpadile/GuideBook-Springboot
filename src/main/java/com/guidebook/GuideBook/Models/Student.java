@@ -19,6 +19,7 @@ public class Student {
     @JoinColumn(name = "collegeId")
     private College college;
 
+    @ManyToOne
     @JoinColumn(name = "branchId")
     private Branch branch;
 

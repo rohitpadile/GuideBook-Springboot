@@ -15,12 +15,7 @@ public class Branch {
     private Long branchId;
 
     private String branchName;
-
-    // Relationship with College entity
-    @ManyToOne
-    @JoinColumn(name = "collegeId")
-    private College college;
-
-    // Getters and setters
+//
+//    // Getters and setters
 }
 
