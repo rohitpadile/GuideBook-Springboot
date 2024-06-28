@@ -42,7 +42,7 @@ public class Student {
 
     @ElementCollection
     private List<Long> studentLanguageIds = new ArrayList<>();
-    private Integer yearOfStudy;//2024
+    private String yearOfStudy;//2024
 }
 
 

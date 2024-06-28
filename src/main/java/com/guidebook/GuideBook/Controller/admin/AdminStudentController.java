@@ -47,9 +47,7 @@ public class AdminStudentController {
         } else {
             return ResponseEntity.notFound().build(); // Return 404 Not Found if student with given id is not found
         }
-//        language.setLanguageId(id);
-//        Language updatedLanguage = adminLanguageService.updateLanguageById(id, language);
-//        return ResponseEntity.ok(updatedLanguage);
+
     }
 
     @DeleteMapping("deleteStudent/{id}")
