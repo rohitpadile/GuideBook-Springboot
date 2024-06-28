@@ -67,5 +67,9 @@ public class AdminStudentService {
     public void deleteStudentById(Long id) {
         studentRepository.deleteById(id);
     }
+
+    public void deleteAllStudents() {
+        studentRepository.deleteAll();
+    }
 }
 

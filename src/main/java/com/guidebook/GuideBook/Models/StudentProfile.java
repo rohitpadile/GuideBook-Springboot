@@ -17,24 +17,22 @@ public class StudentProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long studentProfileId;
 
-    @OneToOne(fetch = FetchType.LAZY) //LAZY fetching meaning -fetches only when needed
-    @JoinColumn(name = "studentId", referencedColumnName = "studentId")
-    private Student student;
-
-    // Additional profile attributes (resume, work history, skills, etc.)
-//        TAKE THIS INFO DIRECTLY FROM THE FORM FILLED FOR PROFILE DETAILS
     private String studentYear;
 
     @Column(length = 1000) // Example length for resume
     private String resume;
 
     @Column(length = 2000) // Example length for work history
-    private String workHistory;
-
-    @ElementCollection // Use ElementCollection for a collection of basic types (e.g., skills)
-    private List<String> skills = new ArrayList<>(); //mapped to another table handled by JPA
+    private String workHistory;//skills
 
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "studentId")
+    private Student student;
+
+    public Student getStudent() {
+        return student;
+    }
 
     //Add more File, images references link in more columns later
 }

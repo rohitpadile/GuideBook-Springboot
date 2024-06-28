@@ -25,24 +25,21 @@ public class Student {
     @ManyToOne
     @JoinColumn(name = "branchId")
     private Branch branch;
+    private double cetPercentile; //set contraints on this later if possible
+    private double grade;//set contraints on this later if possible
+    private String yearOfStudy;
 
-//    @Column(precision = 10, scale = 8) // Assuming cetPercentile can have up to 7-8 decimal digits
-    private double cetPercentile;
+    @OneToMany
+    @JoinColumn(name = "languageId")
+    private List<Language> studentLanguageList;
 
-//    @Column(precision = 4, scale = 2) // Assuming grade (CGPA) is out of 10 and can have up to 2 decimal digits
-    private double grade;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "student", cascade = CascadeType.ALL)
+    @JoinColumn(name = "studentProfileId")
+    private StudentProfile studentProfile;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "language",
-//            joinColumns = @JoinColumn(name = "studentId"),
-//            inverseJoinColumns = @JoinColumn(name = "languageId")
-//    )
-//    private List<Language> languages = new ArrayList<>();
-
-    @ElementCollection
-    private List<Long> studentLanguageIds = new ArrayList<>();
-    private String yearOfStudy;//2024
+    public StudentProfile getStudentProfile() {
+        return studentProfile;
+    }
 }
 
 

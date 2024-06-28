@@ -19,7 +19,8 @@ public class College {
     private Long collegeId;
     private String collegeName;
 
-    @ElementCollection
-    private List<Long> collegeBranchIds = new ArrayList<>();
+    @OneToMany
+    @JoinColumn(name = "branchId")
+    private List<Branch> collegeBranchList;
 
 }

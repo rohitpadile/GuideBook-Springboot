@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.Controller.admin;
 
 import com.guidebook.GuideBook.Models.Language;
 import com.guidebook.GuideBook.Models.Student;
+import com.guidebook.GuideBook.Models.StudentProfile;
 import com.guidebook.GuideBook.Services.admin.AdminStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,5 +58,16 @@ public class AdminStudentController {
         }
         adminStudentService.deleteStudentById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("deleteAllStudents")
+    public ResponseEntity<Void> deleteAllStudents(){
+        adminStudentService.deleteAllStudents();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("studentProfile/{id}")
+    public ResponseEntity<StudentProfile> getStudentProfileById(@PathVariable Long id){
+
     }
 }
