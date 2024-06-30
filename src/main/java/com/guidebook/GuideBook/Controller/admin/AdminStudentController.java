@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.Controller.admin;
 
 import com.guidebook.GuideBook.Models.Language;
 import com.guidebook.GuideBook.Models.Student;
+import com.guidebook.GuideBook.Models.StudentProfile;
 import com.guidebook.GuideBook.Services.admin.AdminStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,17 +39,17 @@ public class AdminStudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
     }
 
-    @PutMapping("/updateStudent/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
-        student.setStudentId(id);
-        Student updatedStudent = adminStudentService.updateStudent(id, student);
-        if (updatedStudent != null) {
-            return ResponseEntity.ok(updatedStudent); // Return 200 OK with updated student
-        } else {
-            return ResponseEntity.notFound().build(); // Return 404 Not Found if student with given id is not found
-        }
-
-    }
+//    @PutMapping("/updateStudent/{id}")
+//    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
+//        student.setStudentId(id);
+//        Student updatedStudent = adminStudentService.updateStudent(id, student);
+//        if (updatedStudent != null) {
+//            return ResponseEntity.ok(updatedStudent); // Return 200 OK with updated student
+//        } else {
+//            return ResponseEntity.notFound().build(); // Return 404 Not Found if student with given id is not found
+//        }
+//
+//    }
 
     @DeleteMapping("deleteStudent/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
@@ -58,4 +59,15 @@ public class AdminStudentController {
         adminStudentService.deleteStudentById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("deleteAllStudents")
+    public ResponseEntity<Void> deleteAllStudents(){
+        adminStudentService.deleteAllStudents();
+        return ResponseEntity.noContent().build();
+    }
+
+//    @GetMapping("studentProfile/{id}")
+//    public ResponseEntity<StudentProfile> getStudentProfileById(@PathVariable Long id){
+//
+//    }
 }

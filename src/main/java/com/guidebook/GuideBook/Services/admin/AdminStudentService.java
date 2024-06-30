@@ -33,25 +33,25 @@ public class AdminStudentService {
         return studentRepository.save(student);
     }
 
-    public Student updateStudent(Long id, Student student) {
+//    public Student updateStudent(Long id, Student student) {
 
-        Optional<Student> optionalStudent = studentRepository.findById(id);
-        if(optionalStudent.isPresent()){
-            Student existingStudent = optionalStudent.get();
-            //set the updated fields
-            existingStudent.setStudentName(student.getStudentName());
-            //remaining fields update
-            existingStudent.setCollege(student.getCollege());
-            existingStudent.setBranch(student.getBranch());
-            existingStudent.setGrade(student.getGrade());
-            existingStudent.setCetPercentile(student.getCetPercentile());
-            existingStudent.setStudentLanguageIds(student.getStudentLanguageIds());
-            existingStudent.setYearOfStudy(student.getYearOfStudy());
-            return studentRepository.save(student);
-        }else {
-            return null;
-        }
-    }
+//        Optional<Student> optionalStudent = studentRepository.findById(id);
+//        if(optionalStudent.isPresent()){
+//            Student existingStudent = optionalStudent.get();
+//            //set the updated fields
+//            existingStudent.setStudentName(student.getStudentName());
+//            //remaining fields update
+//            existingStudent.setCollege(student.getCollege());
+//            existingStudent.setBranch(student.getBranch());
+//            existingStudent.setGrade(student.getGrade());
+//            existingStudent.setCetPercentile(student.getCetPercentile());
+//            existingStudent.setStudentLanguageIds(student.getStudentLanguageIds());
+//            existingStudent.setYearOfStudy(student.getYearOfStudy());
+//            return studentRepository.save(student);
+//        }else {
+//            return null;
+//        }
+//    }
 
 //    Optional<Language> optionalLanguage = languageRepository.findById(id);
 //        if (optionalLanguage.isPresent()) {
@@ -66,6 +66,10 @@ public class AdminStudentService {
 
     public void deleteStudentById(Long id) {
         studentRepository.deleteById(id);
+    }
+
+    public void deleteAllStudents() {
+        studentRepository.deleteAll();
     }
 }
 

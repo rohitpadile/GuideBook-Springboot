@@ -27,7 +27,7 @@ public class AdminCollegeService {
                 .orElseThrow(() -> new EntityNotFoundException("College not found with id: " + collegeId));
 
         existingCollege.setCollegeName(collegeDetails.getCollegeName());
-        existingCollege.setCollegeBranchIds(collegeDetails.getCollegeBranchIds());
+//        existingCollege.setCollegeBranchIds(collegeDetails.getCollegeBranchIds());
 
         return collegeRepository.save(existingCollege);
     }
