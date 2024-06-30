@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Data //getters and setters
 @Builder
 //Below is a lombok annotation for making private all the non static properties
 //@FieldDefaults(level = AccessLevel.PRIVATE) - Use it later. Now just go with writing things
@@ -42,7 +42,7 @@ public class Student {
     @Enumerated(value = EnumType.STRING)
     private StudentClassType studentClassType; //Done
 
-    @ManyToMany
+    @ManyToMany //owning side
     @JoinTable(
             name = "student_language",
             joinColumns = @JoinColumn(name = "studentId"),
@@ -52,11 +52,8 @@ public class Student {
 
     @OneToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "studentProfileId")
-    @JsonIgnore //ignores this when fetching list of students to the frontend
-    private StudentProfile studentProfile; //Remaining
+    @JsonIgnore //ignores this when fetching list of students to the frontend //otherwise create a DTO directy.
+    private StudentProfile studentProfile;
 
-//    public StudentProfile getStudentProfile() {
-//        return studentProfile; //Remaining
-//    }
 }
 

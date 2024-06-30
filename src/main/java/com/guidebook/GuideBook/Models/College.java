@@ -31,7 +31,7 @@ public class College {
     )
     private Set<Branch> collegeBranchList = new HashSet<>();
 
-    @OneToMany
+    @OneToMany //owning side
     @JoinColumn(name = "fk_collegeId_studentId", referencedColumnName = "collegeId")
     private List<Student> collegeStudentList;
 
