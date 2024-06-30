@@ -1,12 +1,13 @@
 package com.guidebook.GuideBook.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -19,4 +20,8 @@ public class Language {
     private Long languageId;
 
     private String languageName;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "studentLanguageList")
+    private Set<Student> languageStudentList = new HashSet<>();
 }
