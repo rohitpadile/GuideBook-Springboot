@@ -2,7 +2,6 @@ package com.guidebook.GuideBook.Services.admin;
 
 
 
-import com.guidebook.GuideBook.Models.Language;
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AdminStudentService {
+public class StudentService {
 
     private StudentRepository studentRepository;
 
     @Autowired
-    public AdminStudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
 

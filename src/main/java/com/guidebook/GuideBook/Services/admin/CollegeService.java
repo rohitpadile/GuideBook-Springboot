@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AdminCollegeService {
+public class CollegeService {
     private CollegeRepository collegeRepository;
     @Autowired
-    AdminCollegeService(CollegeRepository collegeRepository){
+    CollegeService(CollegeRepository collegeRepository){
         this.collegeRepository = collegeRepository;
     }
 

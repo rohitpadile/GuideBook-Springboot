@@ -31,10 +31,5 @@ public class StudentProfile {
     @OneToOne(mappedBy = "studentProfile")
     private Student student;
 
-//    public Student getStudent() {
-//        return student;
-//    }
-
-    //Add more File, images references link in more columns later
 }
 

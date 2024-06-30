@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AdminLanguageService {
+public class LanguageService {
 
     private LanguageRepository languageRepository;
 
     @Autowired
-    public AdminLanguageService(LanguageRepository languageRepository) {
+    public LanguageService(LanguageRepository languageRepository) {
         this.languageRepository = languageRepository;
     }
 
