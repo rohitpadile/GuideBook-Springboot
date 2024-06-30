@@ -1,6 +1,7 @@
 
 package com.guidebook.GuideBook.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,8 +28,7 @@ public class StudentProfile {
     private String workHistory;//skills
 
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "studentId")
+    @OneToOne(mappedBy = "studentProfile")
     private Student student;
 
 //    public Student getStudent() {

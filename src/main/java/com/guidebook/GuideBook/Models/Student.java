@@ -50,8 +50,9 @@ public class Student {
     )
     private List<Language> studentLanguageList; //Remaining
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "student", cascade = CascadeType.ALL)
+    @OneToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "studentProfileId")
+    @JsonIgnore //ignores this when fetching list of students to the frontend
     private StudentProfile studentProfile; //Remaining
 
 //    public StudentProfile getStudentProfile() {
