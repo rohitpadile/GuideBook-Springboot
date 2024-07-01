@@ -21,8 +21,7 @@ public class Language {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long languageId;
 
-    @Enumerated(value = EnumType.STRING)
-    private LanguageEnum languageName;
+    private String languageName;
 
 
     @ManyToMany(mappedBy = "studentLanguageList")

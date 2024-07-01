@@ -17,8 +17,6 @@ public class BranchService {
     //Which Service to autowire to which service comes only when you learn to use DATA TRANSFER OBJECT
 
     private BranchRepository branchRepository;
-    @Autowired
-    private StudentService studentService;
 
     @Autowired
     BranchService(BranchRepository branchRepository){

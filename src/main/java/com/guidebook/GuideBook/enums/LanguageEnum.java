@@ -4,6 +4,5 @@ public enum LanguageEnum {
     ENGLISH,
     HINDI,
     MARATHI,
-    GUJARATI,
-
+    GUJARATI
 }

@@ -56,6 +56,11 @@ public class CollegeService {
             }
         }
         newCollege.setCollegeBranchSet(branchSet);
+        collegeRepository.save(newCollege);
 
+    }
+
+    public College findCollegeByCollegeName(String name){
+        return collegeRepository.findCollegeByCollegeName(name);
     }
 }

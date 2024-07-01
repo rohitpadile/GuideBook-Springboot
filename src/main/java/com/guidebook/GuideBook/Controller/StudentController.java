@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.Controller;
 
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Services.StudentService;
+import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,4 +34,8 @@ public class StudentController {
         return new ResponseEntity<>(filteredStudentList, HttpStatus.OK);
     }
 
+    public ResponseEntity<Student> addStudent(AddStudentRequest addStudentRequest){
+        Student addedStudent = studentService.addStudent(addStudentRequest);
+        return new ResponseEntity<>(addedStudent, HttpStatus.CREATED);
+    }
 }
