@@ -1,0 +1,20 @@
+
+Hibernate: create table Branch (branchId bigint not null auto_increment, branchName varchar(255), primary key (branchId)) engine=InnoDB
+Hibernate: create table College (collegeId bigint not null auto_increment, collegeName varchar(255), primary key (collegeId)) engine=InnoDB
+Hibernate: create table college_branches (collegeId bigint not null, branchId bigint not null, primary key (collegeId, branchId)) engine=InnoDB
+Hibernate: create table Language (languageId bigint not null auto_increment, languageName varchar(255), primary key (languageId)) engine=InnoDB
+Hibernate: create table Student (studentId bigint not null auto_increment, cetPercentile float(53), grade float(53), studentClassType enum ('DSY_BTECH','FINALYEAR_BTECH','FY_BPLANNING','FY_BTECH','FY_MTECH','SY_BPLANNING','SY_BTECH','SY_MTECH','TY_BTECH'), studentMis bigint, studentName varchar(255), fk_studentId_branchId bigint, fk_studentId_collegeId bigint, studentProfileId bigint, primary key (studentId)) engine=InnoDB
+Hibernate: create table student_language (studentId bigint not null, languageId bigint not null) engine=InnoDB
+Hibernate: create table StudentProfile (studentProfileId bigint not null auto_increment, resume varchar(1000), studentYear varchar(255), workHistory varchar(2000), primary key (studentProfileId)) engine=InnoDB
+Hibernate: alter table Student drop index UKd2rx4asrb6hxqtccrbwha1wsh
+Hibernate: alter table Student add constraint UKd2rx4asrb6hxqtccrbwha1wsh unique (studentProfileId)
+Hibernate: alter table college_branches add constraint FK5nkn8j75ae36oy2471gjptdm9 foreign key (branchId) references Branch (branchId)
+Hibernate: alter table college_branches add constraint FKkyu330yuv1cxjwncxmnb1nsam foreign key (collegeId) references College (collegeId)
+Hibernate: alter table Student add constraint FKso2oa3fimn19fr8y36rvh3t4y foreign key (fk_studentId_branchId) references Branch (branchId)
+Hibernate: alter table Student add constraint FKlb3ngnfqras8lk3tsw968pow8 foreign key (fk_studentId_collegeId) references College (collegeId)
+Hibernate: alter table Student add constraint FK3t5nl8hcgtbxm9qbxmb6ty650 foreign key (studentProfileId) references StudentProfile (studentProfileId)
+Hibernate: alter table student_language add constraint FKajhhcqnoes1ehqxg6osoi632f foreign key (languageId) references Language (languageId)
+Hibernate: alter table student_language add constraint FKp1hke6m9e8h75ddfpov0dd9vp foreign key (studentId) references Student (studentId)
+
+//Above Queries are the queries I wanted as of 1st July.
+//ignore student profile in this - will later update its properties

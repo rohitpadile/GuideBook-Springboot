@@ -27,12 +27,12 @@ public class Student {
     private String studentName;
 
     @ManyToOne
-    @JoinColumn(name = "fk_studentId_collegeId", referencedColumnName = "studentId")
+    @JoinColumn(name = "fk_studentId_collegeId", referencedColumnName = "collegeId")
     private College studentCollege; //owning side
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "fk_studentId_branchId", referencedColumnName = "studentId")
+    @JoinColumn(name = "fk_studentId_branchId", referencedColumnName = "branchId")
     private Branch studentBranch; //owning side
 
     private Double cetPercentile; //set contraints on this later if possible

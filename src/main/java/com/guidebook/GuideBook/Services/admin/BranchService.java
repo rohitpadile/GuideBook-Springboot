@@ -52,16 +52,10 @@ public class BranchService {
         branchRepository.delete(branch);
     }
 
-    public Branch addStudentToBranch(Long branchid, Long studentId){
-        Branch branch = branchRepository.findById(branchid)
-                .orElseThrow(() -> new EntityNotFoundException("Not found branch with id: " + branchid));
-        //You can throw custom Exceptions also.
-        Student student = studentService.getStudentById(studentId)
-                .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + studentId));
-
-        //Now both branch and student is with us.
-        List<Student> studentList = branch.getBranchStudentList();
-        studentList.add(student);
-        return branchRepository.save(branch);
+    public void deleteAllBranches() {
+        branchRepository.deleteAll();
     }
+
+//    public Branch addStudentToBranch(Long branchid, Long studentId) {
+//    }
 }

@@ -51,9 +51,9 @@ public class BranchController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/addStudentIdToBranchId/{branchId}/{studentId}")
-    public  ResponseEntity<Branch> addStudentIdToBranchId(@PathVariable Long branchId, @PathVariable Long studentId){
-        Branch branch = branchService.addStudentToBranch(branchId, studentId);
-        return new ResponseEntity<>(branch, HttpStatus.OK);
+    @DeleteMapping("/deleteAllBranches")
+    public ResponseEntity<Void> deleteAllBranches(){
+        branchService.deleteAllBranches();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
