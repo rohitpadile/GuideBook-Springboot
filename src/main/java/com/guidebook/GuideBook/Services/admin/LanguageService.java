@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.Services.admin;
 
 import com.guidebook.GuideBook.Models.Language;
 import com.guidebook.GuideBook.Repository.LanguageRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,25 +24,23 @@ public class LanguageService {
     }
 
     public Language getLanguageById(Long id) {
-        Optional<Language> language = languageRepository.findById(id);
-        return language.orElse(null);
+        return languageRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Language not found with id: " + id)
+        );
     }
 
     public Language addLanguage(Language language) {
         return languageRepository.save(language);
     }
 
-    public Language updateLanguageById(Long id, Language updatedLanguage) {
-        Optional<Language> optionalLanguage = languageRepository.findById(id);
-        if (optionalLanguage.isPresent()) {
-            Language language = optionalLanguage.get();
-            language.setLanguageName(updatedLanguage.getLanguageName());
-            // Set other fields to update as needed
-
-            return languageRepository.save(language);
-        } else {
-            return null; // or throw exception, depending on your use case
+    public Language updateLanguageById(Long id, Language language) {
+        Language exisitingLanguage = languageRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Language not found with id: " + id)
+        );
+        if(language.getLanguageName()!=null){
+            exisitingLanguage.setLanguageName(language.getLanguageName());
         }
+        return languageRepository.save(exisitingLanguage);
     }
 
     public void deleteLanguageById(Long id) {

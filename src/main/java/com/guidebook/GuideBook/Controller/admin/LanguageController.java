@@ -19,40 +19,32 @@ public class LanguageController {
     }
 
     @GetMapping("/languages")
-    public List<Language> getAllLanguages() {
-        return languageService.getAllLanguages();
+    public ResponseEntity<List<Language>> getAllLanguages() {
+        List<Language> languages = languageService.getAllLanguages();
+        return new ResponseEntity<>(languages, HttpStatus.OK);
     }
 
     @GetMapping("/languages/{id}")
     public ResponseEntity<Language> getLanguageById(@PathVariable Long id) {
         Language language = languageService.getLanguageById(id);
-        if (language != null) {
-            return ResponseEntity.ok(language);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return new ResponseEntity<>(language, HttpStatus.OK);
     }
 
     @PostMapping("/addLanguage")
     public ResponseEntity<Language> addLanguage(@RequestBody Language language) {
         Language savedLanguage = languageService.addLanguage(language);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedLanguage);
+        return new ResponseEntity<>(savedLanguage, HttpStatus.CREATED);
     }
 
     @PutMapping("/updateLanguage/{id}")
     public ResponseEntity<Language> updateLanguageById(@PathVariable Long id, @RequestBody Language language) {
-        language.setLanguageId(id);
         Language updatedLanguage = languageService.updateLanguageById(id, language);
-        if(updatedLanguage!=null){
-            return ResponseEntity.ok(updatedLanguage);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return new ResponseEntity<>(updatedLanguage, HttpStatus.OK);
     }
 
     @DeleteMapping("deleteLanguage/{id}")
     public ResponseEntity<Void> deleteLanguage(@PathVariable Long id) {
         languageService.deleteLanguageById(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
