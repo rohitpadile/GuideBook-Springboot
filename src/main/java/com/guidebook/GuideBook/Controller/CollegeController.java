@@ -18,39 +18,5 @@ public class CollegeController {
         this.collegeService = collegeService;
     }
 
-    // Endpoint to add a new college
-    @PostMapping("/addCollege")
-    public ResponseEntity<College> addCollege(@RequestBody College college) {
-        College savedCollege = collegeService.save(college);
-        return new ResponseEntity<>(savedCollege, HttpStatus.CREATED);
-    }
 
-    // Endpoint to update a college
-    @PutMapping("/updateCollege/{collegeId}")
-    public ResponseEntity<College> updateCollege(@PathVariable Long collegeId, @RequestBody College collegeDetails) {
-        College updatedCollege = collegeService.update(collegeId, collegeDetails);
-        return new ResponseEntity<>(updatedCollege, HttpStatus.OK);
-    }
-
-    // Endpoint to delete a college
-    @DeleteMapping("/deleteCollege/{collegeId}")
-    public ResponseEntity<Void> deleteCollege(@PathVariable Long collegeId) {
-        collegeService.delete(collegeId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    // Endpoint to retrieve all colleges
-    @GetMapping("/colleges")
-    public ResponseEntity<List<College>> getAllColleges() {
-        List<College> colleges = collegeService.getAllColleges();
-        return new ResponseEntity<>(colleges, HttpStatus.OK);
-    }
-
-    // Endpoint to retrieve a specific college by ID
-    @GetMapping("/colleges/{collegeId}")
-    public ResponseEntity<College> getCollegeById(@PathVariable Long collegeId) {
-        College college = collegeService.getCollegeById(collegeId);
-        return new ResponseEntity<>(college,HttpStatus.OK);
-
-    }
 }
