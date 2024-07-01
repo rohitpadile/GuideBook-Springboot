@@ -1,7 +1,7 @@
-package com.guidebook.GuideBook.Controller.admin;
+package com.guidebook.GuideBook.Controller;
 
 import com.guidebook.GuideBook.Models.Language;
-import com.guidebook.GuideBook.Services.admin.LanguageService;
+import com.guidebook.GuideBook.Services.LanguageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

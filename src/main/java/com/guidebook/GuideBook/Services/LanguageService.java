@@ -1,4 +1,4 @@
-package com.guidebook.GuideBook.Services.admin;
+package com.guidebook.GuideBook.Services;
 
 import com.guidebook.GuideBook.Models.Language;
 import com.guidebook.GuideBook.Repository.LanguageRepository;
@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LanguageService {

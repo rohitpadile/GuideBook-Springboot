@@ -1,7 +1,6 @@
-package com.guidebook.GuideBook.Services.admin;
+package com.guidebook.GuideBook.Services;
 
 import com.guidebook.GuideBook.Models.Branch;
-import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Repository.BranchRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

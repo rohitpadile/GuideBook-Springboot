@@ -1,7 +1,7 @@
-package com.guidebook.GuideBook.Controller.admin;
+package com.guidebook.GuideBook.Controller;
 
 import com.guidebook.GuideBook.Models.College;
-import com.guidebook.GuideBook.Services.admin.CollegeService;
+import com.guidebook.GuideBook.Services.CollegeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

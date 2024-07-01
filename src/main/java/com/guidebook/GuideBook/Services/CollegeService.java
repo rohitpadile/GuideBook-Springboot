@@ -1,6 +1,5 @@
-package com.guidebook.GuideBook.Services.admin;
+package com.guidebook.GuideBook.Services;
 
-import com.guidebook.GuideBook.Models.Branch;
 import com.guidebook.GuideBook.Models.College;
 import com.guidebook.GuideBook.Repository.CollegeRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CollegeService {

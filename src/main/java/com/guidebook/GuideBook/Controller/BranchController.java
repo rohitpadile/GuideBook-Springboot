@@ -1,14 +1,12 @@
-package com.guidebook.GuideBook.Controller.admin;
+package com.guidebook.GuideBook.Controller;
 
 import com.guidebook.GuideBook.Models.Branch;
-import com.guidebook.GuideBook.Models.College;
-import com.guidebook.GuideBook.Services.admin.BranchService;
+import com.guidebook.GuideBook.Services.BranchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 @CrossOrigin(origins = {"http://localhost:3000/", "http://localhost:8080"})
 @RestController
