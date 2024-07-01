@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CollegeService {
@@ -26,9 +27,15 @@ public class CollegeService {
         College existingCollege = collegeRepository.findById(collegeId)
                 .orElseThrow(() -> new EntityNotFoundException("College not found with id: " + collegeId));
 
-        existingCollege.setCollegeName(collegeDetails.getCollegeName());
-//        existingCollege.setCollegeBranchIds(collegeDetails.getCollegeBranchIds());
-
+        if(collegeDetails.getCollegeName() != null){
+            existingCollege.setCollegeName(collegeDetails.getCollegeName());
+        }
+        if(collegeDetails.getCollegeBranchList()!= null){
+            existingCollege.setCollegeBranchList(collegeDetails.getCollegeBranchList());
+        }
+        if(collegeDetails.getCollegeStudentList() != null){
+            existingCollege.setCollegeStudentList(collegeDetails.getCollegeStudentList());
+        }
         return collegeRepository.save(existingCollege);
     }
 
@@ -36,7 +43,6 @@ public class CollegeService {
     public void delete(Long collegeId) {
         College existingCollege = collegeRepository.findById(collegeId)
                 .orElseThrow(() -> new EntityNotFoundException("College not found with id: " + collegeId));
-
         collegeRepository.delete(existingCollege);
     }
 
@@ -49,5 +55,11 @@ public class CollegeService {
     public College getCollegeById(Long collegeId) {
         return collegeRepository.findById(collegeId)
                 .orElseThrow(() -> new EntityNotFoundException("College not found with id: " + collegeId));
+    }
+
+    public void addBranchIdToCollegeId(Long collegeId, Long branchId){
+    }
+
+    public void addStudentIdToCollegeId(Long collegeId, Long studentId){
     }
 }
