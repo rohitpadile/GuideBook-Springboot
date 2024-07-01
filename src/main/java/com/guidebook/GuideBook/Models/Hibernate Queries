@@ -1,8 +1,7 @@
-
 Hibernate: create table Branch (branchId bigint not null auto_increment, branchName varchar(255), primary key (branchId)) engine=InnoDB
 Hibernate: create table College (collegeId bigint not null auto_increment, collegeName varchar(255), primary key (collegeId)) engine=InnoDB
 Hibernate: create table college_branches (collegeId bigint not null, branchId bigint not null, primary key (collegeId, branchId)) engine=InnoDB
-Hibernate: create table Language (languageId bigint not null auto_increment, languageName varchar(255), primary key (languageId)) engine=InnoDB
+Hibernate: create table Language (languageId bigint not null auto_increment, languageName enum ('ENGLISH','GUJARATI','HINDI','MARATHI'), primary key (languageId)) engine=InnoDB
 Hibernate: create table Student (studentId bigint not null auto_increment, cetPercentile float(53), grade float(53), studentClassType enum ('DSY_BTECH','FINALYEAR_BTECH','FY_BPLANNING','FY_BTECH','FY_MTECH','SY_BPLANNING','SY_BTECH','SY_MTECH','TY_BTECH'), studentMis bigint, studentName varchar(255), fk_studentId_branchId bigint, fk_studentId_collegeId bigint, studentProfileId bigint, primary key (studentId)) engine=InnoDB
 Hibernate: create table student_language (studentId bigint not null, languageId bigint not null) engine=InnoDB
 Hibernate: create table StudentProfile (studentProfileId bigint not null auto_increment, resume varchar(1000), studentYear varchar(255), workHistory varchar(2000), primary key (studentProfileId)) engine=InnoDB

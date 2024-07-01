@@ -1,6 +1,7 @@
 
 package com.guidebook.GuideBook.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,7 @@ public class College {
     private Long collegeId;
     private String collegeName;
 
+    @JsonIgnore //Keep convention: Add branch to collegebranchList when a new branch is added
     @ManyToMany //owning side
     @JoinTable(name = "college_branches",
         joinColumns = @JoinColumn(name = "collegeId"),

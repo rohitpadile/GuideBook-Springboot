@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.Services.admin;
 
+import com.guidebook.GuideBook.Models.Branch;
 import com.guidebook.GuideBook.Models.College;
 import com.guidebook.GuideBook.Repository.CollegeRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -57,9 +58,14 @@ public class CollegeService {
                 .orElseThrow(() -> new EntityNotFoundException("College not found with id: " + collegeId));
     }
 
-    public void addBranchIdToCollegeId(Long collegeId, Long branchId){
-    }
+//    public void addBranchIdToCollegeId(Long collegeId, Long branchId){ //Internal method
+//        Branch branch = branchService.getBranchById(branchId);
+//        College college = collegeRepository.findById(collegeId).orElseThrow(
+//                () -> new EntityNotFoundException("College not found with id: " + collegeId)
+//        );
+//        college.getCollegeBranchList().add(branch);
+//    }
 
-    public void addStudentIdToCollegeId(Long collegeId, Long studentId){
-    }
+//    public void addStudentIdToCollegeId(Long collegeId, Long studentId){
+//    }
 }

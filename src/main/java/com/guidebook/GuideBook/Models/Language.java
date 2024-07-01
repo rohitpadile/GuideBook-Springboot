@@ -2,6 +2,7 @@
 package com.guidebook.GuideBook.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.guidebook.GuideBook.enums.LanguageEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +21,8 @@ public class Language {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long languageId;
 
-    private String languageName;
+    @Enumerated(value = EnumType.STRING)
+    private LanguageEnum languageName;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "studentLanguageList")
