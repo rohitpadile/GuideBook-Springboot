@@ -31,7 +31,7 @@ public class College {
         joinColumns = @JoinColumn(name = "collegeId"),
         inverseJoinColumns = @JoinColumn(name = "branchId")
     )
-    private Set<Branch> collegeBranchList = new HashSet<>();
+    private Set<Branch> collegeBranchSet = new HashSet<>();
 
     @OneToMany(mappedBy = "studentCollege")
     private List<Student> collegeStudentList;

@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 
 import java.util.List;
 
-@Builder
+
 @Data
 public class FilteredStudentListRequest {//edit this dto after reading the minor project code.
     @NotEmpty(message = "Branch name cannot be empty")
