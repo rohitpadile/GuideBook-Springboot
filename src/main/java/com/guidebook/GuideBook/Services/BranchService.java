@@ -2,6 +2,8 @@ package com.guidebook.GuideBook.Services;
 
 import com.guidebook.GuideBook.Models.Branch;
 import com.guidebook.GuideBook.Repository.BranchRepository;
+import com.guidebook.GuideBook.dtos.AddBranchRequest;
+import com.guidebook.GuideBook.mapper.BranchMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,10 +30,15 @@ public class BranchService {
         );
     }
 
+    public Branch addBranch(AddBranchRequest addBranchRequest){
+        Branch newBranch = new Branch();
+        newBranch.setBranchName(addBranchRequest.getBranchName());
+        return addBranch(newBranch);
+    }
+
     public Branch addBranch(Branch branch){
         return branchRepository.save(branch);
     }
-
 
     public Branch getBranchByName(String name){
         return branchRepository.findBranchByBranchName(name);

@@ -24,7 +24,7 @@ public class Language {
     @Enumerated(value = EnumType.STRING)
     private LanguageEnum languageName;
 
-    @JsonIgnore
+
     @ManyToMany(mappedBy = "studentLanguageList")
     private Set<Student> languageStudentList = new HashSet<>();
 }

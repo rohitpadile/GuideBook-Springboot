@@ -24,11 +24,11 @@ public class Branch {
 
     private String branchName;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "collegeBranchList")
+
+    @ManyToMany(mappedBy = "collegeBranchSet")
     private Set<College> branchCollegeList = new HashSet<>();
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "studentBranch")
     private List<Student> branchStudentList;
 }

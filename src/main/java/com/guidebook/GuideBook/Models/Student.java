@@ -30,7 +30,7 @@ public class Student {
     @JoinColumn(name = "fk_studentId_collegeId", referencedColumnName = "collegeId")
     private College studentCollege; //owning side
 
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "fk_studentId_branchId", referencedColumnName = "branchId")
     private Branch studentBranch; //owning side
@@ -50,7 +50,6 @@ public class Student {
 
     @OneToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY) //owning side
     @JoinColumn(name = "studentProfileId")
-    @JsonIgnore //ignores this when fetching list of students to the frontend //otherwise create a DTO directy.
     private StudentProfile studentProfile;
 
 }
