@@ -21,51 +21,39 @@ public class StudentController {
     }
 
     @GetMapping("/students")
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    public ResponseEntity<List<Student>> getAllStudents() {
+        List<Student> studentList = studentService.getAllStudents();
+        return new ResponseEntity<>(studentList, HttpStatus.OK);
     }
 
     @GetMapping("/students/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
-        Optional<Student> student = studentService.getStudentById(id);
-        return student.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        Student student = studentService.getStudentById(id);
+        return new ResponseEntity<>(student, HttpStatus.OK);
     }
 
     @PostMapping("/addStudent")
     public ResponseEntity<Student> addStudent(@RequestBody Student student) {
         Student savedStudent = studentService.addStudent(student);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
+        return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
     }
 
-//    @PutMapping("/updateStudent/{id}")
-//    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
-//        student.setStudentId(id);
-//        Student updatedStudent = studentService.updateStudent(id, student);
-//        if (updatedStudent != null) {
-//            return ResponseEntity.ok(updatedStudent); // Return 200 OK with updated student
-//        } else {
-//            return ResponseEntity.notFound().build(); // Return 404 Not Found if student with given id is not found
-//        }
-//
-//    }
+    @PutMapping("/updateStudent/{id}")
+    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
+        Student updatedStudent = studentService.updateStudentById(id, student);
+        return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
+    }
 
     @DeleteMapping("deleteStudent/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
-        if (!studentService.getStudentById(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
         studentService.deleteStudentById(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("deleteAllStudents")
     public ResponseEntity<Void> deleteAllStudents(){
         studentService.deleteAllStudents();
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-
-//    @GetMapping("studentProfile/{id}")
-//    public ResponseEntity<StudentProfile> getStudentProfileById(@PathVariable Long id){
-//
-//    }
+    //make dto's for studentProfile if possible
 }

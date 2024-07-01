@@ -4,6 +4,7 @@ package com.guidebook.GuideBook.Services.admin;
 
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Repository.StudentRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +25,10 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public Optional<Student> getStudentById(Long id) {
-        return studentRepository.findById(id);
+    public Student getStudentById(Long id) {
+        return studentRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Student not found with id: " + id)
+        );
     }
 
     public Student addStudent(Student student) {
@@ -69,6 +72,38 @@ public class StudentService {
 
     public void deleteAllStudents() {
         studentRepository.deleteAll();
+    }
+
+    public Student updateStudentById(Long id, Student student) {
+        Student existingStudent = studentRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Student not found with id: " + id)
+        );
+        if(student.getStudentName() != null){
+            existingStudent.setStudentName(student.getStudentName());
+        }
+        if(student.getStudentBranch()!=null){
+            existingStudent.setStudentBranch(student.getStudentBranch());
+        }
+        if(student.getStudentCollege()!=null){
+            existingStudent.setStudentCollege(student.getStudentCollege());
+        }
+        if(student.getStudentMis()!=null){
+            existingStudent.setStudentMis(student.getStudentMis());
+        }
+        if(student.getCetPercentile() != null){
+            existingStudent.setCetPercentile(student.getCetPercentile());
+        }
+        if(student.getGrade()!=null){
+            existingStudent.setGrade(student.getGrade());
+        }
+        if(student.getStudentClassType()!=null){
+            existingStudent.setStudentClassType(student.getStudentClassType());
+        }
+        if(student.getStudentLanguageList()!=null){
+            existingStudent.setStudentLanguageList(student.getStudentLanguageList());
+        }
+        //Make another method for adding Student Profile
+        return studentRepository.save(existingStudent);
     }
 }
 

@@ -26,19 +26,17 @@ public class Student {
     private Long studentMis;
     private String studentName;
 
+    @ManyToOne
+    @JoinColumn(name = "fk_studentId_collegeId", referencedColumnName = "studentId")
+    private College studentCollege; //owning side
+
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "fk_collegeId_studentId")
-    private College college; //Done
+    @JoinColumn(name = "fk_studentId_branchId", referencedColumnName = "studentId")
+    private Branch studentBranch; //owning side
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "fk_branchId_studentId")
-    private Branch studentBranch; //Done
-
-
-    private double cetPercentile; //set contraints on this later if possible
-    private double grade;//set contraints on this later if possible
+    private Double cetPercentile; //set contraints on this later if possible
+    private Double grade;//set contraints on this later if possible
     @Enumerated(value = EnumType.STRING)
     private StudentClassType studentClassType; //Done
 
@@ -48,9 +46,9 @@ public class Student {
             joinColumns = @JoinColumn(name = "studentId"),
             inverseJoinColumns = @JoinColumn(name = "languageId")
     )
-    private List<Language> studentLanguageList; //Remaining
+    private List<Language> studentLanguageList;
 
-    @OneToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY) //owning side
     @JoinColumn(name = "studentProfileId")
     @JsonIgnore //ignores this when fetching list of students to the frontend //otherwise create a DTO directy.
     private StudentProfile studentProfile;

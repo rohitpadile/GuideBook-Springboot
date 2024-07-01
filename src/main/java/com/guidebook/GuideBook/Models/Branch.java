@@ -28,8 +28,8 @@ public class Branch {
     @ManyToMany(mappedBy = "collegeBranchList")
     private Set<College> branchCollegeList = new HashSet<>();
 
-    @OneToMany//owner side
-    @JoinColumn(name = "fk_branchId_studentId", referencedColumnName = "branchId")
+    @JsonIgnore
+    @OneToMany(mappedBy = "studentBranch")
     private List<Student> branchStudentList;
 }
 
