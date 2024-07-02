@@ -2,8 +2,10 @@ package com.guidebook.GuideBook.Services;
 
 import com.guidebook.GuideBook.Models.Branch;
 import com.guidebook.GuideBook.Repository.BranchRepository;
+import com.guidebook.GuideBook.Repository.cutomrepository.CustomBranchRepositoryImpl;
 import com.guidebook.GuideBook.dtos.AddBranchRequest;
-import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllBranchNameListResponse;
+import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeRequest;
+import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeResponse;
 import com.guidebook.GuideBook.mapper.BranchMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,12 @@ public class BranchService {
     //Which Service to autowire to which service comes only when you learn to use DATA TRANSFER OBJECT
 
     private BranchRepository branchRepository;
+    private CustomBranchRepositoryImpl customBranchRepositoryImpl;
 
     @Autowired
-    BranchService(BranchRepository branchRepository){
+    BranchService(BranchRepository branchRepository, CustomBranchRepositoryImpl customBranchRepositoryImpl){
         this.branchRepository = branchRepository;
+        this.customBranchRepositoryImpl = customBranchRepositoryImpl;
     }
     public Branch getBranchById(Long branchId){
         return branchRepository.findById(branchId).orElseThrow(
@@ -47,13 +51,14 @@ public class BranchService {
         return branchRepository.findAll();
     }
 
-    public GetAllBranchNameListResponse getAllbranchNamesList() {
-        GetAllBranchNameListResponse response = new GetAllBranchNameListResponse();
-        List<Branch> branches = branchRepository.findAll();
+    public GetAllBranchNameListForCollegeResponse getAllBranchNameListForCollege(GetAllBranchNameListForCollegeRequest request) {
+        List<Branch> branches = customBranchRepositoryImpl.findBranchesForCollegeIgnoreCase(request);
+        GetAllBranchNameListForCollegeResponse response = new GetAllBranchNameListForCollegeResponse();
 
-        for(Branch branch : branches){
-            response.getAllBranchNamesList().add(branch.getBranchName());
+        for (Branch branch : branches) {
+            response.getAllBranchNamesForCollegeList().add(branch.getBranchName());
         }
+
         return response;
     }
 

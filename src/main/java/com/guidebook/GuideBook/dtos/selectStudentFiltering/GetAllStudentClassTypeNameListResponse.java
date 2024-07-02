@@ -5,11 +5,12 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Valid
+
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GetAllStudentClassTypeNameListResponse {
-    List<String> allStudentClassTypeNamesList;
+    List<String> allStudentClassTypeNamesList = new ArrayList<>();
 }

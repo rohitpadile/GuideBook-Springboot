@@ -6,5 +6,5 @@ import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
 import java.util.List;
 
 public interface CustomStudentRepository {
-    public List<Student> findStudentsByFiltersIgnoreCase(FilteredStudentListRequest filters);
+    List<Student> findStudentsByFiltersIgnoreCase(FilteredStudentListRequest filters);
 }

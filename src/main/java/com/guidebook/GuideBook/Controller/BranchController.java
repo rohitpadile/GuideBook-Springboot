@@ -1,21 +1,16 @@
 package com.guidebook.GuideBook.Controller;
 
 import com.guidebook.GuideBook.Models.Branch;
-import com.guidebook.GuideBook.Models.StudentClassType;
 import com.guidebook.GuideBook.Services.BranchService;
 import com.guidebook.GuideBook.dtos.AddBranchRequest;
-import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllBranchNameListResponse;
+import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeRequest;
+import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.And;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 @CrossOrigin(origins = {"http://localhost:3000/", "http://localhost:8080"})
 @RestController
 @RequestMapping("/api/v1/admin/")
@@ -33,9 +28,9 @@ public class BranchController {
         return new ResponseEntity<>(addedBranch, HttpStatus.CREATED);
     }
 
-    @GetMapping("/branches")
-    public ResponseEntity<GetAllBranchNameListResponse> getAllbranchNamesList(){
-        GetAllBranchNameListResponse res = branchService.getAllbranchNamesList();
+    @PostMapping("/filteredBranches")
+    public ResponseEntity<GetAllBranchNameListForCollegeResponse> getAllBranchNameListForCollege(@RequestBody @Valid GetAllBranchNameListForCollegeRequest request){
+        GetAllBranchNameListForCollegeResponse res = branchService.getAllBranchNameListForCollege(request);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }
