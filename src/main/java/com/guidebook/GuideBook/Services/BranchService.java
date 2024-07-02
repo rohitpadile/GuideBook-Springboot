@@ -58,7 +58,6 @@ public class BranchService {
         for (Branch branch : branches) {
             response.getAllBranchNamesForCollegeList().add(branch.getBranchName());
         }
-
         return response;
     }
 
