@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BranchRepository extends JpaRepository<Branch, Long> {
 
-    Branch findBranchByBranchName(String name);
+    Branch findBranchByBranchNameIgnoreCase(String name);
 }

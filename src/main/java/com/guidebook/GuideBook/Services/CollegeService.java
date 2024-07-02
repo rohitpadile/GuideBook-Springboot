@@ -6,7 +6,6 @@ import com.guidebook.GuideBook.Repository.CollegeRepository;
 import com.guidebook.GuideBook.dtos.AddCollegeRequest;
 import com.guidebook.GuideBook.dtos.GetCollegeListResponse;
 import com.guidebook.GuideBook.mapper.CollegeMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,14 +44,14 @@ public class CollegeService {
 
         Set<Branch> branchSet = new HashSet<>(); //This set is to be added to branch table
         for(String branchName : addCollegeRequest.getBranchNames()){
-            if((branchService.getBranchByName(branchName)) == null){
+            if((branchService.getBranchByBranchNameIgnoreCase(branchName)) == null){
                 Branch branch = new Branch(); //make a new branch , add it to collegeBranchSet
                 branch.setBranchName(branchName);
                 Branch newBranchAdded = branchService.addBranch(branch); //adding the new branch to branch entity
                 branchSet.add(newBranchAdded);//adding it to collegeBranchSet
             } else {//already branch present
                 log.info("Branch {} is already in the branch table", branchName);
-                branchSet.add(branchService.getBranchByName(branchName)); //add it to collegeBranchSet
+                branchSet.add(branchService.getBranchByBranchNameIgnoreCase(branchName)); //add it to collegeBranchSet
             }
         }
         newCollege.setCollegeBranchSet(branchSet);
@@ -60,7 +59,7 @@ public class CollegeService {
 
     }
 
-    public College findCollegeByCollegeName(String name){
-        return collegeRepository.findCollegeByCollegeName(name);
+    public College findCollegeByCollegeNameIgnoreCase(String name){
+        return collegeRepository.findCollegeByCollegeNameIgnoreCase(name);
     }
 }

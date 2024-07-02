@@ -25,11 +25,11 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/students") //kept this just for history reference
-    public ResponseEntity<List<Student>> getAllStudents() {
-        List<Student> studentList = studentService.getAllStudents();
-        return new ResponseEntity<>(studentList, HttpStatus.OK);
-    }
+//    @GetMapping("/students") //kept this just for history reference
+//    public ResponseEntity<List<Student>> getAllStudents() {
+//        List<Student> studentList = studentService.getAllStudents();
+//        return new ResponseEntity<>(studentList, HttpStatus.OK);
+//    }
 
     @GetMapping("/filteredStudentList")
     public ResponseEntity<FilteredStudentListResponse> getFilteredStudentList(@RequestBody @Valid FilteredStudentListRequest filteredStudentListRequest){

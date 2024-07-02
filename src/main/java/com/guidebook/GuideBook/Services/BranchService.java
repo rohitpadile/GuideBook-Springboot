@@ -8,8 +8,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class BranchService {
 
@@ -29,17 +27,17 @@ public class BranchService {
     }
 
     public Branch addBranch(AddBranchRequest addBranchRequest){
-        Branch newBranch = new Branch();
-        newBranch.setBranchName(addBranchRequest.getBranchName());
-        return addBranch(newBranch);
+        Branch newbranchAdded = BranchMapper.mapToBranch(addBranchRequest);
+        return branchRepository.save(newbranchAdded);
+
     }
 
     public Branch addBranch(Branch branch){
         return branchRepository.save(branch);
     }
 
-    public Branch getBranchByName(String name){
-        return branchRepository.findBranchByBranchName(name);
+    public Branch getBranchByBranchNameIgnoreCase(String name){
+        return branchRepository.findBranchByBranchNameIgnoreCase(name);
     }
 
 //    public Branch addStudentToBranch(Long branchid, Long studentId) {

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CollegeRepository extends JpaRepository<College, Long> {
-    College findCollegeByCollegeName(String name);
+    College findCollegeByCollegeNameIgnoreCase(String name);
 }

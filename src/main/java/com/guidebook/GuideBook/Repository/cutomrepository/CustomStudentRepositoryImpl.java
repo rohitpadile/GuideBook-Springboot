@@ -12,25 +12,30 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 @Repository
-public class CustomStudentRepositoryImpl implements CustomStudentRepository{
+public class CustomStudentRepositoryImpl implements CustomStudentRepository {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
+
     @Autowired
     public CustomStudentRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
+
     @Override
-    public List<Student> findStudentsByFilters(FilteredStudentListRequest filters) {
+    public List<Student> findStudentsByFiltersIgnoreCase(FilteredStudentListRequest filters) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Student> criteriaQuery = criteriaBuilder.createQuery(Student.class);
 
         Root<Student> studentRoot = criteriaQuery.from(Student.class);
         List<Predicate> predicates = new ArrayList<>();
 
-        // Filter by Branch Name
+        // Filter by Branch Name (Case-Insensitive)
         if (filters.getBranchName() != null && !filters.getBranchName().isEmpty()) {
             Join<Student, Branch> branchJoin = studentRoot.join("studentBranch", JoinType.INNER);
-            predicates.add(criteriaBuilder.equal(branchJoin.get("branchName"), filters.getBranchName()));
+            predicates.add(criteriaBuilder.equal(
+                    criteriaBuilder.lower(branchJoin.get("branchName")),
+                    filters.getBranchName().toLowerCase()
+            ));
         }
 
         // Filter by Minimum Grade
@@ -48,10 +53,13 @@ public class CustomStudentRepositoryImpl implements CustomStudentRepository{
             predicates.add(criteriaBuilder.equal(studentRoot.get("studentClassType"), filters.getStudentClassType()));
         }
 
-        // Filter by Language Name
+        // Filter by Language Name (Case-Insensitive)
         if (filters.getLanguageName() != null && !filters.getLanguageName().isEmpty()) {
             Join<Student, Language> languageJoin = studentRoot.join("studentLanguageList", JoinType.INNER);
-            predicates.add(criteriaBuilder.equal(languageJoin.get("languageName"), filters.getLanguageName()));
+            predicates.add(criteriaBuilder.equal(
+                    criteriaBuilder.lower(languageJoin.get("languageName")),
+                    filters.getLanguageName().toLowerCase()
+            ));
         }
 
         criteriaQuery.where(predicates.toArray(new Predicate[0]));

@@ -2,7 +2,6 @@ package com.guidebook.GuideBook.Services;
 
 
 
-import com.guidebook.GuideBook.Models.College;
 import com.guidebook.GuideBook.Models.Language;
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Repository.StudentRepository;
@@ -10,17 +9,14 @@ import com.guidebook.GuideBook.Repository.cutomrepository.CustomStudentRepositor
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListResponse;
-import com.guidebook.GuideBook.enums.LanguageEnum;
 import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
 import com.guidebook.GuideBook.mapper.StudentMapper;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Filter;
 
 @Service
 public class StudentService {
@@ -45,7 +41,7 @@ public class StudentService {
 
     public FilteredStudentListResponse filteredStudentListRequest(FilteredStudentListRequest filteredStudentListRequest){
         FilteredStudentListResponse filteredStudentListResponse = new FilteredStudentListResponse();
-        List<Student> studentList = (customStudentRepository.findStudentsByFilters(filteredStudentListRequest));
+        List<Student> studentList = (customStudentRepository.findStudentsByFiltersIgnoreCase(filteredStudentListRequest));
         for(Student student : studentList){
             filteredStudentListResponse.getStudentNameList().add(student.getStudentName());
         }
@@ -56,27 +52,27 @@ public class StudentService {
     public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
 
-        if((collegeService.findCollegeByCollegeName(addStudentRequest.getStudentCollegeName())) == null){
+        if((collegeService.findCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName())) == null){
             throw new CollegeNotFoundException("College not found: " + addStudentRequest.getStudentCollegeName());
             //Throw custom CollegeNotFound Exception here - after charging plugged laptop.
         } else {
-            newStudent.setStudentCollege(collegeService.findCollegeByCollegeName(addStudentRequest.getStudentCollegeName()));
+            newStudent.setStudentCollege(collegeService.findCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName()));
         }
 
-        if((branchService.getBranchByName(addStudentRequest.getStudentBranchName())) == null){
+        if((branchService.getBranchByBranchNameIgnoreCase(addStudentRequest.getStudentBranchName())) == null){
             throw new BranchNotFoundException("Branch not found: " + addStudentRequest.getStudentBranchName());
             //Throw custom BranchNotFoundException
         } else {
-            newStudent.setStudentBranch(branchService.getBranchByName(addStudentRequest.getStudentBranchName()));
+            newStudent.setStudentBranch(branchService.getBranchByBranchNameIgnoreCase(addStudentRequest.getStudentBranchName()));
         }
 
         List<Language> languageList = new ArrayList<>();
         for (String studentLanguageName : addStudentRequest.getStudentLanguageNames()) {
-            Language language = languageService.findLanguageByLanguageName(studentLanguageName);
+            Language language = languageService.GetLanguageByLanguageNameIgnoreCase(studentLanguageName);
             if (language == null) {
                 // Language does not exist, create a new one
                 language = new Language();
-                language.setLanguageName(studentLanguageName.toUpperCase());
+                language.setLanguageName(studentLanguageName);
                 language = languageService.addLanguage(language); // Save the new language to database
             }
             languageList.add(language); //add the language to the studentLanguageList

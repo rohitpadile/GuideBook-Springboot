@@ -2,11 +2,8 @@ package com.guidebook.GuideBook.Services;
 
 import com.guidebook.GuideBook.Models.Language;
 import com.guidebook.GuideBook.Repository.LanguageRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class LanguageService {
@@ -22,8 +19,8 @@ public class LanguageService {
         return languageRepository.save(language);
     }
 
-    public Language findLanguageByLanguageName(String name){
-        return languageRepository.findLanguageByLanguageName(name);
+    public Language GetLanguageByLanguageNameIgnoreCase(String name){
+        return languageRepository.findLanguageByLanguageNameIgnoreCase(name);
     }
 
 }
