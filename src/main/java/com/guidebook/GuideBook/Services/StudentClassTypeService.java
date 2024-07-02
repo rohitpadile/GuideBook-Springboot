@@ -4,8 +4,11 @@ import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Models.StudentClassType;
 import com.guidebook.GuideBook.Repository.StudentClassTypeRepository;
 import com.guidebook.GuideBook.dtos.AddStudentClassTypeRequest;
+import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllStudentClassTypeNameListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class StudentClassTypeService {
@@ -16,7 +19,8 @@ public class StudentClassTypeService {
     public StudentClassTypeService(StudentClassTypeRepository studentClassTypeRepository) {
         this.studentClassTypeRepository = studentClassTypeRepository;
     }
-    public StudentClassType getStudentClassTypeByStudentClassTypeName(String classType){
+
+    public StudentClassType getStudentClassTypeByStudentClassTypeName(String classType) {
         return studentClassTypeRepository.findStudentClassTypeByStudentClassTypeName(classType);
     }
 
@@ -24,6 +28,16 @@ public class StudentClassTypeService {
         StudentClassType studentClassType = new StudentClassType();
         studentClassType.setStudentClassTypeName(addStudentClassTypeRequest.getStudentClassTypeName());
         return studentClassTypeRepository.save(studentClassType);
+    }
+
+    public GetAllStudentClassTypeNameListResponse getAllStudentClassTypes() {
+        GetAllStudentClassTypeNameListResponse response = new GetAllStudentClassTypeNameListResponse();
+        List<StudentClassType> classTypes = studentClassTypeRepository.findAll();
+
+        for (StudentClassType classType : classTypes){
+            response.getAllStudentClassTypeNamesList().add(classType.getStudentClassTypeName());
+        }
+        return response;
     }
 }
 

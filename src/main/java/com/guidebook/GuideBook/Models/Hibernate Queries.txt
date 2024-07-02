@@ -15,5 +15,7 @@ Hibernate: alter table Student add constraint FK3t5nl8hcgtbxm9qbxmb6ty650 foreig
 Hibernate: alter table student_language add constraint FKajhhcqnoes1ehqxg6osoi632f foreign key (languageId) references Language (languageId)
 Hibernate: alter table student_language add constraint FKp1hke6m9e8h75ddfpov0dd9vp foreign key (studentId) references Student (studentId)
 
-//Above Queries are the queries I wanted as of 1st July.
+//Above Queries are the queries I wanted as of 1st July initially.
 //ignore student profile in this - will later update its properties
+
+//Entities are updated as of 2nd July

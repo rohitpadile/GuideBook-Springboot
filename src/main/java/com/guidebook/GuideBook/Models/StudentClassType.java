@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,5 +24,6 @@ public class StudentClassType {
 
     @OneToMany(mappedBy = "studentClassType")
     @Column(unique = true)
+    @JsonIgnore
     List<Student> studentClassTypeStudentList;
 }

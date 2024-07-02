@@ -2,8 +2,11 @@ package com.guidebook.GuideBook.Services;
 
 import com.guidebook.GuideBook.Models.Language;
 import com.guidebook.GuideBook.Repository.LanguageRepository;
+import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllLanguageNameListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class LanguageService {
@@ -23,5 +26,15 @@ public class LanguageService {
         return languageRepository.findLanguageByLanguageNameIgnoreCase(name);
     }
 
+    public GetAllLanguageNameListResponse getAllLanguageNamesList() {
+        GetAllLanguageNameListResponse response = new GetAllLanguageNameListResponse();
+        List<Language> languages = languageRepository.findAll();
+
+        for(Language language : languages){
+            response.getAllLanguageNamesList().add(language.getLanguageName());
+        }
+
+        return response;
+    }
 }
 

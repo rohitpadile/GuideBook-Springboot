@@ -26,10 +26,12 @@ public class Branch {
 
 
     @ManyToMany(mappedBy = "collegeBranchSet")
+    @JsonIgnore
     private Set<College> branchCollegeList = new HashSet<>();
 
 
     @OneToMany(mappedBy = "studentBranch")
+    @JsonIgnore
     private List<Student> branchStudentList;
 }
 

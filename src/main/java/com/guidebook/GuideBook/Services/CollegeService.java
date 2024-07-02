@@ -59,7 +59,7 @@ public class CollegeService {
 
     }
 
-    public College findCollegeByCollegeNameIgnoreCase(String name){
+    public College getCollegeByCollegeNameIgnoreCase(String name){
         return collegeRepository.findCollegeByCollegeNameIgnoreCase(name);
     }
 }

@@ -25,6 +25,7 @@ public class Language {
 
 
     @ManyToMany(mappedBy = "studentLanguageList")
+    @JsonIgnore
     private Set<Student> languageStudentList = new HashSet<>();
 }
 

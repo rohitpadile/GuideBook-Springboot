@@ -26,12 +26,12 @@ public class StudentService {
     private BranchService branchService;
     private StudentClassTypeService studentClassTypeService;
     private StudentRepository studentRepository;
-    private CustomStudentRepositoryImpl customStudentRepository;
+    private CustomStudentRepositoryImpl customStudentRepositoryImpl;
 
     @Autowired
-    public StudentService(StudentClassTypeService studentClassTypeService,LanguageService languageService,BranchService branchService,StudentRepository studentRepository,CollegeService collegeService, CustomStudentRepositoryImpl customStudentRepository) {
+    public StudentService(StudentClassTypeService studentClassTypeService,LanguageService languageService,BranchService branchService,StudentRepository studentRepository,CollegeService collegeService, CustomStudentRepositoryImpl customStudentRepositoryImpl) {
         this.studentRepository = studentRepository;
-        this.customStudentRepository = customStudentRepository;
+        this.customStudentRepositoryImpl = customStudentRepositoryImpl;
         this.collegeService = collegeService;
         this.branchService = branchService;
         this.languageService = languageService;
@@ -44,22 +44,21 @@ public class StudentService {
 
     public FilteredStudentListResponse filteredStudentListRequest(FilteredStudentListRequest filteredStudentListRequest){
         FilteredStudentListResponse filteredStudentListResponse = new FilteredStudentListResponse();
-        List<Student> studentList = (customStudentRepository.findStudentsByFiltersIgnoreCase(filteredStudentListRequest));
+        List<Student> studentList = (customStudentRepositoryImpl.findStudentsByFiltersIgnoreCase(filteredStudentListRequest));
         for(Student student : studentList){
             filteredStudentListResponse.getStudentNameList().add(student.getStudentName());
         }
-
         return filteredStudentListResponse;
     }
 
     public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException, StudentClassTypeNotFoundException {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
 
-        if((collegeService.findCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName())) == null){
+        if((collegeService.getCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName())) == null){
             throw new CollegeNotFoundException("College not found: " + addStudentRequest.getStudentCollegeName());
             //Throw custom CollegeNotFound Exception here - after charging plugged laptop.
         } else {
-            newStudent.setStudentCollege(collegeService.findCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName()));
+            newStudent.setStudentCollege(collegeService.getCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName()));
         }
 
         if((branchService.getBranchByBranchNameIgnoreCase(addStudentRequest.getStudentBranchName())) == null){
@@ -91,9 +90,6 @@ public class StudentService {
         }
 
         return studentRepository.save(newStudent);
-
-
-
     }
 
 }

@@ -33,6 +33,7 @@ public class College {
     )
     private Set<Branch> collegeBranchSet = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "studentCollege")
     private List<Student> collegeStudentList;
 

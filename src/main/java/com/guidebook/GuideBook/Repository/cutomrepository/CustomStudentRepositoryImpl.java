@@ -1,6 +1,7 @@
 package com.guidebook.GuideBook.Repository.cutomrepository;
 
 import com.guidebook.GuideBook.Models.Branch;
+import com.guidebook.GuideBook.Models.College;
 import com.guidebook.GuideBook.Models.Language;
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
@@ -29,6 +30,15 @@ public class CustomStudentRepositoryImpl implements CustomStudentRepository {
         Root<Student> studentRoot = criteriaQuery.from(Student.class);
         List<Predicate> predicates = new ArrayList<>();
 
+        // Filter by College Name (Case-Insensitive)
+        if (filters.getCollegeName() != null && !filters.getCollegeName().isEmpty()) {
+            Join<Student, College> collegeJoin = studentRoot.join("studentCollege", JoinType.INNER);
+            predicates.add(criteriaBuilder.equal(
+                    criteriaBuilder.lower(collegeJoin.get("collegeName")),
+                    filters.getCollegeName().toLowerCase()
+            ));
+        }
+
         // Filter by Branch Name (Case-Insensitive)
         if (filters.getBranchName() != null && !filters.getBranchName().isEmpty()) {
             Join<Student, Branch> branchJoin = studentRoot.join("studentBranch", JoinType.INNER);
@@ -48,9 +58,12 @@ public class CustomStudentRepositoryImpl implements CustomStudentRepository {
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(studentRoot.get("cetPercentile"), filters.getMinCetPercentile()));
         }
 
-        // Filter by Student Class Type
-        if (filters.getStudentClassType() != null) {
-            predicates.add(criteriaBuilder.equal(studentRoot.get("studentClassType"), filters.getStudentClassType()));
+        // Filter by Student Class Type (Case-Insensitive)
+        if (filters.getStudentClassType() != null && !filters.getStudentClassType().isEmpty()) {
+            predicates.add(criteriaBuilder.equal(
+                    criteriaBuilder.lower(studentRoot.get("studentClassType")),
+                    filters.getStudentClassType().toLowerCase()
+            ));
         }
 
         // Filter by Language Name (Case-Insensitive)
@@ -65,4 +78,6 @@ public class CustomStudentRepositoryImpl implements CustomStudentRepository {
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
+
+
 }

@@ -9,6 +9,9 @@ import lombok.Data;
 
 @Data
 public class FilteredStudentListRequest {//edit this dto after reading the minor project code.
+
+    @NotNull(message = "College name is strictly not null")
+    private String collegeName;
     @NotEmpty(message = "Branch name cannot be empty")
     private String branchName;
 
@@ -19,7 +22,7 @@ public class FilteredStudentListRequest {//edit this dto after reading the minor
     private Double minCetPercentile;
 
     @NotNull(message = "Student class type cannot be null")
-    private StudentClassType studentClassType;
+    private String studentClassType;
 
     @NotEmpty(message = "Language name cannot be empty")
     private String languageName;
