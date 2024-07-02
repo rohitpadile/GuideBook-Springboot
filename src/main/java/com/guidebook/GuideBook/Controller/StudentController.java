@@ -4,6 +4,8 @@ import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Services.StudentService;
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
+import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
+import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +36,7 @@ public class StudentController {
         return new ResponseEntity<>(filteredStudentList, HttpStatus.OK);
     }
 
-    public ResponseEntity<Student> addStudent(AddStudentRequest addStudentRequest){
+    public ResponseEntity<Student> addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException {
         Student addedStudent = studentService.addStudent(addStudentRequest);
         return new ResponseEntity<>(addedStudent, HttpStatus.CREATED);
     }

@@ -10,6 +10,8 @@ import com.guidebook.GuideBook.Repository.cutomrepository.CustomStudentRepositor
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
 import com.guidebook.GuideBook.enums.LanguageEnum;
+import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
+import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
 import com.guidebook.GuideBook.mapper.StudentMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,18 +46,18 @@ public class StudentService {
         return customStudentRepository.findStudentsByFilters(filteredStudentListRequest);
     }
 
-    public Student addStudent(AddStudentRequest addStudentRequest){
+    public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
 
         if((collegeService.findCollegeByCollegeName(addStudentRequest.getStudentCollegeName())) == null){
-            throw new EntityNotFoundException("College not found: " + addStudentRequest.getStudentCollegeName());
+            throw new CollegeNotFoundException("College not found: " + addStudentRequest.getStudentCollegeName());
             //Throw custom CollegeNotFound Exception here - after charging plugged laptop.
         } else {
             newStudent.setStudentCollege(collegeService.findCollegeByCollegeName(addStudentRequest.getStudentCollegeName()));
         }
 
         if((branchService.getBranchByName(addStudentRequest.getStudentBranchName())) == null){
-            throw new EntityNotFoundException("Branch not found: " + addStudentRequest.getStudentBranchName());
+            throw new BranchNotFoundException("Branch not found: " + addStudentRequest.getStudentBranchName());
             //Throw custom BranchNotFoundException
         } else {
             newStudent.setStudentBranch(branchService.getBranchByName(addStudentRequest.getStudentBranchName()));
