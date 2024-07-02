@@ -36,7 +36,7 @@ public class CollegeService {
         List<College> colleges = collegeRepository.findAll();
         GetCollegeListResponse getCollegeListResponse = new GetCollegeListResponse();
         for(College clg : colleges){
-            getCollegeListResponse.setCollegeName(clg.getCollegeName());
+            getCollegeListResponse.getCollegeNameList().add(clg.getCollegeName());
         }
         return getCollegeListResponse;
     }

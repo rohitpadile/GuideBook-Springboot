@@ -3,6 +3,7 @@ package com.guidebook.GuideBook.Controller;
 import com.guidebook.GuideBook.Models.Branch;
 import com.guidebook.GuideBook.Services.BranchService;
 import com.guidebook.GuideBook.dtos.AddBranchRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,8 @@ public class BranchController {
     BranchController(BranchService branchService){
         this.branchService = branchService;
     }
-
-    public ResponseEntity<Branch> addBranch(AddBranchRequest addBranchRequest){
+    @PostMapping("/addBranch")
+    public ResponseEntity<Branch> addBranch(@RequestBody @Valid AddBranchRequest addBranchRequest){
 
         Branch addedBranch =  branchService.addBranch(addBranchRequest);
         return new ResponseEntity<>(addedBranch, HttpStatus.CREATED);

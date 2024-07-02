@@ -9,6 +9,7 @@ import com.guidebook.GuideBook.Repository.StudentRepository;
 import com.guidebook.GuideBook.Repository.cutomrepository.CustomStudentRepositoryImpl;
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
+import com.guidebook.GuideBook.dtos.FilteredStudentListResponse;
 import com.guidebook.GuideBook.enums.LanguageEnum;
 import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
@@ -42,8 +43,14 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public List<Student> filteredStudentListRequest(FilteredStudentListRequest filteredStudentListRequest){
-        return customStudentRepository.findStudentsByFilters(filteredStudentListRequest);
+    public FilteredStudentListResponse filteredStudentListRequest(FilteredStudentListRequest filteredStudentListRequest){
+        FilteredStudentListResponse filteredStudentListResponse = new FilteredStudentListResponse();
+        List<Student> studentList = (customStudentRepository.findStudentsByFilters(filteredStudentListRequest));
+        for(Student student : studentList){
+            filteredStudentListResponse.getStudentNameList().add(student.getStudentName());
+        }
+
+        return filteredStudentListResponse;
     }
 
     public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException {

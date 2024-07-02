@@ -4,6 +4,7 @@ import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Services.StudentService;
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
+import com.guidebook.GuideBook.dtos.FilteredStudentListResponse;
 import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
 import jakarta.validation.Valid;
@@ -13,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = {"http://localhost:3000/", "http://localhost:8080"})
 @RestController
 @RequestMapping("/api/v1/admin/")
 public class StudentController {
@@ -31,12 +32,12 @@ public class StudentController {
     }
 
     @GetMapping("/filteredStudentList")
-    public ResponseEntity<List<Student>> getFilteredStudentList(@RequestBody @Valid FilteredStudentListRequest filteredStudentListRequest){
-        List<Student> filteredStudentList = studentService.filteredStudentListRequest(filteredStudentListRequest);
-        return new ResponseEntity<>(filteredStudentList, HttpStatus.OK);
+    public ResponseEntity<FilteredStudentListResponse> getFilteredStudentList(@RequestBody @Valid FilteredStudentListRequest filteredStudentListRequest){
+        FilteredStudentListResponse response = studentService.filteredStudentListRequest(filteredStudentListRequest);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-    public ResponseEntity<Student> addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException {
+    @PostMapping("/addStudent")
+    public ResponseEntity<Student> addStudent(@RequestBody @Valid AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException {
         Student addedStudent = studentService.addStudent(addStudentRequest);
         return new ResponseEntity<>(addedStudent, HttpStatus.CREATED);
     }
