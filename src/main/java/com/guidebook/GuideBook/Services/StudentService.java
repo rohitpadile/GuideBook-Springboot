@@ -11,6 +11,7 @@ import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListResponse;
 import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
+import com.guidebook.GuideBook.exceptions.StudentClassTypeNotFoundException;
 import com.guidebook.GuideBook.mapper.StudentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,16 +24,18 @@ public class StudentService {
     private LanguageService languageService;
     private CollegeService collegeService;
     private BranchService branchService;
+    private StudentClassTypeService studentClassTypeService;
     private StudentRepository studentRepository;
     private CustomStudentRepositoryImpl customStudentRepository;
 
     @Autowired
-    public StudentService(LanguageService languageService,BranchService branchService,StudentRepository studentRepository,CollegeService collegeService, CustomStudentRepositoryImpl customStudentRepository) {
+    public StudentService(StudentClassTypeService studentClassTypeService,LanguageService languageService,BranchService branchService,StudentRepository studentRepository,CollegeService collegeService, CustomStudentRepositoryImpl customStudentRepository) {
         this.studentRepository = studentRepository;
         this.customStudentRepository = customStudentRepository;
         this.collegeService = collegeService;
         this.branchService = branchService;
         this.languageService = languageService;
+        this.studentClassTypeService = studentClassTypeService;
     }
 
     public List<Student> getAllStudents() {
@@ -49,7 +52,7 @@ public class StudentService {
         return filteredStudentListResponse;
     }
 
-    public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException {
+    public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException, StudentClassTypeNotFoundException {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
 
         if((collegeService.findCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName())) == null){
@@ -77,9 +80,20 @@ public class StudentService {
             }
             languageList.add(language); //add the language to the studentLanguageList
         }
-
         newStudent.setStudentLanguageList(languageList);
+
+        //Do for studentClassType also
+        if((studentClassTypeService.getStudentClassTypeByStudentClassTypeName(addStudentRequest.getStudentClassType())) == null){
+            throw new StudentClassTypeNotFoundException("StudentClassType not found: " + addStudentRequest.getStudentClassType());
+            //Throw custom StudentClassTypeNotFoundException
+        } else {
+            newStudent.setStudentClassType(studentClassTypeService.getStudentClassTypeByStudentClassTypeName(addStudentRequest.getStudentClassType()));
+        }
+
         return studentRepository.save(newStudent);
+
+
+
     }
 
 }

@@ -23,7 +23,6 @@ public class StudentMapper {
                 .studentMis(request.getStudentMis())
                 .cetPercentile(request.getStudentCetPercentile())
                 .grade(request.getStudentGrade())
-                .studentClassType(request.getStudentClassType())
                 .build();
     }
 }

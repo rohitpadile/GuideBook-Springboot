@@ -1,15 +1,12 @@
 
 package com.guidebook.GuideBook.Models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.guidebook.GuideBook.enums.StudentClassType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,8 +34,10 @@ public class Student {
 
     private Double cetPercentile; //set contraints on this later if possible
     private Double grade;//set contraints on this later if possible
-    @Enumerated(value = EnumType.STRING)
-    private StudentClassType studentClassType; //Done
+
+    @ManyToOne //owning side
+    @JoinColumn(name = "fk_studentId_studentClassTypeId", referencedColumnName = "studentClassTypeId")
+    private StudentClassType studentClassType; //EX: FY_BTECH, SY_MTECH
 
     @ManyToMany //owning side
     @JoinTable(

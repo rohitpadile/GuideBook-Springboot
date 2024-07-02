@@ -1,16 +1,9 @@
 package com.guidebook.GuideBook.dtos;
 
-import com.guidebook.GuideBook.Models.Branch;
-import com.guidebook.GuideBook.Models.College;
-import com.guidebook.GuideBook.Models.Language;
-import com.guidebook.GuideBook.Models.StudentProfile;
-import com.guidebook.GuideBook.enums.StudentClassType;
-import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.nio.charset.MalformedInputException;
 import java.util.List;
 
 @Data
@@ -29,7 +22,7 @@ public class AddStudentRequest {
     @NotNull(message = "Student current CGPA is also required") //Think about this field after discussing with people
     private Double studentGrade;//how this filter would look like - IS THIS REALLY NECESSARY FIELD. //I THINK IT IS
     @NotNull(message = "Student classType is compulsory field")
-    private StudentClassType studentClassType;
+    private String studentClassType;
     @NotNull(message = "Student should speak at least one language, so this can't be null")
     private List<String> studentLanguageNames;
 
