@@ -1,9 +1,6 @@
 package com.guidebook.GuideBook.Repository.cutomrepository;
 
-import com.guidebook.GuideBook.Models.Branch;
-import com.guidebook.GuideBook.Models.College;
-import com.guidebook.GuideBook.Models.Language;
-import com.guidebook.GuideBook.Models.Student;
+import com.guidebook.GuideBook.Models.*;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
@@ -60,8 +57,9 @@ public class CustomStudentRepositoryImpl implements CustomStudentRepository {
 
         // Filter by Student Class Type (Case-Insensitive)
         if (filters.getStudentClassType() != null && !filters.getStudentClassType().isEmpty()) {
+            Join<Student, StudentClassType> classTypeJoin = studentRoot.join("studentClassType", JoinType.INNER);
             predicates.add(criteriaBuilder.equal(
-                    criteriaBuilder.lower(studentRoot.get("studentClassType")),
+                    criteriaBuilder.lower(classTypeJoin.get("studentClassTypeName")),
                     filters.getStudentClassType().toLowerCase()
             ));
         }
@@ -78,6 +76,4 @@ public class CustomStudentRepositoryImpl implements CustomStudentRepository {
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
-
-
 }

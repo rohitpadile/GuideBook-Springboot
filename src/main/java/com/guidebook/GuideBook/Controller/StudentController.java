@@ -32,7 +32,7 @@ public class StudentController {
         return new ResponseEntity<>(studentList, HttpStatus.OK);
     }
 
-    @GetMapping("/filteredStudentList")
+    @PostMapping("/filteredStudentList")
     public ResponseEntity<FilteredStudentListResponse> getFilteredStudentList(@RequestBody @Valid FilteredStudentListRequest filteredStudentListRequest){
         FilteredStudentListResponse response = studentService.filteredStudentListRequest(filteredStudentListRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);

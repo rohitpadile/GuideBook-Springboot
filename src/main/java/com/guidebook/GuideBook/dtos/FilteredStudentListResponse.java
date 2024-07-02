@@ -4,13 +4,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Data
 public class FilteredStudentListResponse {
-    @NotNull(message = "Student names list cannot be empty")
-    private List<String> studentNameList;
+
+    private List<String> studentNameList = new ArrayList<>();
     //LATER I WANT BRANCH TO BE WRITTEN BELOW THE STUDENT - BUT THAT WILL BE DONKEY CASE
     //BECAUSE ALREADY THE CLIENT FILTERING OUT THE STUDENTS BASED ON BRANCH AND OTHER PROPERTIES RIGHT!
     //LET'S SEE WHICH LOOKS GOOD

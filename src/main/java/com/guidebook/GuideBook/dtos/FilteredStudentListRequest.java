@@ -12,7 +12,7 @@ public class FilteredStudentListRequest {//edit this dto after reading the minor
 
     @NotNull(message = "College name is strictly not null")
     private String collegeName;
-    @NotEmpty(message = "Branch name cannot be empty")
+    @NotNull(message = "Branch name cannot be empty")
     private String branchName;
 
     @Min(value = 0, message = "Minimum grade should not be less than 0")
@@ -24,6 +24,6 @@ public class FilteredStudentListRequest {//edit this dto after reading the minor
     @NotNull(message = "Student class type cannot be null")
     private String studentClassType;
 
-    @NotEmpty(message = "Language name cannot be empty")
+    @NotNull(message = "Language name cannot be empty")
     private String languageName;
 }

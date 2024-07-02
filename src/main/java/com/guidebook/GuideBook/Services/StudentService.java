@@ -42,14 +42,30 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public FilteredStudentListResponse filteredStudentListRequest(FilteredStudentListRequest filteredStudentListRequest){
+    public FilteredStudentListResponse filteredStudentListRequest(FilteredStudentListRequest filteredStudentListRequest) {
         FilteredStudentListResponse filteredStudentListResponse = new FilteredStudentListResponse();
-        List<Student> studentList = (customStudentRepositoryImpl.findStudentsByFiltersIgnoreCase(filteredStudentListRequest));
-        for(Student student : studentList){
-            filteredStudentListResponse.getStudentNameList().add(student.getStudentName());
+
+        try {
+            List<Student> studentList = customStudentRepositoryImpl.findStudentsByFiltersIgnoreCase(filteredStudentListRequest);
+
+            // Initialize the list if not already initialized
+            if (filteredStudentListResponse.getStudentNameList() == null) {
+                filteredStudentListResponse.setStudentNameList(new ArrayList<>());
+            }
+
+            for (Student student : studentList) {
+                filteredStudentListResponse.getStudentNameList().add(student.getStudentName());
+            }
+        } catch (Exception ex) {
+            // Log the exception
+            ex.printStackTrace();
+            throw new RuntimeException("Error fetching filtered student list", ex); // Example: Rethrow as a more specific exception
         }
+
         return filteredStudentListResponse;
     }
+
+
 
     public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException, StudentClassTypeNotFoundException {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);

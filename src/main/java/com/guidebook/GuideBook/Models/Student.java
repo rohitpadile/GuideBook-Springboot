@@ -32,8 +32,8 @@ public class Student {
     @JoinColumn(name = "fk_studentId_branchId", referencedColumnName = "branchId")
     private Branch studentBranch; //owning side
 
-    private Double cetPercentile; //set contraints on this later if possible
-    private Double grade;//set contraints on this later if possible
+    private Double cetPercentile; 
+    private Double grade;
 
     @ManyToOne //owning side
     @JoinColumn(name = "fk_studentId_studentClassTypeId", referencedColumnName = "studentClassTypeId")
