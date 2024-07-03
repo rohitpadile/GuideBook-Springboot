@@ -20,25 +20,20 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long studentId;
-    private Long studentMis;
-    private String studentName;
-
+    private Long studentMis; //Search details about the student through MIS only
+    private String studentName; //Rohit Padile - There can be multiple names
+    private Double cetPercentile;
+    private Double grade;
+    //ABOVE PROPERTIES ARE USED IN StudentMapper
     @ManyToOne
     @JoinColumn(name = "fk_studentId_collegeId", referencedColumnName = "collegeId")
     private College studentCollege; //owning side
-
-
     @ManyToOne
     @JoinColumn(name = "fk_studentId_branchId", referencedColumnName = "branchId")
     private Branch studentBranch; //owning side
-
-    private Double cetPercentile; 
-    private Double grade;
-
     @ManyToOne //owning side
     @JoinColumn(name = "fk_studentId_studentClassTypeId", referencedColumnName = "studentClassTypeId")
     private StudentClassType studentClassType; //EX: FY_BTECH, SY_MTECH
-
     @ManyToMany //owning side
     @JoinTable(
             name = "student_language",
@@ -46,10 +41,6 @@ public class Student {
             inverseJoinColumns = @JoinColumn(name = "languageId")
     )
     private List<Language> studentLanguageList;
-
-    @OneToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY) //owning side
-    @JoinColumn(name = "studentProfileId")
-    private StudentProfile studentProfile;
 
 }
 

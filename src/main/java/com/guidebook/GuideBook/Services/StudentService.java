@@ -4,6 +4,7 @@ package com.guidebook.GuideBook.Services;
 
 import com.guidebook.GuideBook.Models.Language;
 import com.guidebook.GuideBook.Models.Student;
+import com.guidebook.GuideBook.Models.StudentProfile;
 import com.guidebook.GuideBook.Repository.StudentRepository;
 import com.guidebook.GuideBook.Repository.cutomrepository.CustomStudentRepositoryImpl;
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
@@ -13,6 +14,7 @@ import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
 import com.guidebook.GuideBook.exceptions.StudentClassTypeNotFoundException;
 import com.guidebook.GuideBook.mapper.StudentMapper;
+import com.guidebook.GuideBook.mapper.StudentProfileMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ public class StudentService {
     private StudentClassTypeService studentClassTypeService;
     private StudentRepository studentRepository;
     private CustomStudentRepositoryImpl customStudentRepositoryImpl;
+    private StudentProfileService studentProfileService;
 
     @Autowired
     public StudentService(StudentClassTypeService studentClassTypeService,LanguageService languageService,BranchService branchService,StudentRepository studentRepository,CollegeService collegeService, CustomStudentRepositoryImpl customStudentRepositoryImpl) {
@@ -35,6 +38,7 @@ public class StudentService {
         this.collegeService = collegeService;
         this.branchService = branchService;
         this.languageService = languageService;
+        this.studentClassTypeService = studentClassTypeService;
         this.studentClassTypeService = studentClassTypeService;
     }
 
@@ -68,6 +72,8 @@ public class StudentService {
 
     public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException, StudentClassTypeNotFoundException {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
+        StudentProfile newStudentProfile = StudentProfileMapper.mapToStudentProfile(addStudentRequest);
+        studentProfileService.addStudentProfile(newStudentProfile); //Saving a profile for this student in studentprofile table
 
         if((collegeService.getCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName())) == null){
             throw new CollegeNotFoundException("College not found: " + addStudentRequest.getStudentCollegeName());
@@ -90,7 +96,7 @@ public class StudentService {
                 // Language does not exist, create a new one
                 language = new Language();
                 language.setLanguageName(studentLanguageName);
-                language = languageService.addLanguage(language); // Save the new language to database
+                language = languageService.addLanguage(language); // SAVE THE NEW LANGUAGE TO THE DATABASE
             }
             languageList.add(language); //add the language to the studentLanguageList
         }
