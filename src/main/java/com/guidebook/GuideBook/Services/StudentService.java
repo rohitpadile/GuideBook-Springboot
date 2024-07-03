@@ -9,6 +9,7 @@ import com.guidebook.GuideBook.Repository.cutomrepository.CustomStudentRepositor
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListResponse;
+import com.guidebook.GuideBook.dtos.helperDtos.StudentDetails;
 import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
 import com.guidebook.GuideBook.exceptions.StudentClassTypeNotFoundException;
@@ -42,19 +43,22 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public FilteredStudentListResponse filteredStudentListRequest(FilteredStudentListRequest filteredStudentListRequest) {
+    public FilteredStudentListResponse getFilteredStudentList(FilteredStudentListRequest filteredStudentListRequest) {
         FilteredStudentListResponse filteredStudentListResponse = new FilteredStudentListResponse();
 
         try {
             List<Student> studentList = customStudentRepositoryImpl.findStudentsByFiltersIgnoreCase(filteredStudentListRequest);
 
             // Initialize the list if not already initialized
-            if (filteredStudentListResponse.getStudentNameList() == null) {
-                filteredStudentListResponse.setStudentNameList(new ArrayList<>());
+            if (filteredStudentListResponse.getStudentDetailsList() == null) {
+                filteredStudentListResponse.setStudentDetailsList(new ArrayList<>());
             }
 
             for (Student student : studentList) {
-                filteredStudentListResponse.getStudentNameList().add(student.getStudentName());
+                filteredStudentListResponse.getStudentDetailsList()
+                        .add(new StudentDetails
+                                (student.getStudentName(), student.getStudentMis()
+                                ));
             }
         } catch (Exception ex) {
             // Log the exception
