@@ -1,13 +1,11 @@
 
 package com.guidebook.GuideBook.Models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -21,11 +19,12 @@ public class StudentProfile {
     Long studentProfileId;
 
     Long studentMis;
-    String studentCityOfCoaching;
+
     String studentAboutSection; //List<String> is needed.
     //Displaying city of coaching will help students/parents to instantly get help from students
     //living in same city as that
     //Do not display name of coaching institute - that may voilate laws maybe. Just research on this.
+    String studentCityOfCoaching;
     String studentScoreDetails;
     String studentOtherExamScoreDetails;
 
@@ -43,6 +42,8 @@ public class StudentProfile {
     //more "studyPlan": "I offer Detailed weekly study plan focusing on concept clarity and practice"
     //So a comment should be saying what exactly the student can tell you clearly about in the session
     //example: "I offer best Textbook suggestions, coaching suggestions"
+
+//**studentCityOfCoaching
 
 //**studentScoreDetails - INCLUDE WHATEVER SCORE THE STUDENT WANT TO INCLUDE
 //        "jeeRank": 1500,
