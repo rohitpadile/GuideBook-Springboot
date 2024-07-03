@@ -4,7 +4,7 @@ import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Services.StudentService;
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
-import com.guidebook.GuideBook.dtos.FilteredStudentListResponse;
+import com.guidebook.GuideBook.dtos.FilteredStudentDetails;
 import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
 import com.guidebook.GuideBook.exceptions.StudentClassTypeNotFoundException;
@@ -33,8 +33,8 @@ public class StudentController {
     }
 
     @PostMapping("/filteredStudentList")
-    public ResponseEntity<FilteredStudentListResponse> getFilteredStudentList(@RequestBody @Valid FilteredStudentListRequest filteredStudentListRequest){
-        FilteredStudentListResponse response = studentService.getFilteredStudentList(filteredStudentListRequest);
+    public ResponseEntity<List<FilteredStudentDetails>> getFilteredStudentList(@RequestBody @Valid FilteredStudentListRequest filteredStudentListRequest){
+        List<FilteredStudentDetails> response = studentService.getFilteredStudentList(filteredStudentListRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PostMapping("/addStudent")

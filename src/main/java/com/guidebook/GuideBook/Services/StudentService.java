@@ -8,8 +8,7 @@ import com.guidebook.GuideBook.Repository.StudentRepository;
 import com.guidebook.GuideBook.Repository.cutomrepository.CustomStudentRepositoryImpl;
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
-import com.guidebook.GuideBook.dtos.FilteredStudentListResponse;
-import com.guidebook.GuideBook.dtos.helperDtos.StudentDetails;
+import com.guidebook.GuideBook.dtos.FilteredStudentDetails;
 import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
 import com.guidebook.GuideBook.exceptions.StudentClassTypeNotFoundException;
@@ -43,22 +42,18 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public FilteredStudentListResponse getFilteredStudentList(FilteredStudentListRequest filteredStudentListRequest) {
-        FilteredStudentListResponse filteredStudentListResponse = new FilteredStudentListResponse();
-
+    public List<FilteredStudentDetails> getFilteredStudentList(FilteredStudentListRequest filteredStudentListRequest) {
+        List<FilteredStudentDetails> list = new ArrayList<>();
         try {
             List<Student> studentList = customStudentRepositoryImpl.findStudentsByFiltersIgnoreCase(filteredStudentListRequest);
 
-            // Initialize the list if not already initialized
-            if (filteredStudentListResponse.getStudentDetailsList() == null) {
-                filteredStudentListResponse.setStudentDetailsList(new ArrayList<>());
-            }
-
             for (Student student : studentList) {
-                filteredStudentListResponse.getStudentDetailsList()
-                        .add(new StudentDetails
-                                (student.getStudentName(), student.getStudentMis()
-                                ));
+                list.add(
+                        new FilteredStudentDetails(
+                                student.getStudentName(),
+                                student.getStudentMis()
+                        )
+                );
             }
         } catch (Exception ex) {
             // Log the exception
@@ -66,7 +61,7 @@ public class StudentService {
             throw new RuntimeException("Error fetching filtered student list", ex); // Example: Rethrow as a more specific exception
         }
 
-        return filteredStudentListResponse;
+        return list;
     }
 
 
