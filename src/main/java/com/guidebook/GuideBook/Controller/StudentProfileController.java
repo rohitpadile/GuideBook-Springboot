@@ -3,6 +3,9 @@ package com.guidebook.GuideBook.Controller;
 import com.guidebook.GuideBook.Models.StudentProfile;
 import com.guidebook.GuideBook.Services.StudentProfileService;
 import com.guidebook.GuideBook.dtos.AddStudentProfileRequest;
+import com.guidebook.GuideBook.dtos.GetStudentProfileResponse;
+import com.guidebook.GuideBook.exceptions.StudentProfileContentNotFoundException;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,5 +25,12 @@ public class StudentProfileController {
     public ResponseEntity<StudentProfile> addStudentProfile(@RequestBody AddStudentProfileRequest request) {
         StudentProfile studentProfile = studentProfileService.addStudentProfile(request);
         return new ResponseEntity<>(studentProfile, HttpStatus.CREATED);
+    }
+    @PostMapping("/studentProfile")
+    public ResponseEntity<GetStudentProfileResponse> getStudentProfile(Long studentMis)
+            throws StudentProfileContentNotFoundException
+    {
+        GetStudentProfileResponse res = studentProfileService.getStudentProfile(studentMis);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

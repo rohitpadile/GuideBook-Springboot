@@ -60,7 +60,6 @@ public class StudentService {
         List<FilteredStudentDetails> list = new ArrayList<>();
         try {
             List<Student> studentList = customStudentRepositoryImpl.findStudentsByFiltersIgnoreCase(filteredStudentListRequest);
-
             for (Student student : studentList) {
                 list.add(
                         new FilteredStudentDetails(
@@ -74,7 +73,6 @@ public class StudentService {
             ex.printStackTrace();
             throw new RuntimeException("Error fetching filtered student list", ex); // Example: Rethrow as a more specific exception
         }
-
         return list;
     }
 

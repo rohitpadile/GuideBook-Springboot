@@ -3,9 +3,13 @@ package com.guidebook.GuideBook.Services;
 import com.guidebook.GuideBook.Models.StudentProfile;
 import com.guidebook.GuideBook.Repository.StudentProfileRepository;
 import com.guidebook.GuideBook.dtos.AddStudentProfileRequest;
+import com.guidebook.GuideBook.dtos.GetStudentProfileResponse;
+import com.guidebook.GuideBook.exceptions.StudentProfileContentNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.guidebook.GuideBook.embeddables.*;
+
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,4 +67,25 @@ public class StudentProfileService {
         return studentProfileRepository.save(studentProfile);
     } //this method create a profile whenever a new student is added
     //only mis is assigned
+    public GetStudentProfileResponse getStudentProfile(Long studentMis)
+    throws StudentProfileContentNotFoundException {
+
+        StudentProfile studentProfile =
+                studentProfileRepository.findStudentProfileByStudentMis(studentMis);
+        GetStudentProfileResponse response = new GetStudentProfileResponse();
+
+        response.setStudentProfileAboutSection(studentProfile.getStudentProfileAboutSection().stream().map(AboutSection::getAbout).collect(Collectors.toList()));
+        response.setStudentProfileCityOfCoaching(studentProfile.getStudentProfileCityOfCoaching().stream().map(CityOfCoaching::getCityOfCoaching).collect(Collectors.toList()));
+        response.setStudentProfileExamScoreDetails(studentProfile.getStudentProfileExamScoreDetails().stream().map(ExamScoreDetails::getScoreDetail).collect(Collectors.toList()));
+        response.setStudentProfileOtherExamScoreDetails(studentProfile.getStudentProfileOtherExamScoreDetails().stream().map(OtherExamScoreDetails::getOtherScoreDetail).collect(Collectors.toList()));
+        response.setStudentProfileAcademicActivity(studentProfile.getStudentProfileAcademicActivity().stream().map(AcademicActivity::getActivity).collect(Collectors.toList()));
+        response.setStudentProfileCoCurricularActivity(studentProfile.getStudentProfileCoCurricularActivity().stream().map(CoCurricularActivity::getActivity).collect(Collectors.toList()));
+        response.setStudentProfileExtraCurricularActivity(studentProfile.getStudentProfileExtraCurricularActivity().stream().map(ExtraCurricularActivity::getActivity).collect(Collectors.toList()));
+        response.setStudentProfileTutoringExperience(studentProfile.getStudentProfileTutoringExperience().stream().map(TutoringExperience::getExperience).collect(Collectors.toList()));
+        response.setStudentProfileExternalLink(studentProfile.getStudentProfileExternalLink());
+        response.setStudentProfileSessionsConducted(StudentProfile.studentProfileSessionsConducted);
+
+        return response;
+    }
+
 }

@@ -1,20 +1,17 @@
 package com.guidebook.GuideBook.dtos;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
+import com.guidebook.GuideBook.embeddables.ExternalLink;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Valid
 @Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class AddStudentProfileRequest {
-    @NotNull
+@NoArgsConstructor
+@AllArgsConstructor
+public class GetStudentProfileResponse {
     private Long studentMis;
-    @NotNull
     private List<String> studentProfileAboutSection;
     private List<String> studentProfileCityOfCoaching;
     private List<String> studentProfileExamScoreDetails;
@@ -23,12 +20,6 @@ public class AddStudentProfileRequest {
     private List<String> studentProfileCoCurricularActivity;
     private List<String> studentProfileExtraCurricularActivity;
     private List<String> studentProfileTutoringExperience;
-
-    private List<ExternalLinkDto> studentProfileExternalLink;
-
-    @Data
-    public static class ExternalLinkDto {
-        private String linkName;
-        private String linkAddress;
-    }
+    private List<ExternalLink> studentProfileExternalLink;
+    private Long studentProfileSessionsConducted;
 }

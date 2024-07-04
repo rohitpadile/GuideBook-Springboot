@@ -53,7 +53,7 @@ public class StudentProfile {
     @CollectionTable(name = "studentprofile_ExternalLink", joinColumns = @JoinColumn(name = "studentProfileId"))
     List<ExternalLink> studentProfileExternalLink;
 
-    static Long studentProfileSessionsConducted; //Sessions conducted on our platform
+    public static Long studentProfileSessionsConducted; //Sessions conducted on our platform
 
 }
 //**studentAboutSection:-
