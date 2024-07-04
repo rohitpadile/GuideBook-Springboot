@@ -25,7 +25,7 @@ public class StudentProfile {
     //living in same city as that
     //Do not display name of coaching institute - that may voilate laws maybe. Just research on this.
     String studentCityOfCoaching;
-    String studentScoreDetails;
+    String studentScoreDetails; //maybe List<String> //TRY IF WRITING "<p></p>" that can directly send as html
     String studentOtherExamScoreDetails;
 
     String studentAcademicActivity; //activity included achievements too

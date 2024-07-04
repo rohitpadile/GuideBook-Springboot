@@ -14,7 +14,7 @@ public class StudentProfileService {
         this.studentProfileRepository = studentProfileRepository;
     }
 
-    public StudentProfile addStudentProfile(StudentProfile studentProfile){
-        return studentProfileRepository.save(studentProfile);
-    }
+//    public StudentProfile addStudentProfile(StudentProfile studentProfile){
+//        return studentProfileRepository.save(studentProfile);
+//    }
 }
