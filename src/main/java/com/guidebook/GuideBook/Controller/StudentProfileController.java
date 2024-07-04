@@ -21,6 +21,6 @@ public class StudentProfileController {
     @PostMapping("/addStudentProfile")
     public ResponseEntity<StudentProfile> addStudentProfile(@RequestBody AddStudentProfileRequest request) {
         StudentProfile studentProfile = studentProfileService.addStudentProfile(request);
-        return ResponseEntity.ok(studentProfile);
+        return new ResponseEntity<>(studentProfile, HttpStatus.CREATED);
     }
 }

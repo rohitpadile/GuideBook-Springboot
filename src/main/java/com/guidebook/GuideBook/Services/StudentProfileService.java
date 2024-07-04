@@ -18,8 +18,7 @@ public class StudentProfileService {
     }
 
     public StudentProfile addStudentProfile(AddStudentProfileRequest request) {
-        StudentProfile studentProfile = new StudentProfile();
-        studentProfile.setStudentMis(request.getStudentMis());
+        StudentProfile studentProfile = studentProfileRepository.findStudentProfileByStudentMis(request.getStudentMis());
         studentProfile.setStudentProfileAboutSection(
                 request.getStudentProfileAboutSection().stream()
                         .map(AboutSection::new).collect(Collectors.toList())
@@ -57,11 +56,11 @@ public class StudentProfileService {
                         .map(link -> new ExternalLink(link.getLinkName(), link.getLinkAddress()))
                         .collect(Collectors.toList())
         );
-
         return studentProfileRepository.save(studentProfile);
     }
 
-//    public StudentProfile addStudentProfile(StudentProfile studentProfile){
-//        return studentProfileRepository.save(studentProfile);
-//    }
+    public StudentProfile addStudentProfileWithAddStudent(StudentProfile studentProfile){
+        return studentProfileRepository.save(studentProfile);
+    } //this method create a profile whenever a new student is added
+    //only mis is assigned
 }

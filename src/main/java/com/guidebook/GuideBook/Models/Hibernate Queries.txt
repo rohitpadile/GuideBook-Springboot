@@ -19,3 +19,26 @@ Hibernate: alter table student_language add constraint FKp1hke6m9e8h75ddfpov0dd9
 //ignore student profile in this - will later update its properties
 
 //Entities are updated as of 2nd July
+
+
+
+
+//STUDENT PROFILE
+Hibernate: create table studentprofile_AboutSection (studentProfileId bigint not null, about varchar(255)) engine=InnoDB
+Hibernate: create table studentprofile_AcademicActivity (studentProfileId bigint not null, activity varchar(255)) engine=InnoDB
+Hibernate: create table studentprofile_CityOfCoaching (studentProfileId bigint not null, cityOfCoaching varchar(255)) engine=InnoDB
+Hibernate: create table studentprofile_CoCurricularActivity (studentProfileId bigint not null, activity varchar(255)) engine=InnoDB
+Hibernate: create table studentprofile_ExamScoreDetails (studentProfileId bigint not null, scoreDetail varchar(255)) engine=InnoDB
+Hibernate: create table studentprofile_ExternalLink (studentProfileId bigint not null, linkAddress varchar(255), linkName varchar(255)) engine=InnoDB
+Hibernate: create table studentprofile_ExtraCurricularActivity (studentProfileId bigint not null, activity varchar(255)) engine=InnoDB
+Hibernate: create table studentprofile_OtherExamScoreDetails (studentProfileId bigint not null, otherScoreDetail varchar(255)) engine=InnoDB
+Hibernate: create table studentprofile_TutoringExperience (studentProfileId bigint not null, experience varchar(255)) engine=InnoDB
+Hibernate: alter table studentprofile_AboutSection add constraint FKmbxwk5lk78picrk7vmv24w693 foreign key (studentProfileId) references StudentProfile (studentProfileId)
+Hibernate: alter table studentprofile_AcademicActivity add constraint FK1wbdj36e7fg16nd1j69m0lyog foreign key (studentProfileId) references StudentProfile (studentProfileId)
+Hibernate: alter table studentprofile_CityOfCoaching add constraint FKspqckv5tvw8ftqrrkptxje0oy foreign key (studentProfileId) references StudentProfile (studentProfileId)
+Hibernate: alter table studentprofile_CoCurricularActivity add constraint FKchmsxatnaqsf7p55p79yx8fgl foreign key (studentProfileId) references StudentProfile (studentProfileId)
+Hibernate: alter table studentprofile_ExamScoreDetails add constraint FKgfown27cqj5fmdegtil6hah28 foreign key (studentProfileId) references StudentProfile (studentProfileId)
+Hibernate: alter table studentprofile_ExternalLink add constraint FK895rceiev8xeijtrt7f4scp9c foreign key (studentProfileId) references StudentProfile (studentProfileId)
+Hibernate: alter table studentprofile_ExtraCurricularActivity add constraint FK6yhn96dgj3ut9bs6cr6o9pac1 foreign key (studentProfileId) references StudentProfile (studentProfileId)
+Hibernate: alter table studentprofile_OtherExamScoreDetails add constraint FKkmgwb8nesvki6thkoa5jrj4lu foreign key (studentProfileId) references StudentProfile (studentProfileId)
+Hibernate: alter table studentprofile_TutoringExperience add constraint FKafkxidpsfyudy68niqpwr9x63 foreign key (studentProfileId) references StudentProfile (studentProfileId)

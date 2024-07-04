@@ -83,7 +83,7 @@ public class StudentService {
     public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException, StudentClassTypeNotFoundException, StudentCategoryNotFoundException {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
         StudentProfile newStudentProfile = StudentProfileMapper.mapToStudentProfile(addStudentRequest);
-        studentProfileService.addStudentProfile(newStudentProfile); //Saving a profile for this student in studentprofile table
+        studentProfileService.addStudentProfileWithAddStudent(newStudentProfile); //Saving a profile for this student in studentprofile table
 
         if((collegeService.getCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName())) == null){
             throw new CollegeNotFoundException("College not found: " + addStudentRequest.getStudentCollegeName());
