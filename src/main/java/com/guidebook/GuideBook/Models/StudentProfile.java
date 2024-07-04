@@ -2,11 +2,14 @@
 package com.guidebook.GuideBook.Models;
 
 
+import com.guidebook.GuideBook.embeddables.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
 
+//NOTE THE NAMING CONVENTION FOR EMBEDDEDABLE TABLES NAMES - KEEP IT CONSTANT EVERYWHERE IN THE APPLICATION
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,22 +20,40 @@ public class StudentProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long studentProfileId;
-
     Long studentMis;
 
-    String studentAboutSection; //List<String> is needed.
+    @ElementCollection
+    @CollectionTable(name = "studentprofile_AboutSection", joinColumns = @JoinColumn(name = "studentProfileId"))
+    List<AboutSection> studentProfileAboutSection; //List<String> is needed.
     //Displaying city of coaching will help students/parents to instantly get help from students
     //living in same city as that
     //Do not display name of coaching institute - that may voilate laws maybe. Just research on this.
-    String studentCityOfCoaching;
-    String studentScoreDetails; //maybe List<String> //TRY IF WRITING "<p></p>" that can directly send as html
-    String studentOtherExamScoreDetails;
+    @ElementCollection
+    @CollectionTable(name = "studentprofile_CityOfCoaching", joinColumns = @JoinColumn(name = "studentProfileId"))
+    List<CityOfCoaching> studentProfileCityOfCoaching;
+    @ElementCollection
+    @CollectionTable(name = "studentprofile_ExamScoreDetails", joinColumns = @JoinColumn(name = "studentProfileId"))
+    List<ExamScoreDetails> studentProfileExamScoreDetails; //maybe List<String> //TRY IF WRITING "<p></p>" that can directly send as html
+    @ElementCollection
+    @CollectionTable(name = "studentprofile_OtherExamScoreDetails", joinColumns = @JoinColumn(name = "studentProfileId"))
+    List<OtherExamScoreDetails> studentProfileOtherExamScoreDetails;
+    @ElementCollection
+    @CollectionTable(name = "studentprofile_AcademicActivity", joinColumns = @JoinColumn(name = "studentProfileId"))
+    List<AcademicActivity> studentProfileAcademicActivity; //activity included achievements too
+    @ElementCollection
+    @CollectionTable(name = "studentprofile_CoCurricularActivity", joinColumns = @JoinColumn(name = "studentProfileId"))
+    List<CoCurricularActivity> studentProfileCoCurricularActivity;
+    @ElementCollection
+    @CollectionTable(name = "studentprofile_ExtraCurricularActivity", joinColumns = @JoinColumn(name = "studentProfileId"))
+    List<ExtraCurricularActivity> studentProfileExtraCurricularActivity;
+    @ElementCollection
+    @CollectionTable(name = "studentprofile_TutoringExperience", joinColumns = @JoinColumn(name = "studentProfileId"))
+    List<TutoringExperience> studentProfileTutoringExperience;
+    @ElementCollection
+    @CollectionTable(name = "studentprofile_ExternalLink", joinColumns = @JoinColumn(name = "studentProfileId"))
+    List<ExternalLink> studentProfileExternalLink;
 
-    String studentAcademicActivity; //activity included achievements too
-    String studentCoCurricularActivity;
-    String studentExtraCurricularAchievements;
-    String studentTutoringExperience;
-    Long studentSessionsConducted; //Sessions conducted on our platform
+    static Long studentProfileSessionsConducted; //Sessions conducted on our platform
 
 }
 //**studentAboutSection:-

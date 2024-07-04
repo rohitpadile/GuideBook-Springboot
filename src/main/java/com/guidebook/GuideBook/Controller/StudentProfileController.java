@@ -1,13 +1,12 @@
 package com.guidebook.GuideBook.Controller;
 
+import com.guidebook.GuideBook.Models.StudentProfile;
 import com.guidebook.GuideBook.Services.StudentProfileService;
+import com.guidebook.GuideBook.dtos.AddStudentProfileRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = {"http://localhost:3000/", "http://localhost:8080"})
 @RestController
@@ -20,8 +19,8 @@ public class StudentProfileController {
     }
 
     @PostMapping("/addStudentProfile")
-    public ResponseEntity<Void> addStudentProfile(){
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<StudentProfile> addStudentProfile(@RequestBody AddStudentProfileRequest request) {
+        StudentProfile studentProfile = studentProfileService.addStudentProfile(request);
+        return ResponseEntity.ok(studentProfile);
     }
 }
