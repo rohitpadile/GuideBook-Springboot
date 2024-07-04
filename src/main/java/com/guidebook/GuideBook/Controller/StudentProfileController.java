@@ -25,9 +25,10 @@ public class StudentProfileController {
     }
 
     @PostMapping("/addStudentProfile")
-    public ResponseEntity<StudentProfile> addStudentProfile(@RequestBody AddStudentProfileRequest request) {
-        StudentProfile studentProfile = studentProfileService.addStudentProfile(request);
-        return new ResponseEntity<>(studentProfile, HttpStatus.CREATED);
+    public ResponseEntity<GetStudentProfileResponse> addStudentProfile(@RequestBody AddStudentProfileRequest request)
+    throws StudentProfileContentNotFoundException{
+        GetStudentProfileResponse response = studentProfileService.addStudentProfile(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     @GetMapping("/studentProfile/{studentMis}")
     public ResponseEntity<GetStudentProfileResponse> getStudentProfile(@PathVariable Long studentMis)

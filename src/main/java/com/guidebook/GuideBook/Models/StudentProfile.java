@@ -2,6 +2,7 @@
 package com.guidebook.GuideBook.Models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.guidebook.GuideBook.embeddables.*;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,11 +15,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
+
 @Builder
 public class StudentProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+            @JsonIgnore
     Long studentProfileId;
     Long studentMis;
 
@@ -53,7 +55,7 @@ public class StudentProfile {
     @CollectionTable(name = "studentprofile_ExternalLink", joinColumns = @JoinColumn(name = "studentProfileId"))
     List<ExternalLink> studentProfileExternalLink;
 
-    public static Long studentProfileSessionsConducted; //Sessions conducted on our platform
+    Long studentProfileSessionsConducted; //Sessions conducted on our platform
     //THIS IS TO BE UPDATED INTERNALLY VIA ANOTHER DTO IN FUTURE WHEN WE WILL MAKE TRANSACTION TABLES
 }
 //**studentAboutSection:-

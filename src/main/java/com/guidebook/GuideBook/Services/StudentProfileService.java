@@ -23,46 +23,46 @@ public class StudentProfileService {
         this.studentProfileRepository = studentProfileRepository;
     }
 
-    public StudentProfile addStudentProfile(AddStudentProfileRequest request) {
+    public GetStudentProfileResponse addStudentProfile(AddStudentProfileRequest request)
+    throws StudentProfileContentNotFoundException{
         StudentProfile studentProfile = studentProfileRepository.findStudentProfileByStudentMis(request.getStudentMis());
-        studentProfile.setStudentProfileAboutSection(
-                request.getStudentProfileAboutSection().stream()
-                        .map(AboutSection::new).collect(Collectors.toList())
-        );
-        studentProfile.setStudentProfileCityOfCoaching(
-                request.getStudentProfileCityOfCoaching().stream()
-                        .map(CityOfCoaching::new).collect(Collectors.toList())
-        );
-        studentProfile.setStudentProfileExamScoreDetails(
-                request.getStudentProfileExamScoreDetails().stream()
-                        .map(ExamScoreDetails::new).collect(Collectors.toList())
-        );
-        studentProfile.setStudentProfileOtherExamScoreDetails(
-                request.getStudentProfileOtherExamScoreDetails().stream()
-                        .map(OtherExamScoreDetails::new).collect(Collectors.toList())
-        );
-        studentProfile.setStudentProfileAcademicActivity(
-                request.getStudentProfileAcademicActivity().stream()
-                        .map(AcademicActivity::new).collect(Collectors.toList())
-        );
-        studentProfile.setStudentProfileCoCurricularActivity(
-                request.getStudentProfileCoCurricularActivity().stream()
-                        .map(CoCurricularActivity::new).collect(Collectors.toList())
-        );
-        studentProfile.setStudentProfileExtraCurricularActivity(
-                request.getStudentProfileExtraCurricularActivity().stream()
-                        .map(ExtraCurricularActivity::new).collect(Collectors.toList())
-        );
-        studentProfile.setStudentProfileTutoringExperience(
-                request.getStudentProfileTutoringExperience().stream()
-                        .map(TutoringExperience::new).collect(Collectors.toList())
-        );
-        studentProfile.setStudentProfileExternalLink(
-                request.getStudentProfileExternalLink().stream()
-                        .map(link -> new ExternalLink(link.getLinkName(), link.getLinkAddress()))
-                        .collect(Collectors.toList())
-        );
-        return studentProfileRepository.save(studentProfile);
+
+        if(request.getStudentProfileAboutSection()!=null)
+            studentProfile.setStudentProfileAboutSection(request.getStudentProfileAboutSection());
+
+        if(request.getStudentProfileCityOfCoaching()!=null)
+            studentProfile.setStudentProfileCityOfCoaching(request.getStudentProfileCityOfCoaching());
+        if(request.getStudentProfileExamScoreDetails()!=null)
+            studentProfile.setStudentProfileExamScoreDetails(request.getStudentProfileExamScoreDetails());
+        if(request.getStudentProfileOtherExamScoreDetails()!=null)
+            studentProfile.setStudentProfileOtherExamScoreDetails(request.getStudentProfileOtherExamScoreDetails());
+        if(request.getStudentProfileAcademicActivity()!=null)
+            studentProfile.setStudentProfileAcademicActivity(request.getStudentProfileAcademicActivity());
+        if(request.getStudentProfileCoCurricularActivity()!=null)
+            studentProfile.setStudentProfileCoCurricularActivity(request.getStudentProfileCoCurricularActivity());
+        if(request.getStudentProfileExtraCurricularActivity()!=null)
+            studentProfile.setStudentProfileExtraCurricularActivity(request.getStudentProfileExtraCurricularActivity());
+        if(request.getStudentProfileTutoringExperience()!=null)
+            studentProfile.setStudentProfileTutoringExperience(request.getStudentProfileTutoringExperience());
+        if(request.getStudentProfileExternalLink()!=null)
+            studentProfile.setStudentProfileExternalLink(request.getStudentProfileExternalLink());
+        studentProfile.setStudentProfileSessionsConducted((long)0);
+
+
+        GetStudentProfileResponse response = new GetStudentProfileResponse();
+        StudentProfile savedProfile = studentProfileRepository.save(studentProfile);
+        response.setStudentMis(savedProfile.getStudentMis());
+        response.setStudentProfileAboutSection(savedProfile.getStudentProfileAboutSection());
+        response.setStudentProfileCityOfCoaching(savedProfile.getStudentProfileCityOfCoaching());
+        response.setStudentProfileExamScoreDetails(savedProfile.getStudentProfileExamScoreDetails());
+        response.setStudentProfileOtherExamScoreDetails(savedProfile.getStudentProfileOtherExamScoreDetails());
+        response.setStudentProfileAcademicActivity(savedProfile.getStudentProfileAcademicActivity());
+        response.setStudentProfileCoCurricularActivity(savedProfile.getStudentProfileCoCurricularActivity());
+        response.setStudentProfileExtraCurricularActivity(savedProfile.getStudentProfileExtraCurricularActivity());
+        response.setStudentProfileTutoringExperience(savedProfile.getStudentProfileTutoringExperience());
+        response.setStudentProfileExternalLink(savedProfile.getStudentProfileExternalLink());
+        savedProfile.setStudentProfileSessionsConducted(savedProfile.getStudentProfileSessionsConducted());
+        return response;
     }
 
     public StudentProfile addStudentProfileWithAddStudent(StudentProfile studentProfile){
@@ -76,16 +76,16 @@ public class StudentProfileService {
                 studentProfileRepository.findStudentProfileByStudentMis(studentMis);
         GetStudentProfileResponse response = new GetStudentProfileResponse();
         response.setStudentMis(studentProfile.getStudentMis());
-        response.setStudentProfileAboutSection(studentProfile.getStudentProfileAboutSection().stream().map(AboutSection::getAbout).collect(Collectors.toList()));
-        response.setStudentProfileCityOfCoaching(studentProfile.getStudentProfileCityOfCoaching().stream().map(CityOfCoaching::getCityOfCoaching).collect(Collectors.toList()));
-        response.setStudentProfileExamScoreDetails(studentProfile.getStudentProfileExamScoreDetails().stream().map(ExamScoreDetails::getScoreDetail).collect(Collectors.toList()));
-        response.setStudentProfileOtherExamScoreDetails(studentProfile.getStudentProfileOtherExamScoreDetails().stream().map(OtherExamScoreDetails::getOtherScoreDetail).collect(Collectors.toList()));
-        response.setStudentProfileAcademicActivity(studentProfile.getStudentProfileAcademicActivity().stream().map(AcademicActivity::getActivity).collect(Collectors.toList()));
-        response.setStudentProfileCoCurricularActivity(studentProfile.getStudentProfileCoCurricularActivity().stream().map(CoCurricularActivity::getActivity).collect(Collectors.toList()));
-        response.setStudentProfileExtraCurricularActivity(studentProfile.getStudentProfileExtraCurricularActivity().stream().map(ExtraCurricularActivity::getActivity).collect(Collectors.toList()));
-        response.setStudentProfileTutoringExperience(studentProfile.getStudentProfileTutoringExperience().stream().map(TutoringExperience::getExperience).collect(Collectors.toList()));
+        response.setStudentProfileAboutSection(studentProfile.getStudentProfileAboutSection());
+        response.setStudentProfileCityOfCoaching(studentProfile.getStudentProfileCityOfCoaching());
+        response.setStudentProfileExamScoreDetails(studentProfile.getStudentProfileExamScoreDetails());
+        response.setStudentProfileOtherExamScoreDetails(studentProfile.getStudentProfileOtherExamScoreDetails());
+        response.setStudentProfileAcademicActivity(studentProfile.getStudentProfileAcademicActivity());
+        response.setStudentProfileCoCurricularActivity(studentProfile.getStudentProfileCoCurricularActivity());
+        response.setStudentProfileExtraCurricularActivity(studentProfile.getStudentProfileExtraCurricularActivity());
+        response.setStudentProfileTutoringExperience(studentProfile.getStudentProfileTutoringExperience());
         response.setStudentProfileExternalLink(studentProfile.getStudentProfileExternalLink());
-        response.setStudentProfileSessionsConducted(StudentProfile.studentProfileSessionsConducted);
+        response.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted());
 
         return response;
     }

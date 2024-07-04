@@ -10,10 +10,8 @@ import com.guidebook.GuideBook.Repository.cutomrepository.CustomStudentRepositor
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentDetails;
-import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
-import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
-import com.guidebook.GuideBook.exceptions.StudentCategoryNotFoundException;
-import com.guidebook.GuideBook.exceptions.StudentClassTypeNotFoundException;
+import com.guidebook.GuideBook.dtos.GetStudentBasicDetailsResponse;
+import com.guidebook.GuideBook.exceptions.*;
 import com.guidebook.GuideBook.mapper.StudentMapper;
 import com.guidebook.GuideBook.mapper.StudentProfileMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -133,5 +132,23 @@ public class StudentService {
         return studentRepository.save(newStudent);
     }
 
+    public GetStudentBasicDetailsResponse getStudentBasicDetails(Long studentMis)
+    throws StudentBasicDetailsNotFoundException
+    {
+        Student student = studentRepository.findByStudentMis(studentMis);
+        GetStudentBasicDetailsResponse response = new GetStudentBasicDetailsResponse();
+        response.setBranch(student.getStudentBranch().getBranchName());
+        response.setGrade(student.getGrade());
+        response.setCetPercentile(student.getCetPercentile());
+        response.setClassType(student.getStudentClassType().getStudentClassTypeName());
+
+        List<Language> languageList = student.getStudentLanguageList();
+        for(Language language : languageList){
+            response.getLanguagesSpoken().add(language.getLanguageName());
+        }
+
+        return response;
+
+    }
 }
 

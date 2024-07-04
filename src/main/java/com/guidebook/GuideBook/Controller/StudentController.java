@@ -2,13 +2,8 @@ package com.guidebook.GuideBook.Controller;
 
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Services.StudentService;
-import com.guidebook.GuideBook.dtos.AddStudentRequest;
-import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
-import com.guidebook.GuideBook.dtos.FilteredStudentDetails;
-import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
-import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
-import com.guidebook.GuideBook.exceptions.StudentCategoryNotFoundException;
-import com.guidebook.GuideBook.exceptions.StudentClassTypeNotFoundException;
+import com.guidebook.GuideBook.dtos.*;
+import com.guidebook.GuideBook.exceptions.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,5 +42,13 @@ public class StudentController {
     {
         Student addedStudent = studentService.addStudent(addStudentRequest);
         return new ResponseEntity<>(addedStudent, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/studentBasicDetails/{mis}")
+    public ResponseEntity<GetStudentBasicDetailsResponse> getStudentBasicDetails(@PathVariable Long mis)
+    throws StudentBasicDetailsNotFoundException
+    {
+        GetStudentBasicDetailsResponse res = studentService.getStudentBasicDetails(mis);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }
