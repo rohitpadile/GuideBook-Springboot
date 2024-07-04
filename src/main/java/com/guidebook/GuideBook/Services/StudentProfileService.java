@@ -73,7 +73,7 @@ public class StudentProfileService {
         StudentProfile studentProfile =
                 studentProfileRepository.findStudentProfileByStudentMis(studentMis);
         GetStudentProfileResponse response = new GetStudentProfileResponse();
-
+        response.setStudentMis(studentProfile.getStudentMis());
         response.setStudentProfileAboutSection(studentProfile.getStudentProfileAboutSection().stream().map(AboutSection::getAbout).collect(Collectors.toList()));
         response.setStudentProfileCityOfCoaching(studentProfile.getStudentProfileCityOfCoaching().stream().map(CityOfCoaching::getCityOfCoaching).collect(Collectors.toList()));
         response.setStudentProfileExamScoreDetails(studentProfile.getStudentProfileExamScoreDetails().stream().map(ExamScoreDetails::getScoreDetail).collect(Collectors.toList()));
