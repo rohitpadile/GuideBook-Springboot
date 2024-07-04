@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetStudentProfileResponse {
+    //LATER CHANGE LIST<STRING> TO ORIGINAL CUSTOM DATATYPES OBJECTS
     private Long studentMis;
     private List<String> studentProfileAboutSection;
     private List<String> studentProfileCityOfCoaching;

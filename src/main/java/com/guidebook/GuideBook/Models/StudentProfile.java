@@ -54,7 +54,7 @@ public class StudentProfile {
     List<ExternalLink> studentProfileExternalLink;
 
     public static Long studentProfileSessionsConducted; //Sessions conducted on our platform
-
+    //THIS IS TO BE UPDATED INTERNALLY VIA ANOTHER DTO IN FUTURE WHEN WE WILL MAKE TRANSACTION TABLES
 }
 //**studentAboutSection:-
     //IMPORTANT: "I Offer customized study plans and stress management techniques",

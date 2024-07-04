@@ -4,11 +4,13 @@ import com.guidebook.GuideBook.Models.StudentProfile;
 import com.guidebook.GuideBook.Repository.StudentProfileRepository;
 import com.guidebook.GuideBook.dtos.AddStudentProfileRequest;
 import com.guidebook.GuideBook.dtos.GetStudentProfileResponse;
+import com.guidebook.GuideBook.dtos.UpdateStudentProfileRequest;
 import com.guidebook.GuideBook.exceptions.StudentProfileContentNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.guidebook.GuideBook.embeddables.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -86,6 +88,41 @@ public class StudentProfileService {
         response.setStudentProfileSessionsConducted(StudentProfile.studentProfileSessionsConducted);
 
         return response;
+    }
+
+    public StudentProfile updateStudentProfile(Long studentMis, UpdateStudentProfileRequest updateRequest) {
+
+        StudentProfile studentProfile = studentProfileRepository.findStudentProfileByStudentMis(studentMis);
+
+        // Update fields based on the DTO
+        if(updateRequest.getAboutSection() != null){
+            studentProfile.setStudentProfileAboutSection(updateRequest.getAboutSection());
+        }
+        if(updateRequest.getCityOfCoaching()!=null){
+            studentProfile.setStudentProfileCityOfCoaching(updateRequest.getCityOfCoaching());
+        }
+        if(updateRequest.getExamScoreDetails()!=null){
+            studentProfile.setStudentProfileExamScoreDetails(updateRequest.getExamScoreDetails());
+        }
+        if(updateRequest.getOtherExamScoreDetails()!=null){
+            studentProfile.setStudentProfileOtherExamScoreDetails(updateRequest.getOtherExamScoreDetails());
+        }
+        if(updateRequest.getAcademicActivity()!=null){
+            studentProfile.setStudentProfileAcademicActivity(updateRequest.getAcademicActivity());
+        }
+        if(updateRequest.getCoCurricularActivity()!=null){
+            studentProfile.setStudentProfileCoCurricularActivity(updateRequest.getCoCurricularActivity());
+        }
+        if(updateRequest.getExtraCurricularActivity()!=null){
+            studentProfile.setStudentProfileExtraCurricularActivity(updateRequest.getExtraCurricularActivity());
+        }
+        if(updateRequest.getTutoringExperience()!=null){
+            studentProfile.setStudentProfileTutoringExperience(updateRequest.getTutoringExperience());
+        }
+        if(updateRequest.getExternalLinks()!=null){
+            studentProfile.setStudentProfileExternalLink(updateRequest.getExternalLinks());
+        }
+        return studentProfileRepository.save(studentProfile);
     }
 
 }
