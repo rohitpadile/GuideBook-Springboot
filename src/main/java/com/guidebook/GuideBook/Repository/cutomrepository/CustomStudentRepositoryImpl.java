@@ -73,6 +73,15 @@ public class CustomStudentRepositoryImpl implements CustomStudentRepository {
             ));
         }
 
+        // Filter by Student Category (Case-Insensitive)
+        if (filters.getStudentCategory() != null && !filters.getStudentCategory().isEmpty()) {
+            Join<Student, StudentCategory> categoryJoin = studentRoot.join("studentCategory", JoinType.INNER);
+            predicates.add(criteriaBuilder.equal(
+                    criteriaBuilder.lower(categoryJoin.get("studentCategoryName")),
+                    filters.getStudentCategory().toLowerCase()
+            ));
+        }
+
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }

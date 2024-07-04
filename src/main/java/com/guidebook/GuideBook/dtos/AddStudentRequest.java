@@ -23,6 +23,8 @@ public class AddStudentRequest {
     private Double studentGrade;//how this filter would look like - IS THIS REALLY NECESSARY FIELD. //I THINK IT IS
     @NotNull(message = "Student classType is compulsory field")
     private String studentClassType;
+    @NotNull(message = "Student category cannot be null")
+    private String studentCategoryName;
     @NotNull(message = "Student should speak at least one language, so this can't be null")
     private List<String> studentLanguageNames;
 

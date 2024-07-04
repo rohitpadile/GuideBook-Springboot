@@ -12,6 +12,7 @@ import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentDetails;
 import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
+import com.guidebook.GuideBook.exceptions.StudentCategoryNotFoundException;
 import com.guidebook.GuideBook.exceptions.StudentClassTypeNotFoundException;
 import com.guidebook.GuideBook.mapper.StudentMapper;
 import com.guidebook.GuideBook.mapper.StudentProfileMapper;
@@ -26,20 +27,29 @@ public class StudentService {
     private LanguageService languageService;
     private CollegeService collegeService;
     private BranchService branchService;
+    private StudentCategoryService studentCategoryService;
     private StudentClassTypeService studentClassTypeService;
     private StudentRepository studentRepository;
     private CustomStudentRepositoryImpl customStudentRepositoryImpl;
     private StudentProfileService studentProfileService;
 
     @Autowired
-    public StudentService(StudentClassTypeService studentClassTypeService,LanguageService languageService,BranchService branchService,StudentRepository studentRepository,CollegeService collegeService, CustomStudentRepositoryImpl customStudentRepositoryImpl) {
+    public StudentService(
+            StudentClassTypeService studentClassTypeService,
+            LanguageService languageService,
+            BranchService branchService,
+            StudentCategoryService studentCategoryService,
+            StudentRepository studentRepository,
+            CollegeService collegeService,
+            CustomStudentRepositoryImpl customStudentRepositoryImpl
+    ) {
         this.studentRepository = studentRepository;
         this.customStudentRepositoryImpl = customStudentRepositoryImpl;
         this.collegeService = collegeService;
         this.branchService = branchService;
         this.languageService = languageService;
         this.studentClassTypeService = studentClassTypeService;
-        this.studentClassTypeService = studentClassTypeService;
+        this.studentCategoryService = studentCategoryService;
     }
 
     public List<Student> getAllStudents() {
@@ -70,7 +80,7 @@ public class StudentService {
 
 
 
-    public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException, StudentClassTypeNotFoundException {
+    public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException, StudentClassTypeNotFoundException, StudentCategoryNotFoundException {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
         StudentProfile newStudentProfile = StudentProfileMapper.mapToStudentProfile(addStudentRequest);
         studentProfileService.addStudentProfile(newStudentProfile); //Saving a profile for this student in studentprofile table
@@ -87,6 +97,18 @@ public class StudentService {
             //Throw custom BranchNotFoundException
         } else {
             newStudent.setStudentBranch(branchService.getBranchByBranchNameIgnoreCase(addStudentRequest.getStudentBranchName()));
+        }
+
+        //Add for student category also - if not throw StudentCategoryNotFoundException
+        if((studentCategoryService.
+                getStudentCategoryByStudentCategoryNameIgnoreCase(addStudentRequest.getStudentCategoryName())) == null){
+            throw new StudentCategoryNotFoundException("Student category not found " + addStudentRequest.getStudentCategoryName());
+        }else {
+            newStudent.setStudentCategory(
+                    studentCategoryService.getStudentCategoryByStudentCategoryNameIgnoreCase(
+                            addStudentRequest.getStudentCategoryName()
+                    )
+            );
         }
 
         List<Language> languageList = new ArrayList<>();

@@ -7,6 +7,7 @@ import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
 import com.guidebook.GuideBook.dtos.FilteredStudentDetails;
 import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
+import com.guidebook.GuideBook.exceptions.StudentCategoryNotFoundException;
 import com.guidebook.GuideBook.exceptions.StudentClassTypeNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,12 @@ public class StudentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PostMapping("/addStudent")
-    public ResponseEntity<Student> addStudent(@RequestBody @Valid AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException, StudentClassTypeNotFoundException {
+    public ResponseEntity<Student> addStudent(@RequestBody @Valid AddStudentRequest addStudentRequest)
+            throws CollegeNotFoundException,
+            BranchNotFoundException,
+            StudentClassTypeNotFoundException,
+            StudentCategoryNotFoundException
+    {
         Student addedStudent = studentService.addStudent(addStudentRequest);
         return new ResponseEntity<>(addedStudent, HttpStatus.CREATED);
     }

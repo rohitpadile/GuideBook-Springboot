@@ -26,4 +26,7 @@ public class FilteredStudentListRequest {//edit this dto after reading the minor
 
     @NotNull(message = "Language name cannot be empty")
     private String languageName;
+
+    @NotNull(message = "Student category cannot be null")
+    private String studentCategory;
 }
