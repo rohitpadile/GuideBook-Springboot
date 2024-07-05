@@ -12,7 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 public class GetStudentProfileResponse {
     //LATER CHANGE LIST<STRING> TO ORIGINAL CUSTOM DATATYPES OBJECTS - DONE
-    private Long studentMis;
+//Work email neither goes in nor goes out - only be accessed by admin from the servers
+    private String studentPublicEmail;
     private List<AboutSection> studentProfileAboutSection;
     private List<CityOfCoaching> studentProfileCityOfCoaching;
     private List<ExamScoreDetails> studentProfileExamScoreDetails;
@@ -21,6 +22,6 @@ public class GetStudentProfileResponse {
     private List<CoCurricularActivity> studentProfileCoCurricularActivity;
     private List<ExtraCurricularActivity> studentProfileExtraCurricularActivity;
     private List<TutoringExperience> studentProfileTutoringExperience;
-    private List<ExternalLink> studentProfileExternalLink;
+    private List<ExternalLink> studentProfileExternalLinks;
     private Long studentProfileSessionsConducted;
 }

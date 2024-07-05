@@ -44,11 +44,11 @@ public class StudentController {
         return new ResponseEntity<>(addedStudent, HttpStatus.CREATED);
     }
 
-    @GetMapping("/studentBasicDetails/{mis}")
-    public ResponseEntity<GetStudentBasicDetailsResponse> getStudentBasicDetails(@PathVariable Long mis)
+    @GetMapping("/studentBasicDetails/{workemail}")
+    public ResponseEntity<GetStudentBasicDetailsResponse> getStudentBasicDetails(@PathVariable String workemail)
     throws StudentBasicDetailsNotFoundException
     {
-        GetStudentBasicDetailsResponse res = studentService.getStudentBasicDetails(mis);
+        GetStudentBasicDetailsResponse res = studentService.getStudentBasicDetails(workemail);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

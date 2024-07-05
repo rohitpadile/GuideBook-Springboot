@@ -8,11 +8,6 @@ import com.guidebook.GuideBook.dtos.UpdateStudentProfileRequest;
 import com.guidebook.GuideBook.exceptions.StudentProfileContentNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.guidebook.GuideBook.embeddables.*;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class StudentProfileService {
@@ -25,7 +20,7 @@ public class StudentProfileService {
 
     public GetStudentProfileResponse addStudentProfile(AddStudentProfileRequest request)
     throws StudentProfileContentNotFoundException{
-        StudentProfile studentProfile = studentProfileRepository.findStudentProfileByStudentMis(request.getStudentMis());
+        StudentProfile studentProfile = studentProfileRepository.findStudentProfileByStudentWorkEmail(request.getStudentWorkEmail());
 
         if(request.getStudentProfileAboutSection()!=null)
             studentProfile.setStudentProfileAboutSection(request.getStudentProfileAboutSection());
@@ -45,84 +40,86 @@ public class StudentProfileService {
         if(request.getStudentProfileTutoringExperience()!=null)
             studentProfile.setStudentProfileTutoringExperience(request.getStudentProfileTutoringExperience());
         if(request.getStudentProfileExternalLink()!=null)
-            studentProfile.setStudentProfileExternalLink(request.getStudentProfileExternalLink());
+            studentProfile.setStudentProfileExternalLinks(request.getStudentProfileExternalLink());
         studentProfile.setStudentProfileSessionsConducted((long)0);
 
-
-        GetStudentProfileResponse response = new GetStudentProfileResponse();
-        StudentProfile savedProfile = studentProfileRepository.save(studentProfile);
-        response.setStudentMis(savedProfile.getStudentMis());
-        response.setStudentProfileAboutSection(savedProfile.getStudentProfileAboutSection());
-        response.setStudentProfileCityOfCoaching(savedProfile.getStudentProfileCityOfCoaching());
-        response.setStudentProfileExamScoreDetails(savedProfile.getStudentProfileExamScoreDetails());
-        response.setStudentProfileOtherExamScoreDetails(savedProfile.getStudentProfileOtherExamScoreDetails());
-        response.setStudentProfileAcademicActivity(savedProfile.getStudentProfileAcademicActivity());
-        response.setStudentProfileCoCurricularActivity(savedProfile.getStudentProfileCoCurricularActivity());
-        response.setStudentProfileExtraCurricularActivity(savedProfile.getStudentProfileExtraCurricularActivity());
-        response.setStudentProfileTutoringExperience(savedProfile.getStudentProfileTutoringExperience());
-        response.setStudentProfileExternalLink(savedProfile.getStudentProfileExternalLink());
-        savedProfile.setStudentProfileSessionsConducted(savedProfile.getStudentProfileSessionsConducted());
-        return response;
+        return getGetStudentProfileResponse(
+                studentProfileRepository.save(studentProfile)
+        );
     }
 
     public StudentProfile addStudentProfileWithAddStudent(StudentProfile studentProfile){
         return studentProfileRepository.save(studentProfile);
     } //this method create a profile whenever a new student is added
     //only mis is assigned
-    public GetStudentProfileResponse getStudentProfile(Long studentMis)
+
+    public GetStudentProfileResponse getStudentProfile(String studentWorkEmail)
     throws StudentProfileContentNotFoundException {
 
-        StudentProfile studentProfile =
-                studentProfileRepository.findStudentProfileByStudentMis(studentMis);
-        GetStudentProfileResponse response = new GetStudentProfileResponse();
-        response.setStudentMis(studentProfile.getStudentMis());
-        response.setStudentProfileAboutSection(studentProfile.getStudentProfileAboutSection());
-        response.setStudentProfileCityOfCoaching(studentProfile.getStudentProfileCityOfCoaching());
-        response.setStudentProfileExamScoreDetails(studentProfile.getStudentProfileExamScoreDetails());
-        response.setStudentProfileOtherExamScoreDetails(studentProfile.getStudentProfileOtherExamScoreDetails());
-        response.setStudentProfileAcademicActivity(studentProfile.getStudentProfileAcademicActivity());
-        response.setStudentProfileCoCurricularActivity(studentProfile.getStudentProfileCoCurricularActivity());
-        response.setStudentProfileExtraCurricularActivity(studentProfile.getStudentProfileExtraCurricularActivity());
-        response.setStudentProfileTutoringExperience(studentProfile.getStudentProfileTutoringExperience());
-        response.setStudentProfileExternalLink(studentProfile.getStudentProfileExternalLink());
-        response.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted());
-
-        return response;
+        return getGetStudentProfileResponse(
+                studentProfileRepository.findStudentProfileByStudentWorkEmail(studentWorkEmail)
+        );
+        //private static method created for GetStudentProfileResponse DTO
     }
 
-    public StudentProfile updateStudentProfile(Long studentMis, UpdateStudentProfileRequest updateRequest) {
+    public GetStudentProfileResponse updateStudentProfile(String studentWorkEmail, UpdateStudentProfileRequest updateRequest)
+    throws StudentProfileContentNotFoundException {
 
-        StudentProfile studentProfile = studentProfileRepository.findStudentProfileByStudentMis(studentMis);
+        StudentProfile studentProfile = studentProfileRepository.findStudentProfileByStudentWorkEmail(studentWorkEmail);
 
         // Update fields based on the DTO
-        if(updateRequest.getAboutSection() != null){
-            studentProfile.setStudentProfileAboutSection(updateRequest.getAboutSection());
+        if(updateRequest.getStudentPublicEmail()!=null){
+            studentProfile.setStudentPublicEmail(updateRequest.getStudentPublicEmail());
         }
-        if(updateRequest.getCityOfCoaching()!=null){
-            studentProfile.setStudentProfileCityOfCoaching(updateRequest.getCityOfCoaching());
+        if(updateRequest.getStudentProfileAboutSection() != null){
+            studentProfile.setStudentProfileAboutSection(updateRequest.getStudentProfileAboutSection());
         }
-        if(updateRequest.getExamScoreDetails()!=null){
-            studentProfile.setStudentProfileExamScoreDetails(updateRequest.getExamScoreDetails());
+        if(updateRequest.getStudentProfileCityOfCoaching()!=null){
+            studentProfile.setStudentProfileCityOfCoaching(updateRequest.getStudentProfileCityOfCoaching());
         }
-        if(updateRequest.getOtherExamScoreDetails()!=null){
-            studentProfile.setStudentProfileOtherExamScoreDetails(updateRequest.getOtherExamScoreDetails());
+        if(updateRequest.getStudentProfileExamScoreDetails()!=null){
+            studentProfile.setStudentProfileExamScoreDetails(updateRequest.getStudentProfileExamScoreDetails());
         }
-        if(updateRequest.getAcademicActivity()!=null){
-            studentProfile.setStudentProfileAcademicActivity(updateRequest.getAcademicActivity());
+        if(updateRequest.getStudentProfileOtherExamScoreDetails()!=null){
+            studentProfile.setStudentProfileOtherExamScoreDetails(updateRequest.getStudentProfileOtherExamScoreDetails());
         }
-        if(updateRequest.getCoCurricularActivity()!=null){
-            studentProfile.setStudentProfileCoCurricularActivity(updateRequest.getCoCurricularActivity());
+        if(updateRequest.getStudentProfileAcademicActivity()!=null){
+            studentProfile.setStudentProfileAcademicActivity(updateRequest.getStudentProfileAcademicActivity());
         }
-        if(updateRequest.getExtraCurricularActivity()!=null){
-            studentProfile.setStudentProfileExtraCurricularActivity(updateRequest.getExtraCurricularActivity());
+        if(updateRequest.getStudentProfileCoCurricularActivity()!=null){
+            studentProfile.setStudentProfileCoCurricularActivity(updateRequest.getStudentProfileCoCurricularActivity());
         }
-        if(updateRequest.getTutoringExperience()!=null){
-            studentProfile.setStudentProfileTutoringExperience(updateRequest.getTutoringExperience());
+        if(updateRequest.getStudentProfileExtraCurricularActivity()!=null){
+            studentProfile.setStudentProfileExtraCurricularActivity(updateRequest.getStudentProfileExtraCurricularActivity());
         }
-        if(updateRequest.getExternalLinks()!=null){
-            studentProfile.setStudentProfileExternalLink(updateRequest.getExternalLinks());
+        if(updateRequest.getStudentProfileTutoringExperience()!=null){
+            studentProfile.setStudentProfileTutoringExperience(updateRequest.getStudentProfileTutoringExperience());
         }
-        return studentProfileRepository.save(studentProfile);
+        if(updateRequest.getStudentProfileExternalLinks()!=null){
+            studentProfile.setStudentProfileExternalLinks(updateRequest.getStudentProfileExternalLinks());
+        }
+        //DO NOT ASSIGN SESSIONS ATTENDED - CYBER ATTACKS CAN HAPPEN AND STUDENT SESSION COUNT CAN BE LOST
+
+        return getGetStudentProfileResponse(
+                studentProfileRepository.save(studentProfile)
+        );
+
+    }
+
+    private static GetStudentProfileResponse getGetStudentProfileResponse(StudentProfile profile) {
+        GetStudentProfileResponse response = new GetStudentProfileResponse();
+
+        response.setStudentPublicEmail(profile.getStudentPublicEmail());
+        response.setStudentProfileAboutSection(profile.getStudentProfileAboutSection());
+        response.setStudentProfileCityOfCoaching(profile.getStudentProfileCityOfCoaching());
+        response.setStudentProfileExamScoreDetails(profile.getStudentProfileExamScoreDetails());
+        response.setStudentProfileOtherExamScoreDetails(profile.getStudentProfileOtherExamScoreDetails());
+        response.setStudentProfileAcademicActivity(profile.getStudentProfileAcademicActivity());
+        response.setStudentProfileCoCurricularActivity(profile.getStudentProfileCoCurricularActivity());
+        response.setStudentProfileExtraCurricularActivity(profile.getStudentProfileExtraCurricularActivity());
+        response.setStudentProfileTutoringExperience(profile.getStudentProfileTutoringExperience());
+        response.setStudentProfileSessionsConducted(profile.getStudentProfileSessionsConducted());
+        return response;
     }
 
 }

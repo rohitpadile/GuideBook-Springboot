@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -63,7 +62,7 @@ public class StudentService {
                 list.add(
                         new FilteredStudentDetails(
                                 student.getStudentName(),
-                                student.getStudentMis()
+                                student.getStudentWorkEmail()
                         )
                 );
             }
@@ -77,7 +76,12 @@ public class StudentService {
 
 
 
-    public Student addStudent(AddStudentRequest addStudentRequest) throws CollegeNotFoundException, BranchNotFoundException, StudentClassTypeNotFoundException, StudentCategoryNotFoundException {
+    public Student addStudent(AddStudentRequest addStudentRequest) throws
+            CollegeNotFoundException,
+            BranchNotFoundException,
+            StudentClassTypeNotFoundException,
+            StudentCategoryNotFoundException
+    {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
         StudentProfile newStudentProfile = StudentProfileMapper.mapToStudentProfile(addStudentRequest);
         studentProfileService.addStudentProfileWithAddStudent(newStudentProfile); //Saving a profile for this student in studentprofile table
@@ -132,11 +136,14 @@ public class StudentService {
         return studentRepository.save(newStudent);
     }
 
-    public GetStudentBasicDetailsResponse getStudentBasicDetails(Long studentMis)
+    public GetStudentBasicDetailsResponse getStudentBasicDetails(String studentWorkEmail)
     throws StudentBasicDetailsNotFoundException
     {
-        Student student = studentRepository.findByStudentMis(studentMis);
+        Student student = studentRepository.findByStudentWorkEmail(studentWorkEmail);
         GetStudentBasicDetailsResponse response = new GetStudentBasicDetailsResponse();
+        if(student.getStudentPublicEmail()!=null){ //just to be sure apart from the exception.
+            response.setPublicEmail(student.getStudentPublicEmail());
+        }
         response.setBranch(student.getStudentBranch().getBranchName());
         response.setGrade(student.getGrade());
         response.setCetPercentile(student.getCetPercentile());

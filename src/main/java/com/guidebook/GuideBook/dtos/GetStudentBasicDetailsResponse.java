@@ -10,11 +10,10 @@ import java.util.List;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GetStudentBasicDetailsResponse {
-
     String branch;
     Double cetPercentile;
     Double grade;
     String classType;
     List<String> languagesSpoken = new ArrayList<>();
-
+    String publicEmail;
 }

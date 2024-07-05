@@ -2,7 +2,6 @@
 package com.guidebook.GuideBook.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.guidebook.GuideBook.enums.LanguageEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

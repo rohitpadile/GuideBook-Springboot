@@ -7,6 +7,9 @@ import com.guidebook.GuideBook.embeddables.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,45 +21,58 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class StudentProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
             @JsonIgnore
     Long studentProfileId;
     Long studentMis;
+    @Column(unique = true)
+    String studentWorkEmail;
+    String studentPublicEmail;
 
     @ElementCollection
     @CollectionTable(name = "studentprofile_AboutSection", joinColumns = @JoinColumn(name = "studentProfileId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
     List<AboutSection> studentProfileAboutSection; //List<String> is needed.
     //Displaying city of coaching will help students/parents to instantly get help from students
     //living in same city as that
     //Do not display name of coaching institute - that may voilate laws maybe. Just research on this.
     @ElementCollection
     @CollectionTable(name = "studentprofile_CityOfCoaching", joinColumns = @JoinColumn(name = "studentProfileId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
     List<CityOfCoaching> studentProfileCityOfCoaching;
     @ElementCollection
     @CollectionTable(name = "studentprofile_ExamScoreDetails", joinColumns = @JoinColumn(name = "studentProfileId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
     List<ExamScoreDetails> studentProfileExamScoreDetails; //maybe List<String> //TRY IF WRITING "<p></p>" that can directly send as html
     @ElementCollection
     @CollectionTable(name = "studentprofile_OtherExamScoreDetails", joinColumns = @JoinColumn(name = "studentProfileId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
     List<OtherExamScoreDetails> studentProfileOtherExamScoreDetails;
     @ElementCollection
     @CollectionTable(name = "studentprofile_AcademicActivity", joinColumns = @JoinColumn(name = "studentProfileId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
     List<AcademicActivity> studentProfileAcademicActivity; //activity included achievements too
+
     @ElementCollection
     @CollectionTable(name = "studentprofile_CoCurricularActivity", joinColumns = @JoinColumn(name = "studentProfileId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
     List<CoCurricularActivity> studentProfileCoCurricularActivity;
     @ElementCollection
     @CollectionTable(name = "studentprofile_ExtraCurricularActivity", joinColumns = @JoinColumn(name = "studentProfileId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
     List<ExtraCurricularActivity> studentProfileExtraCurricularActivity;
     @ElementCollection
     @CollectionTable(name = "studentprofile_TutoringExperience", joinColumns = @JoinColumn(name = "studentProfileId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
     List<TutoringExperience> studentProfileTutoringExperience;
     @ElementCollection
     @CollectionTable(name = "studentprofile_ExternalLink", joinColumns = @JoinColumn(name = "studentProfileId"))
-    List<ExternalLink> studentProfileExternalLink;
+    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
+    List<ExternalLink> studentProfileExternalLinks;
 
     Long studentProfileSessionsConducted; //Sessions conducted on our platform
     //THIS IS TO BE UPDATED INTERNALLY VIA ANOTHER DTO IN FUTURE WHEN WE WILL MAKE TRANSACTION TABLES
@@ -68,7 +84,7 @@ public class StudentProfile {
     @Temporal(TemporalType.TIMESTAMP)
     Date updatedOn;
     @Version
-    private Integer version;
+    Integer version;
 }
 //**studentAboutSection:-
     //IMPORTANT: "I Offer customized study plans and stress management techniques",

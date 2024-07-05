@@ -1,6 +1,7 @@
 package com.guidebook.GuideBook.dtos;
 
 import com.guidebook.GuideBook.embeddables.*;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -14,7 +15,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AddStudentProfileRequest {
     @NotNull
-    private Long studentMis;
+    private String studentWorkEmail;
     @NotNull
     private List<AboutSection> studentProfileAboutSection;
     private List<CityOfCoaching> studentProfileCityOfCoaching;

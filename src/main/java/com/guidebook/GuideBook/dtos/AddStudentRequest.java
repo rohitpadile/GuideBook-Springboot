@@ -13,6 +13,9 @@ public class AddStudentRequest {
     private String studentName;
     @NotNull(message = "Mis is unique identifier for student which cannot be null")
     private Long studentMis;
+    @NotNull(message = "This is very important - not null")
+    private String studentWorkEmail;
+    private String studentPublicEmail;
     @NotNull(message = "Student college is compulsory field")
     private String studentCollegeName;
     @NotNull(message = "Student branch is compulsory field")

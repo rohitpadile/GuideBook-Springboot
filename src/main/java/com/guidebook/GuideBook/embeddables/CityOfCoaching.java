@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Embeddable
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Embeddable
 public class CityOfCoaching {
     private String cityOfCoaching;
 }

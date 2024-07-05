@@ -30,21 +30,22 @@ public class StudentProfileController {
         GetStudentProfileResponse response = studentProfileService.addStudentProfile(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-    @GetMapping("/studentProfile/{studentMis}")
-    public ResponseEntity<GetStudentProfileResponse> getStudentProfile(@PathVariable Long studentMis)
+    @GetMapping("/studentProfile/{studentWorkEmail}")
+    public ResponseEntity<GetStudentProfileResponse> getStudentProfile(@PathVariable String studentWorkEmail)
             throws StudentProfileContentNotFoundException
     {
-        GetStudentProfileResponse res = studentProfileService.getStudentProfile(studentMis);
+        GetStudentProfileResponse res = studentProfileService.getStudentProfile(studentWorkEmail);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PutMapping("/updateStudentProfile/{studentMis}")
-    public ResponseEntity<StudentProfile> updateStudentProfile(
-            @PathVariable Long studentMis,
+    @PutMapping("/updateStudentProfile/{studentWorkEmail}")
+    public ResponseEntity<GetStudentProfileResponse> updateStudentProfile(
+            @PathVariable String studentWorkEmail,
             @RequestBody UpdateStudentProfileRequest updateRequest)
+    throws StudentProfileContentNotFoundException
     {
-        StudentProfile updatedProfile = studentProfileService
-                .updateStudentProfile(studentMis, updateRequest);
-        return new ResponseEntity<>(updatedProfile, HttpStatus.OK);
+        GetStudentProfileResponse response = studentProfileService
+                .updateStudentProfile(studentWorkEmail, updateRequest);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

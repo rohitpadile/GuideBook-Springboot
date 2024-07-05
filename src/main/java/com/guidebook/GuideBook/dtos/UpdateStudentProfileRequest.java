@@ -9,13 +9,15 @@ import java.util.List;
 @Valid
 public class UpdateStudentProfileRequest {
 //MIS IS IN PATH VARIABLE OKAY!
-    private List<AboutSection> AboutSection;
-    private List<CityOfCoaching> CityOfCoaching;
-    private List<ExamScoreDetails> ExamScoreDetails;
-    private List<OtherExamScoreDetails> OtherExamScoreDetails;
-    private List<AcademicActivity> AcademicActivity;
-    private List<CoCurricularActivity> CoCurricularActivity;
-    private List<ExtraCurricularActivity> ExtraCurricularActivity;
-    private List<TutoringExperience> TutoringExperience;
-    private List<ExternalLink> ExternalLinks;
+//work email neither goes in nor goes out - only be accessed by owner from servers
+    private String studentPublicEmail;
+    private List<AboutSection> studentProfileAboutSection;
+    private List<CityOfCoaching> studentProfileCityOfCoaching;
+    private List<ExamScoreDetails> studentProfileExamScoreDetails;
+    private List<OtherExamScoreDetails> studentProfileOtherExamScoreDetails;
+    private List<AcademicActivity> studentProfileAcademicActivity;
+    private List<CoCurricularActivity> studentProfileCoCurricularActivity;
+    private List<ExtraCurricularActivity> studentProfileExtraCurricularActivity;
+    private List<TutoringExperience> studentProfileTutoringExperience;
+    private List<ExternalLink> studentProfileExternalLinks;
 }

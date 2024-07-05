@@ -10,8 +10,6 @@ import lombok.Data;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-
 @Data
 @Slf4j
 @Builder
@@ -19,8 +17,10 @@ import java.util.List;
 public class StudentMapper {
     public static Student mapToStudent(AddStudentRequest request){
         return Student.builder()
+                .studentMis(request.getStudentMis()) //Mis - added on 5th July
+                .studentWorkEmail(request.getStudentWorkEmail()) //work email - added on 5th July
                 .studentName(request.getStudentName())
-                .studentMis(request.getStudentMis())
+                .studentWorkEmail(request.getStudentWorkEmail())
                 .cetPercentile(request.getStudentCetPercentile())
                 .grade(request.getStudentGrade())
                 .build();

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class StudentProfileMapper {
     public static StudentProfile mapToStudentProfile(AddStudentRequest request) {
         return StudentProfile.builder()
+                .studentWorkEmail(request.getStudentWorkEmail())
                 .studentMis(request.getStudentMis())
                 .build();
     }

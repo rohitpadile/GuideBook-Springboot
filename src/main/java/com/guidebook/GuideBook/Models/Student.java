@@ -23,7 +23,10 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long studentId;
-    private Long studentMis; //Search details about the student through MIS only
+    @Column(unique = true)
+    private String studentWorkEmail; //Search details about the student through email only
+    private String studentPublicEmail;
+    private Long studentMis;
     private String studentName; //Rohit Padile - There can be multiple names
     private Double cetPercentile;
     private Double grade;
