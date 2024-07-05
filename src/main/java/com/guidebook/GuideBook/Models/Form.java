@@ -1,9 +1,7 @@
 package com.guidebook.GuideBook.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,6 +16,18 @@ import java.util.Date;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Form {
+
+    String clientName;
+    String clientEmail;
+    @Pattern(regexp = "^\\+?[0-9. ()-]{6,20}$", message = "Invalid phone number")
+    //PATTERN MATCHES FOR GENERAL NUMBER FOR ANY COUNTRY.
+    String clientPhoneNumber;
+    Integer clientAge;
+    String clientCollege;
+    @Lob //for storing large data
+    byte[] clientProofDoc; //college id, college fees, government id
+    //REJECT THE SESSION IF THE PROOF IS NOT VALID.
+    //IF THE STUDENT CONFIRMS THE SESSION WITH A NON VALID PROOF, FIRE HIM/HER
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
