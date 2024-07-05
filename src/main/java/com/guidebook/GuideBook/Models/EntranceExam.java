@@ -21,6 +21,6 @@ public class EntranceExam {
     String entranceExamName;
     @ManyToMany(mappedBy = "collegeEntranceSet")
     @JsonIgnore
-    private Set<College> entranceExamCollegeSet = new HashSet<>();
+    private Set<College> entranceExamCollegeSet;
 
 }

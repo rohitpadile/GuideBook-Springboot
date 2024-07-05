@@ -29,7 +29,7 @@ public class College {
         joinColumns = @JoinColumn(name = "collegeId"),
         inverseJoinColumns = @JoinColumn(name = "branchId")
     )
-    private Set<Branch> collegeBranchSet = new HashSet<>();
+    private Set<Branch> collegeBranchSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "studentCollege")

@@ -30,7 +30,7 @@ public class Branch {
 
     @ManyToMany(mappedBy = "collegeBranchSet")
     @JsonIgnore
-    private Set<College> branchCollegeSet = new HashSet<>();
+    private Set<College> branchCollegeSet;
 
 
     @OneToMany(mappedBy = "studentBranch")
