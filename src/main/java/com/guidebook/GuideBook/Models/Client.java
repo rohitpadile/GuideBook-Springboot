@@ -12,10 +12,10 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Data //getters and setters
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Form {
+public class Client {
     String clientFirstName;
     String clientMiddleName;
     String clientLastName;

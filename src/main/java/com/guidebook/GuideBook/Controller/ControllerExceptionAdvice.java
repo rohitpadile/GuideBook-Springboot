@@ -47,4 +47,9 @@ public class ControllerExceptionAdvice {
         log.error("StudentProfileContentNotFoundException occurred : {}" , studentProfileContentNotFoundException);
         return new ResponseEntity<>(studentProfileContentNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(value = EntranceExamNotFoundException.class)
+    public ResponseEntity<String> takeAction(EntranceExamNotFoundException entranceExamNotFoundException){
+        log.error("EntranceExamNotFoundException occurred : {}" , entranceExamNotFoundException);
+        return new ResponseEntity<>(entranceExamNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

@@ -2,7 +2,8 @@ package com.guidebook.GuideBook.Controller;
 
 import com.guidebook.GuideBook.Services.CollegeService;
 import com.guidebook.GuideBook.dtos.AddCollegeRequest;
-import com.guidebook.GuideBook.dtos.GetCollegeListResponse;
+import com.guidebook.GuideBook.dtos.GetCollegeListForExamResponse;
+import com.guidebook.GuideBook.exceptions.EntranceExamNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,13 +19,18 @@ public class CollegeController {
     CollegeController(CollegeService collegeService){
         this.collegeService = collegeService;
     }
-    @GetMapping("/colleges")
-    public ResponseEntity<GetCollegeListResponse> getCollegeListRequest(){
-        GetCollegeListResponse getCollegeListResponse = collegeService.getCollegeListRequest();
-        return new ResponseEntity<>(getCollegeListResponse, HttpStatus.OK);
+    @GetMapping("/collegesForExam/{examName}")
+    public ResponseEntity<GetCollegeListForExamResponse> getCollegeListRequest(
+            @PathVariable String examName
+    ){
+        GetCollegeListForExamResponse getCollegeListForExamResponse =
+                collegeService.getCollegeListForExam(examName);
+        return new ResponseEntity<>(getCollegeListForExamResponse, HttpStatus.OK);
     }
     @PostMapping("/addCollegeWithBranches")
-    public ResponseEntity<Void> addCollegeWithBranches(@RequestBody @Valid AddCollegeRequest addCollegeRequest){
+    public ResponseEntity<Void> addCollegeWithBranches(@RequestBody @Valid AddCollegeRequest addCollegeRequest)
+            throws EntranceExamNotFoundException
+    {
         collegeService.addCollegeWithBranches(addCollegeRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

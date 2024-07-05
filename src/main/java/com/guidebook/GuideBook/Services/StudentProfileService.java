@@ -119,6 +119,7 @@ public class StudentProfileService {
         response.setStudentProfileExtraCurricularActivity(profile.getStudentProfileExtraCurricularActivity());
         response.setStudentProfileTutoringExperience(profile.getStudentProfileTutoringExperience());
         response.setStudentProfileSessionsConducted(profile.getStudentProfileSessionsConducted());
+        response.setStudentProfileExternalLinks(profile.getStudentProfileExternalLinks());
         return response;
     }
 
