@@ -35,8 +35,12 @@ public class College {
     @OneToMany(mappedBy = "studentCollege")
     private List<Student> collegeStudentList;
 
-    //Add Entrance Exam property here to filter colleges based on selected Entrance-Exam.
-    //THIS CAN BE ADDED IN FUTURE ALSO
+    @ManyToMany
+    @JoinTable(name = "college_entrance",
+        joinColumns = @JoinColumn(name = "collegeId"),
+            inverseJoinColumns = @JoinColumn(name = "entranceExamId")
+    )
+    private Set<EntranceExam> collegeEntranceSet;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
