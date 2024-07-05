@@ -13,6 +13,4 @@ import java.util.Set;
 public interface CollegeRepository extends JpaRepository<College, Long> {
     College findCollegeByCollegeNameIgnoreCase(String name);
 
-    @Query("SELECT c FROM College c JOIN c.collegeEntranceSet e WHERE LOWER(e.entranceExamName) = LOWER(:examName)")
-    List<College> findCollegeByEntranceExamNameIgnoreCase(@Param("examName") String examName);
 }

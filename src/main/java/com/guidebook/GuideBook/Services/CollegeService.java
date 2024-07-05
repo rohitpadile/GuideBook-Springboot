@@ -4,6 +4,7 @@ import com.guidebook.GuideBook.Models.Branch;
 import com.guidebook.GuideBook.Models.College;
 import com.guidebook.GuideBook.Models.EntranceExam;
 import com.guidebook.GuideBook.Repository.CollegeRepository;
+import com.guidebook.GuideBook.Repository.cutomrepository.CustomCollegeRepositoryImpl;
 import com.guidebook.GuideBook.dtos.AddCollegeRequest;
 import com.guidebook.GuideBook.dtos.GetCollegeListForExamResponse;
 import com.guidebook.GuideBook.exceptions.EntranceExamNotFoundException;
@@ -23,14 +24,17 @@ public class CollegeService {
     private EntranceExamService entranceExamService;
     private BranchService branchService;
     private CollegeRepository collegeRepository;
+    private CustomCollegeRepositoryImpl customCollegeRepositoryImpl;
     @Autowired
     CollegeService(CollegeRepository collegeRepository,
                    EntranceExamService entranceExamService,
-                   BranchService branchService
+                   BranchService branchService,
+                   CustomCollegeRepositoryImpl customCollegeRepositoryImpl
     ){
         this.collegeRepository = collegeRepository;
         this.entranceExamService = entranceExamService;
         this.branchService = branchService;
+        this.customCollegeRepositoryImpl = customCollegeRepositoryImpl;
     }
 
     // Method to save a new college
@@ -40,7 +44,7 @@ public class CollegeService {
 
     // Method to retrieve all colleges
     public GetCollegeListForExamResponse getCollegeListForExam(String examName) {
-        List<College> colleges = collegeRepository.findCollegeByEntranceExamNameIgnoreCase(examName);
+        List<College> colleges = customCollegeRepositoryImpl.findCollegeByEntranceExamNameIgnoreCase(examName);
         GetCollegeListForExamResponse getCollegeListForExamResponse = new GetCollegeListForExamResponse();
         for(College clg : colleges){
             getCollegeListForExamResponse.getCollegeNameList().add(clg.getCollegeName());
