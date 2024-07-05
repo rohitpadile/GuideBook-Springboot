@@ -7,11 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor
@@ -38,5 +37,14 @@ public class College {
 
     //Add Entrance Exam property here to filter colleges based on selected Entrance-Exam.
     //THIS CAN BE ADDED IN FUTURE ALSO
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    Date createdOn;
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    Date updatedOn;
+    @Version
+    private Integer version;
 }
 

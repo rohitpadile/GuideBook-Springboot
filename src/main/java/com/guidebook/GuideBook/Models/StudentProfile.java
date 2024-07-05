@@ -7,7 +7,10 @@ import com.guidebook.GuideBook.embeddables.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.Date;
 import java.util.List;
 
 //NOTE THE NAMING CONVENTION FOR EMBEDDEDABLE TABLES NAMES - KEEP IT CONSTANT EVERYWHERE IN THE APPLICATION
@@ -57,6 +60,15 @@ public class StudentProfile {
 
     Long studentProfileSessionsConducted; //Sessions conducted on our platform
     //THIS IS TO BE UPDATED INTERNALLY VIA ANOTHER DTO IN FUTURE WHEN WE WILL MAKE TRANSACTION TABLES
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    Date createdOn;
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    Date updatedOn;
+    @Version
+    private Integer version;
 }
 //**studentAboutSection:-
     //IMPORTANT: "I Offer customized study plans and stress management techniques",

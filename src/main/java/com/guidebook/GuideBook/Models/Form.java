@@ -1,34 +1,23 @@
 package com.guidebook.GuideBook.Models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.Version;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.List;
 
-@Data
-@Slf4j
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class StudentClassType {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long studentClassTypeId;
-
-    String studentClassTypeName;
-
-    @OneToMany(mappedBy = "studentClassType")
-    @Column(unique = true)
-    @JsonIgnore
-    List<Student> studentClassTypeStudentList;
+public class Form {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -38,4 +27,5 @@ public class StudentClassType {
     Date updatedOn;
     @Version
     private Integer version;
+
 }
