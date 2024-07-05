@@ -9,6 +9,5 @@ import java.util.List;
 @Valid
 @Data
 public class GetCollegeListForExamResponse {
-
     private List<String> collegeNameList = new ArrayList<>();
 }
