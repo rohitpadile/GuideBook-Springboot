@@ -22,7 +22,7 @@ import java.util.List;
 //@FieldDefaults(level = AccessLevel.PRIVATE) - Use it later. Now just go with writing things
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //MAKE THIS UUID LATER
     private Long studentId;
     @Column(unique = true)
     private String studentWorkEmail; //Search details about the student through email only
