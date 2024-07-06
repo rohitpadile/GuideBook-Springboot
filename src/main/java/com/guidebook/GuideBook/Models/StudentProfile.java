@@ -79,12 +79,15 @@ public class StudentProfile {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     Date createdOn;
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     Date updatedOn;
     @Version
-    Integer version;
+    @JsonIgnore
+    private Integer version;
 }
 //**studentAboutSection:-
     //IMPORTANT: "I Offer customized study plans and stress management techniques",

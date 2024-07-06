@@ -1,6 +1,7 @@
 
 package com.guidebook.GuideBook.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,11 +57,14 @@ public class Student {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     Date createdOn;
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     Date updatedOn;
     @Version
+    @JsonIgnore
     private Integer version;
 
 }

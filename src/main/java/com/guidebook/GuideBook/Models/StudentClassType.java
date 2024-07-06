@@ -32,10 +32,13 @@ public class StudentClassType {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     Date createdOn;
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     Date updatedOn;
     @Version
+    @JsonIgnore
     private Integer version;
 }
