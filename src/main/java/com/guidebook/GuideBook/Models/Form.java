@@ -16,17 +16,20 @@
 //@Builder
 //@FieldDefaults(level = AccessLevel.PRIVATE)
 //public class Form {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.UUID)
+//    String formId;
 //    String clientFirstName;
 //    String clientMiddleName;
 //    String clientLastName;
 //    String clientEmail;
-//    @Pattern(regexp = "^\\+?[0-9. ()-]{6,20}$", message = "Invalid phone number")
+////    @Pattern(regexp = "^\\+?[0-9. ()-]{6,20}$", message = "Invalid phone number")
 //    //PATTERN MATCHES FOR GENERAL NUMBER FOR ANY COUNTRY.
 //    String clientPhoneNumber;
 //    Integer clientAge;
 //    String clientCollege;
-//    @Lob //for storing large data
-//    byte[] clientProofDoc; //college id, college fees, government id
+////    @Lob //for storing large data
+//    String clientProofDocPath; //college id, college fees, government id
 //    //VERY IMPORTANT NOTE:-
 //    //REJECT THE SESSION IF THE PROOF IS NOT VALID.
 //    //IF THE STUDENT CONFIRMS THE SESSION WITH A NON VALID PROOF, FIRE HIM/HER

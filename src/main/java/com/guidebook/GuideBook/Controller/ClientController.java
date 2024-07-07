@@ -1,0 +1,26 @@
+package com.guidebook.GuideBook.Controller;
+
+import com.guidebook.GuideBook.Models.Client;
+import com.guidebook.GuideBook.Services.ClientService;
+import com.guidebook.GuideBook.dtos.accountDtos.SignupRequest;
+import com.guidebook.GuideBook.dtos.accountDtos.SignupResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@CrossOrigin(origins = {"http://localhost:3000/", "http://localhost:8080"})
+@RestController
+@RequestMapping("/api/v1/admin/")
+public class ClientController {
+    private ClientService clientService;
+    @Autowired
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
+    }
+    @PostMapping("/signup")
+    public ResponseEntity<SignupResponse> addAccount(@RequestBody SignupRequest signupRequest){
+        SignupResponse res = clientService.addAccount(signupRequest);
+        return new ResponseEntity<>(res, HttpStatus.CREATED);
+    }
+}
