@@ -23,4 +23,6 @@ public class ClientController {
         SignupResponse res = clientService.addAccount(signupRequest);
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
+
+    //TO CHECK WHO IS THE CURRENT LOGGED IN PROFILE
 }

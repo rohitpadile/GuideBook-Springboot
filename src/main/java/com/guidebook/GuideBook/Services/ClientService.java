@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.Services;
 
 import com.guidebook.GuideBook.Models.Client;
 import com.guidebook.GuideBook.Repository.ClientRepository;
+import com.guidebook.GuideBook.account.UtilityClass;
 import com.guidebook.GuideBook.dtos.accountDtos.SignupRequest;
 import com.guidebook.GuideBook.dtos.accountDtos.SignupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class ClientService {
         newClient.setClientProofDocPath(request.getClientProofDocPath());
         newClient.setClientPassword(request.getClientPassword());
 
+        UtilityClass.currentLoggedInProfileEmail = newClient.getClientEmail();
         return getSignupResponse(clientRepository.save(newClient));
     }
 
