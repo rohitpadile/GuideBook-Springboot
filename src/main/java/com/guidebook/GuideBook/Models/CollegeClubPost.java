@@ -14,14 +14,14 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class CollegePost {
+public class CollegeClubPost {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String collegePostId;
+    private String collegeClubPostId;
 
-    private String collegePostDescription;
+    private String collegeClubPostDescription;
     @ElementCollection
     @CollectionTable(name = "collegePost_MediaPaths", joinColumns = @JoinColumn(name = "collegePostId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
-    private List<String> collegePostMediaPaths;
+    private List<String> collegeClubPostMediaPaths;
 }
