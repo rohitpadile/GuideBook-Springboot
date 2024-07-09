@@ -6,6 +6,7 @@ import com.guidebook.GuideBook.Models.EntranceExam;
 import com.guidebook.GuideBook.Repository.CollegeRepository;
 import com.guidebook.GuideBook.Repository.cutomrepository.CustomCollegeRepositoryImpl;
 import com.guidebook.GuideBook.dtos.AddCollegeRequest;
+import com.guidebook.GuideBook.dtos.GetAllCollegeListForClubsResponse;
 import com.guidebook.GuideBook.dtos.GetCollegeListForExamResponse;
 import com.guidebook.GuideBook.exceptions.EntranceExamNotFoundException;
 import com.guidebook.GuideBook.mapper.CollegeMapper;
@@ -43,7 +44,7 @@ public class CollegeService {
     }
 
     // Method to retrieve all colleges
-    public GetCollegeListForExamResponse getCollegeListForExam(String examName) {
+    public GetCollegeListForExamResponse getCollegeListForExamRequest(String examName) {
         List<College> colleges = customCollegeRepositoryImpl.findCollegeByEntranceExamNameIgnoreCase(examName);
         GetCollegeListForExamResponse getCollegeListForExamResponse = new GetCollegeListForExamResponse();
         for(College clg : colleges){
@@ -86,5 +87,13 @@ public class CollegeService {
 
     public College getCollegeByCollegeNameIgnoreCase(String name){
         return collegeRepository.findCollegeByCollegeNameIgnoreCase(name);
+    }
+
+    public GetAllCollegeListForClubsResponse getCollegesForClubs() {
+        GetAllCollegeListForClubsResponse response = new GetAllCollegeListForClubsResponse();
+        for(College college : collegeRepository.findAll()){
+            response.getCollegeNameList().add(college.getCollegeName());
+        }
+        return response;
     }
 }

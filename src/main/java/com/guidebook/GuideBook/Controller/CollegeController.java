@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.Controller;
 
 import com.guidebook.GuideBook.Services.CollegeService;
 import com.guidebook.GuideBook.dtos.AddCollegeRequest;
+import com.guidebook.GuideBook.dtos.GetAllCollegeListForClubsResponse;
 import com.guidebook.GuideBook.dtos.GetCollegeListForExamResponse;
 import com.guidebook.GuideBook.exceptions.EntranceExamNotFoundException;
 import jakarta.validation.Valid;
@@ -20,11 +21,11 @@ public class CollegeController {
         this.collegeService = collegeService;
     }
     @GetMapping("/collegesForExam/{examName}")
-    public ResponseEntity<GetCollegeListForExamResponse> getCollegeListRequest(
+    public ResponseEntity<GetCollegeListForExamResponse> getCollegeListForExamRequest(
             @PathVariable String examName
     ){
         GetCollegeListForExamResponse getCollegeListForExamResponse =
-                collegeService.getCollegeListForExam(examName);
+                collegeService.getCollegeListForExamRequest(examName);
         return new ResponseEntity<>(getCollegeListForExamResponse, HttpStatus.OK);
     }
     @PostMapping("/addCollegeWithBranches")
@@ -33,6 +34,12 @@ public class CollegeController {
     {
         collegeService.addCollegeWithBranches(addCollegeRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/collegesForExam")
+    public ResponseEntity<GetAllCollegeListForClubsResponse> getCollegesForClubs(){
+        GetAllCollegeListForClubsResponse res = collegeService.getCollegesForClubs();
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
 }

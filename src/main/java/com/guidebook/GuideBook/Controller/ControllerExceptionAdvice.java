@@ -52,4 +52,11 @@ public class ControllerExceptionAdvice {
         log.error("EntranceExamNotFoundException occurred : {}" , entranceExamNotFoundException);
         return new ResponseEntity<>(entranceExamNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+
+    @ExceptionHandler(value = CollegeClubNotFoundException.class)
+    public ResponseEntity<String> takeAction(CollegeClubNotFoundException collegeClubNotFoundException){
+        log.error("CollegeClubNotFoundException occurred : {}" , collegeClubNotFoundException);
+        return new ResponseEntity<>(collegeClubNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

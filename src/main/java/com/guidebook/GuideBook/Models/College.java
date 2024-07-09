@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.Cluster;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -41,6 +42,11 @@ public class College {
             inverseJoinColumns = @JoinColumn(name = "entranceExamId")
     )
     private Set<EntranceExam> collegeEntranceSet;
+
+    @JsonIgnore
+    @OneToMany
+    private Set<CollegeClub> collegeClubSet;
+
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
