@@ -1,11 +1,9 @@
 package com.guidebook.GuideBook.Repository.cutomrepository;
 
+import com.guidebook.GuideBook.Models.College;
 import com.guidebook.GuideBook.Models.CollegeClub;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -25,10 +23,14 @@ public class CustomCollegeClubRepositoryImpl implements CustomCollegeClubReposit
         CriteriaQuery<CollegeClub> query = criteriaBuilder.createQuery(CollegeClub.class);
         Root<CollegeClub> root = query.from(CollegeClub.class);
 
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("collegeClubCollegeName")), collegeName.toLowerCase()));
+        // Join to College entity
+        Join<CollegeClub, College> collegeJoin = root.join("collegeClubCollege", JoinType.INNER);
 
-        query.select(root).where(predicates.toArray(new Predicate[0]));
+        // Create predicates
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(collegeJoin.get("collegeName")), collegeName.toLowerCase()));
+
+        query.select(root).distinct(true).where(predicates.toArray(new Predicate[0]));
 
         return entityManager.createQuery(query).getResultList();
     }

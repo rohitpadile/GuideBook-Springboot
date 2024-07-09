@@ -24,8 +24,6 @@ public class CollegeClub {
 
     private String collegeClubBannerPath;
 
-    private String collegeClubCollegeName;
-
     private Long collegeClubFollowers;
 
     @ManyToOne
