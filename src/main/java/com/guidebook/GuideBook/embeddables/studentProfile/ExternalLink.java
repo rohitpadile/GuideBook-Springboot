@@ -1,15 +1,15 @@
-package com.guidebook.GuideBook.embeddables;
+package com.guidebook.GuideBook.embeddables.studentProfile;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+@Embeddable
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Embeddable
-public class CityOfCoaching {
-    private String cityOfCoaching;
+public class ExternalLink {
+    private String linkName;
+    private String linkAddress;
 }

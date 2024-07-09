@@ -1,4 +1,4 @@
-package com.guidebook.GuideBook.embeddables;
+package com.guidebook.GuideBook.embeddables.studentProfile;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CoCurricularActivity {
+public class ExtraCurricularActivity {
     private String activity;
 }

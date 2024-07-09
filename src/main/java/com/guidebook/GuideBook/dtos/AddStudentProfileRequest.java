@@ -1,7 +1,6 @@
 package com.guidebook.GuideBook.dtos;
 
-import com.guidebook.GuideBook.embeddables.*;
-import jakarta.persistence.UniqueConstraint;
+import com.guidebook.GuideBook.embeddables.studentProfile.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;

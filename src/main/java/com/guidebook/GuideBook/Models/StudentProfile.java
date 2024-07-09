@@ -3,7 +3,7 @@ package com.guidebook.GuideBook.Models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.guidebook.GuideBook.embeddables.*;
+import com.guidebook.GuideBook.embeddables.studentProfile.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

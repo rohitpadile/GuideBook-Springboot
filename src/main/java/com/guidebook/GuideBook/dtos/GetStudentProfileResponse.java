@@ -1,6 +1,6 @@
 package com.guidebook.GuideBook.dtos;
 
-import com.guidebook.GuideBook.embeddables.*;
+import com.guidebook.GuideBook.embeddables.studentProfile.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

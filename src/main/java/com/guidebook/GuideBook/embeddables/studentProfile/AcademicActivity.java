@@ -1,14 +1,15 @@
-package com.guidebook.GuideBook.embeddables;
+package com.guidebook.GuideBook.embeddables.studentProfile;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Embeddable
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OtherExamScoreDetails {
-    private String otherScoreDetail;
+@Embeddable
+public class AcademicActivity {
+    private String activity;
 }

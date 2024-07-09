@@ -1,4 +1,4 @@
-package com.guidebook.GuideBook.embeddables;
+package com.guidebook.GuideBook.embeddables.studentProfile;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TutoringExperience {
-    private String experience;
+public class ExamScoreDetails {
+    private String scoreDetail;
 }

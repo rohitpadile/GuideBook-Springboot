@@ -3,7 +3,7 @@ package com.guidebook.GuideBook.dtos;
 import lombok.Data;
 
 @Data
-public class CollegeClubResponse {
+public class GetCollegeClubPageResponse {
     private String collegeClubName;
     private String collegeClubDescription;
     private String collegeClubBannerPath;

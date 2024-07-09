@@ -3,9 +3,7 @@ package com.guidebook.GuideBook.Services;
 import com.guidebook.GuideBook.Models.CollegeClub;
 import com.guidebook.GuideBook.Repository.CollegeClubRepository;
 import com.guidebook.GuideBook.Repository.cutomrepository.CustomCollegeClubRepositoryImpl;
-import com.guidebook.GuideBook.dtos.AddCollegeClubRequest;
-import com.guidebook.GuideBook.dtos.CollegeClubResponse;
-import com.guidebook.GuideBook.dtos.GetClubListForCollegeResponse;
+import com.guidebook.GuideBook.dtos.*;
 import com.guidebook.GuideBook.exceptions.CollegeClubNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +27,13 @@ public class CollegeClubService {
     }
 
 
-    public GetClubListForCollegeResponse getCollegeClubsForCollege(String collegeName)
+    public GetClubListForCollegeResponse getCollegeClubsForCollege(GetClubListForCollegeRequest request)
             throws CollegeClubNotFoundException {
         GetClubListForCollegeResponse response = new GetClubListForCollegeResponse();
 
-        List<CollegeClub> collegeClubs = customCollegeClubRepositoryImpl.findClubByCollegeNameIgnoreCase(collegeName);
+        List<CollegeClub> collegeClubs = customCollegeClubRepositoryImpl.findClubByCollegeNameIgnoreCase(request.getCollegeName());
         if (collegeClubs.isEmpty()) {
-            throw new CollegeClubNotFoundException("No clubs found for college: " + collegeName);
+            throw new CollegeClubNotFoundException("No clubs found for college: " + request.getCollegeName());
         }
         for (CollegeClub club : collegeClubs) {
             response.getCollegeClubNameList().add(club.getCollegeClubName());
@@ -43,7 +41,7 @@ public class CollegeClubService {
         return response;
     }
 
-    public CollegeClubResponse addCollegeClub(AddCollegeClubRequest request) {
+    public GetCollegeClubPageResponse addCollegeClub(AddCollegeClubRequest request) {
         CollegeClub newCollegeClub = new CollegeClub();
         newCollegeClub.setCollegeClubName(request.getCollegeClubName());
         newCollegeClub.setCollegeClubDescription(request.getCollegeClubDescription());
@@ -51,14 +49,24 @@ public class CollegeClubService {
         newCollegeClub.setCollegeClubCollege(
                 collegeService.getCollegeByCollegeNameIgnoreCase(request.getCollegeClubCollegeName())
         );
-        return getCollegeClubResponse(collegeClubRepository.save(newCollegeClub));
+        return getCollegeClubPageResponse(collegeClubRepository.save(newCollegeClub));
     }
-    private static CollegeClubResponse getCollegeClubResponse(CollegeClub club){
-        CollegeClubResponse response = new CollegeClubResponse();
+
+    public GetCollegeClubPageResponse getClubPageDetails(GetClubPageDetailsRequest request) {
+        CollegeClub collegeClub = collegeClubRepository.findByCollegeClubNameIgnoreCase(
+                request.getCollegeClubName()
+        );
+        return getCollegeClubPageResponse(collegeClub);
+
+    }
+    private static GetCollegeClubPageResponse getCollegeClubPageResponse(CollegeClub club){
+        GetCollegeClubPageResponse response = new GetCollegeClubPageResponse();
         response.setCollegeClubName(club.getCollegeClubName());
         response.setCollegeClubDescription(club.getCollegeClubDescription());
         response.setCollegeClubBannerPath(club.getCollegeClubBannerPath());
         response.setCollegeClubCollegeName(club.getCollegeClubCollege().getCollegeName());
         return response;
     }
+
+
 }
