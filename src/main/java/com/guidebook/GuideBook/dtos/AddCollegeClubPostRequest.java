@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @Valid
 public class AddCollegeClubPostRequest {
-
     @NotEmpty
     @NotNull
     private String collegeClubName;
@@ -21,8 +20,4 @@ public class AddCollegeClubPostRequest {
     private String collegeClubPostDescription;
 
     private List<String> collegeClubPostMediaPaths;
-
-    // Constructor, getters, and setters can be generated using Lombok
-
-    // If you are using Lombok, ensure you have the plugin configured in your IDE or build tool
 }

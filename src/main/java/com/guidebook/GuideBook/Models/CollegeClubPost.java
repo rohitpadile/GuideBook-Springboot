@@ -22,6 +22,5 @@ public class CollegeClubPost {
     private String collegeClubPostDescription;
     @ElementCollection
     @CollectionTable(name = "collegePost_MediaPaths", joinColumns = @JoinColumn(name = "collegePostId"))
-    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
     private List<String> collegeClubPostMediaPaths;
 }
