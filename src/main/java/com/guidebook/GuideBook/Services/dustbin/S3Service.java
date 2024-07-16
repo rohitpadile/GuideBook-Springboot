@@ -4,8 +4,6 @@
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.stereotype.Service;
 //import org.springframework.web.multipart.MultipartFile;
-//import software.amazon.awssdk.auth.credentials.InstanceProfileCredentialsProvider;
-//import software.amazon.awssdk.regions.Region;
 //import software.amazon.awssdk.services.s3.S3Client;
 //import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 //
@@ -25,7 +23,7 @@
 //        this.s3Client = s3Client;
 //    }
 //
-//    public String uploadFile(MultipartFile file, String clubName) throws IOException {
+//    public String uploadCollegeClubPostsMedia(MultipartFile file, String clubName) throws IOException {
 //        String uniqueFileName = clubName + "_" + System.currentTimeMillis() + "_" + UUID.randomUUID() + "_" + file.getOriginalFilename();
 //        String key = Paths.get("collegeClubPostsMedia", uniqueFileName).toString();
 //

@@ -47,7 +47,6 @@ public class College {
     @OneToMany
     private Set<CollegeClub> collegeClubSet;
 
-
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore

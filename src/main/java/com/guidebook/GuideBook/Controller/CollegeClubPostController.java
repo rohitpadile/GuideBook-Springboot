@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.guidebook.GuideBook.Models.CollegeClubPost;
 import com.guidebook.GuideBook.Services.CollegeClubPostService;
 //import com.guidebook.GuideBook.Services.S3Service;
+
 import com.guidebook.GuideBook.dtos.AddCollegeClubPostRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +35,12 @@ public class CollegeClubPostController {
 //    {
 //        List<String> filePaths = new ArrayList<>();
 //        for (MultipartFile file : files) {
-//            String filePath = s3Service.uploadFile(file, collegeClubName);
+//            String filePath = s3Service.uploadCollegeClubPostsMedia(file, collegeClubName);
 //            filePaths.add(filePath);
 //        }
 //        return filePaths;
 //    }
-//
+
 //    @PostMapping("/createCollegeClubPost")
 //    public CollegeClubPost createClubPost(@Valid @RequestBody AddCollegeClubPostRequest request) {
 //        CollegeClubPost post = new CollegeClubPost();
