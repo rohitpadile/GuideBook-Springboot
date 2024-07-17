@@ -58,6 +58,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: spring-boot-app
+          path: ./build
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v20
@@ -68,4 +69,5 @@ jobs:
           application_name: guidebookx
           environment_name: Guidebookx-env
           version_label: ${{ github.sha }}
-          deployment_package: spring-boot-app/*.jar
+          deployment_package: ./build/target/*.jar
+          existing_bucket_name: elasticbeanstalk-ap-south-1-058264328131  # Use your S3 bucket name
