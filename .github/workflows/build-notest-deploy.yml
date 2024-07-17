@@ -68,8 +68,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: guidebookx
-          environment_name: Guidebookx-env
+          application_name: guidebookX
+          environment_name: GuidebookX-env
           version_label: ${{ github.sha }}
           region: ap-south-1
           deployment_package: build/deploy.zip
