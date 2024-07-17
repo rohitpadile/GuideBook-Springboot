@@ -1,6 +1,10 @@
 name: Build, Test, and Deploy Spring Boot Application
+
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build-test:
@@ -33,6 +37,8 @@ jobs:
           name: spring-boot-app
           path: target/*.jar
 
+      - run: echo "Build and Test completed successfully!"
+
   deploy:
     name: Deploy to AWS Elastic Beanstalk
     runs-on: ubuntu-latest
@@ -56,8 +62,10 @@ jobs:
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v20
         with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ap-south-1
           application_name: guidebookx
           environment_name: Guidebookx-env
           version_label: ${{ github.sha }}
-          region: ap-south-1
-          artifact_path: spring-boot-app/*.jar
+          deployment_package: spring-boot-app/*.jar
