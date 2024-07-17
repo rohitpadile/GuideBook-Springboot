@@ -34,7 +34,7 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: spring-boot-app
+          name: guidebookx-app
           path: target/*.jar
 
       - run: echo "Build and Test completed successfully!"
@@ -57,7 +57,7 @@ jobs:
       - name: Download Build Artifact
         uses: actions/download-artifact@v3
         with:
-          name: spring-boot-app
+          name: guidebookx-app
           path: ./build
 
       - name: Deploy to Elastic Beanstalk
@@ -69,5 +69,5 @@ jobs:
           application_name: guidebookx
           environment_name: Guidebookx-env
           version_label: ${{ github.sha }}
-          deployment_package: ./build/*.jar
+          deployment_package: ./build/guidebookx-app.jar
           existing_bucket_name: elasticbeanstalk-ap-south-1-058264328131  # Use your S3 bucket name
