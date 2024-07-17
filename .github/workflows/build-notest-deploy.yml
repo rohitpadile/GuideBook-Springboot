@@ -60,6 +60,11 @@ jobs:
           name: guidebookx-app
           path: .
 
-      - name: Deploy to Elastic Beanstalk
-        run: eb deploy --region ap-south-1 --nohang --quiet
+      - name: Install Elastic Beanstalk CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install awsebcli
 
+      - name: Deploy to Elastic Beanstalk
+        run: eb deploy --region ap-south-1
