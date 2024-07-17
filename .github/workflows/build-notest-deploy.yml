@@ -61,13 +61,5 @@ jobs:
           path: .
 
       - name: Deploy to Elastic Beanstalk
-        uses: einaregilsson/beanstalk-deploy@v20
-        with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          region: ap-south-1
-          application_name: guidebookx
-          environment_name: Guidebookx-env
-          version_label: ${{ github.sha }}
-          deployment_package: guidebookx-app.jar
-          existing_bucket_name: elasticbeanstalk-ap-south-1-058264328131  # Use your S3 bucket name
+        run: aws s3 cp guidebookx-app.jar s3://elasticbeanstalk-ap-south-1-058264328131/guidebookx-app.jar
+
