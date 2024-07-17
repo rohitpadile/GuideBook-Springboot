@@ -20,7 +20,6 @@ public class StudentMapper {
                 .studentMis(request.getStudentMis()) //Mis - added on 5th July
                 .studentWorkEmail(request.getStudentWorkEmail()) //work email - added on 5th July
                 .studentName(request.getStudentName())
-                .studentWorkEmail(request.getStudentWorkEmail())
                 .cetPercentile(request.getStudentCetPercentile())
                 .grade(request.getStudentGrade())
                 .build();

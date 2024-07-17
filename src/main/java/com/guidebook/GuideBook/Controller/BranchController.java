@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-@CrossOrigin(origins = "http://guidebookx.s3-website.ap-south-1.amazonaws.com")
+//@CrossOrigin(origins = "http://guidebookx.s3-website.ap-south-1.amazonaws.com")
 //@CrossOrigin(origins = {"http://localhost:3000/", "http://localhost:8080"})
 @RestController
 @RequestMapping("/api/v1/admin/")
