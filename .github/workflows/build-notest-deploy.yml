@@ -60,11 +60,11 @@ jobs:
           name: guidebookx-app
           path: .
 
-      - name: Create Application Version (if not exists)
-        run: aws elasticbeanstalk create-application-version --application-name guidebookx --version-label ${{ github.run_id }} --source-bundle S3Bucket="elasticbeanstalk-ap-south-1-${{ secrets.AWS_ACCOUNT_ID }}",S3Key="guidebookx-app.jar" || true
-
-      - name: Update Environment
-        run: aws elasticbeanstalk update-environment --application-name guidebookx --environment-name Guidebookx-env --version-label ${{ github.run_id }}
-
-      - name: Wait for Environment Update (optional)
-        run: aws elasticbeanstalk wait environment-updated --application-name guidebookx --environment-name Guidebookx-env || echo "Environment update may still be in progress"
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          application_name: guidebookx
+          environment_name: Guidebookx-env
+          version_label: ${{ github.run_id }}
+          s3_bucket: elasticbeanstalk-ap-south-1-${{ secrets.AWS_ACCOUNT_ID }}
+          artifact: guidebookx-app.jar
