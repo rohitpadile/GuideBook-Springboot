@@ -1,33 +1,33 @@
-name: Deploy to AWS Elastic Beanstalk
-on:
-  workflow_dispatch:
-
-jobs:
-  deploy:
-    name: Deploy to AWS Elastic Beanstalk
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
-
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: spring-boot-app
-          path: ./build
-
-      - name: Deploy to Elastic Beanstalk
-        uses: einaregilsson/beanstalk-deploy@v20
-        with:
-          application_name: guidebookx
-          environment_name: Guidebookx-env
-          version_label: ${{ github.sha }}
-          region: ap-south-1
-          artifact_path: ./build/spring-boot-app.jar
+#name: Deploy to AWS Elastic Beanstalk
+#on:
+#  workflow_dispatch:
+#
+#jobs:
+#  deploy:
+#    name: Deploy to AWS Elastic Beanstalk
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v2
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ap-south-1
+#
+#      - name: Download Build Artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: spring-boot-app
+#          path: ./build
+#
+#      - name: Deploy to Elastic Beanstalk
+#        uses: einaregilsson/beanstalk-deploy@v20
+#        with:
+#          application_name: guidebookx
+#          environment_name: Guidebookx-env
+#          version_label: ${{ github.sha }}
+#          region: ap-south-1
+#          artifact_path: ./build/spring-boot-app.jar
