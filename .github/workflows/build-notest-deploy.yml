@@ -67,7 +67,7 @@ jobs:
           environment_name: Guidebookx-env
           version_label: ${{ github.sha }}
           region: ap-south-1
-          artifact_path: ./build/target/guidebookx-app.jar
+          deployment_package: ./build/guidebookx-app.jar
         env:
           AWS_REGION: ap-south-1
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
