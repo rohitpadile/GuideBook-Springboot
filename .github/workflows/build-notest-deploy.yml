@@ -50,8 +50,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: AKIAQ3EGTC7B4ZSTJYCF
+          aws-secret-access-key: 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
           aws-region: ap-south-1
 
       - name: Download Build Artifact
@@ -63,8 +63,8 @@ jobs:
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v20
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_access_key: AKIAQ3EGTC7B4ZSTJYCF
+          aws_secret_key: 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
           region: ap-south-1
           application_name: guidebookx
           environment_name: Guidebookx-env
