@@ -61,5 +61,5 @@ jobs:
           path: .
 
       - name: Deploy to Elastic Beanstalk
-        run: aws s3 cp guidebookx-app.jar s3://elasticbeanstalk-ap-south-1-058264328131/guidebookx-app.jar
+        run: eb deploy --region ap-south-1 --nohang --quiet
 
