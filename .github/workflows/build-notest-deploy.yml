@@ -66,5 +66,5 @@ jobs:
           application_name: guidebookx
           environment_name: Guidebookx-env
           version_label: ${{ github.run_id }}
-          s3_bucket: elasticbeanstalk-ap-south-1-${{ secrets.AWS_ACCOUNT_ID }}
+          s3_bucket: elasticbeanstalk-ap-south-1-058264328131
           artifact: guidebookx-app.jar
