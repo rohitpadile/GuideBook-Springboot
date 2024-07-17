@@ -56,12 +56,6 @@ jobs:
           name: guidebookx-app
           path: ./build
 
-      - name: Move JAR file to build directory
-        run: mv ./build/*.jar ./build/guidebookx-app.jar
-
-      - name: Deploy to Elastic Beanstalk
-        run: aws s3 cp ./build/guidebookx-app.jar s3://elasticbeanstalk-ap-south-1-058264328131/guidebookx-app.jar
-
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v20
         with:
@@ -71,5 +65,6 @@ jobs:
           application_name: guidebookx
           environment_name: Guidebookx-env
           version_label: ${{ github.sha }}
-          deployment_package: s3://elasticbeanstalk-ap-south-1-058264328131/guidebookx-app.jar
+          deployment_package: ./build/guidebookx-app.jar
+          existing_bucket_name: elasticbeanstalk-ap-south-1-058264328131  # Use your S3 bucket name
           wait_for_deployment: true
