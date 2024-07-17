@@ -63,8 +63,8 @@ jobs:
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
+          region: ap-south-1
           application_name: guidebookx
           environment_name: Guidebookx-env
           version_label: ${{ github.run_id }}
-          s3_bucket: elasticbeanstalk-ap-south-1-058264328131
-          artifact: guidebookx-app.jar
+          deployment_package: guidebookx-app.jar
