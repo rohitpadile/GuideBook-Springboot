@@ -63,8 +63,11 @@ jobs:
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
-          region: ap-south-1
           application_name: guidebookx
           environment_name: Guidebookx-env
           version_label: ${{ github.run_id }}
           deployment_package: guidebookx-app.jar
+        env:
+          AWS_REGION: ap-south-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
