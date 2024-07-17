@@ -1,6 +1,7 @@
 name: Build, Test, and Deploy Spring Boot Application
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -13,13 +14,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
         with:
-          java-version: '11'
+          distribution: 'temurin'
+          java-version: '21'
 
       - name: Cache Maven packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -30,10 +32,12 @@ jobs:
         run: mvn clean install -DskipTests
 
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: guidebookx-app
           path: target/*.jar
+
+      - run: echo "Build and Test completed successfully!"
 
   deploy:
     name: Deploy to AWS Elastic Beanstalk
@@ -51,10 +55,10 @@ jobs:
           aws-region: ap-south-1
 
       - name: Download Build Artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: guidebookx-app
-          path: ./build
+          path: .
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v20
@@ -65,6 +69,5 @@ jobs:
           application_name: guidebookx
           environment_name: Guidebookx-env
           version_label: ${{ github.sha }}
-          deployment_package: ./build/guidebookx-app.jar
+          deployment_package: guidebookx-app.jar
           existing_bucket_name: elasticbeanstalk-ap-south-1-058264328131  # Use your S3 bucket name
-          wait_for_deployment: true
