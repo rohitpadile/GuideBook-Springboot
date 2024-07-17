@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.mapper;
 
+import com.guidebook.GuideBook.Models.StudentCategory;
 import com.guidebook.GuideBook.Models.StudentProfile;
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import lombok.Builder;

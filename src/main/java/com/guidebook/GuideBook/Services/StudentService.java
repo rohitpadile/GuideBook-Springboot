@@ -39,7 +39,8 @@ public class StudentService {
             StudentCategoryService studentCategoryService,
             StudentRepository studentRepository,
             CollegeService collegeService,
-            CustomStudentRepositoryImpl customStudentRepositoryImpl
+            CustomStudentRepositoryImpl customStudentRepositoryImpl,
+            StudentProfileService studentProfileService
     ) {
         this.studentRepository = studentRepository;
         this.customStudentRepositoryImpl = customStudentRepositoryImpl;
@@ -48,6 +49,7 @@ public class StudentService {
         this.languageService = languageService;
         this.studentClassTypeService = studentClassTypeService;
         this.studentCategoryService = studentCategoryService;
+        this.studentProfileService = studentProfileService;
     }
 
     public List<Student> getAllStudents() {

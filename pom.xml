@@ -88,7 +88,7 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
-					<finalName>guidebookx-app-prod</finalName>
+					<finalName>guidebookx-app</finalName>
 				</configuration>
 			</plugin>
 			<plugin>
