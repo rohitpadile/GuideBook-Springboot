@@ -1,35 +1,35 @@
-#name: Build and Test Spring Boot Application
-#on:
-#  workflow_dispatch:
-#
-#jobs:
-#  build-test:
-#    name: Build and Test Spring Boot Application
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Install and set up Java 21 on the runner
-#        uses: actions/setup-java@v3
-#        with:
-#          distribution: 'temurin'
-#          java-version: '21'
-#
-#      - name: Set up Maven
-#        uses: actions/setup-java@v3
-#        with:
-#          distribution: 'temurin'
-#          java-version: '21'
-#          cache: 'maven'
-#
-#      - name: Build the project
-#        run: mvn clean install -DskipTests
-#
-#      - name: Upload Build Artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: spring-boot-app
-#          path: target/*.jar
-#
-#      - run: echo "Build and Test completed successfully!"
+name: Build and Test Spring Boot Application
+on:
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    name: Build and Test Spring Boot Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install and set up Java 21 on the runner
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Set up Maven
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Build the project
+        run: mvn clean install -DskipTests
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: spring-boot-app
+          path: target/*.jar
+
+      - run: echo "Build and Test completed successfully!"
