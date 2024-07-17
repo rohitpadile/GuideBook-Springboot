@@ -60,11 +60,11 @@ jobs:
           name: guidebookx-app
           path: .
 
-      - name: Install Elastic Beanstalk CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          pip3 install awsebcli
+      - name: Upload JAR to S3
+        run: aws s3 cp guidebookx-app.jar s3://elasticbeanstalk-ap-south-1-${{ secrets.AWS_ACCOUNT_ID }}/guidebookx-app.jar
 
       - name: Deploy to Elastic Beanstalk
-        run: eb deploy --region ap-south-1
+        run: |
+          aws elasticbeanstalk create-application-version --application-name guidebookx --version-label ${{ github.run_id }} --source-bundle S3Bucket="elasticbeanstalk-ap-south-1-${{ secrets.AWS_ACCOUNT_ID }}",S3Key="guidebookx-app.jar"
+          aws elasticbeanstalk update-environment --application-name guidebookx --environment-name Guidebookx-env --version-label ${{ github.run_id }}
+          aws elasticbeanstalk wait environment-updated --application-name guidebookx --environment-name Guidebookx-env
