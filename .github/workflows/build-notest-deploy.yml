@@ -69,5 +69,5 @@ jobs:
           application_name: guidebookx
           environment_name: Guidebookx-env
           version_label: ${{ github.sha }}
-          deployment_package: ./build/target/*.jar
+          deployment_package: ./build/*.jar
           existing_bucket_name: elasticbeanstalk-ap-south-1-058264328131  # Use your S3 bucket name
