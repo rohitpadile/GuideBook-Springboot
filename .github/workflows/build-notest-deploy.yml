@@ -58,16 +58,16 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: guidebookx-app
-          path: .
+          path: ./build
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
           application_name: guidebookx
           environment_name: Guidebookx-env
-          version_label: ${{ github.run_id }}
-          deployment_package: guidebookx-app.jar
+          version_label: ${{ github.sha }}
           region: ap-south-1
+          artifact_path: ./build/target/guidebookx-app.jar
         env:
           AWS_REGION: ap-south-1
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
