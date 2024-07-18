@@ -2,7 +2,7 @@ package com.guidebook.GuideBook.Controller;
 
 import com.guidebook.GuideBook.Services.CollegeService;
 import com.guidebook.GuideBook.dtos.AddCollegeRequest;
-import com.guidebook.GuideBook.dtos.GetAllCollegeListForClubsResponse;
+//import com.guidebook.GuideBook.dtos.GetAllCollegeListForClubsResponse;
 import com.guidebook.GuideBook.dtos.GetCollegeListForExamResponse;
 import com.guidebook.GuideBook.exceptions.EntranceExamNotFoundException;
 import jakarta.validation.Valid;
@@ -36,10 +36,10 @@ public class CollegeController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/collegesForExam")
-    public ResponseEntity<GetAllCollegeListForClubsResponse> getCollegesForClubs(){
-        GetAllCollegeListForClubsResponse res = collegeService.getCollegesForClubs();
-        return new ResponseEntity<>(res, HttpStatus.OK);
-    }
+//    @GetMapping("/collegesForExam")
+//    public ResponseEntity<GetAllCollegeListForClubsResponse> getCollegesForClubs(){
+//        GetAllCollegeListForClubsResponse res = collegeService.getCollegesForClubs();
+//        return new ResponseEntity<>(res, HttpStatus.OK);
+//    }
 
 }

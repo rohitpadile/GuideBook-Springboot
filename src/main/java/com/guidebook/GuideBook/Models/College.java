@@ -43,9 +43,9 @@ public class College {
     )
     private Set<EntranceExam> collegeEntranceSet;
 
-    @JsonIgnore
-    @OneToMany
-    private Set<CollegeClub> collegeClubSet;
+//    @JsonIgnore
+//    @OneToMany
+//    private Set<CollegeClub> collegeClubSet;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
