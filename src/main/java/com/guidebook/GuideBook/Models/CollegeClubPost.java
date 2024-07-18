@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
 
 import java.util.List;
 
@@ -23,4 +22,8 @@ public class CollegeClubPost {
     @ElementCollection
     @CollectionTable(name = "collegePost_MediaPaths", joinColumns = @JoinColumn(name = "collegePostId"))
     private List<String> collegeClubPostMediaPaths;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_collegeClubPostId_collegeClubId", referencedColumnName = "collegeClubId")
+    private CollegeClub collegeClubPostClub; //owning side
 }

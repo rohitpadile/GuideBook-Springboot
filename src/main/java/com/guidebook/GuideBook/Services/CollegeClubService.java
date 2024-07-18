@@ -55,7 +55,9 @@ public class CollegeClubService {
     public GetCollegeClubPageResponse getClubPageDetails(GetClubPageDetailsRequest request) {
         CollegeClub collegeClub = collegeClubRepository.findByCollegeClubNameIgnoreCase(
                 request.getCollegeClubName()
-        );
+        ).orElseThrow(() -> new IllegalArgumentException("College club not found"));
+
+        //ADD COLLEGE CLUB NOT FOUND CUSTOM EXCEPTION
         return getCollegeClubPageResponse(collegeClub);
 
     }

@@ -1,10 +1,13 @@
 package com.guidebook.GuideBook.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -29,5 +32,9 @@ public class CollegeClub {
     @ManyToOne
     @JoinColumn(name = "fk_collegeClubId_collegeId", referencedColumnName = "collegeId")
     private College collegeClubCollege; //owning side
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "collegeClubPostClub")
+    private List<CollegeClubPost> collegeClubPosts;
 
 }
