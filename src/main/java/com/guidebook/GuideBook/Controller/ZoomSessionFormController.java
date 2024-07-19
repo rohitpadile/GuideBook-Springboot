@@ -33,8 +33,7 @@ public class ZoomSessionFormController {
     @PostMapping("/zoomSessionFormVerifyOTP")
     public ResponseEntity<ZoomSessionFormMessageResponse> verifyOTP(@RequestBody @Valid ZoomSessionOTPVerify zoomSessionOTPVerify) {
         ZoomSessionFormMessageResponse responseMessage = zoomSessionFormService.verifyOTP(zoomSessionOTPVerify);
-        HttpStatus status = responseMessage.getZoomSessionFormMessage().equals("OTP has been verified.") ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST;
-        return new ResponseEntity<>(responseMessage, status);
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 //
 //    @PostMapping("/zoomSessionFormResendOTP")

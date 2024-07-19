@@ -11,9 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 public class ZoomSessionOTPVerify {
     @NotNull
-    @NotEmpty
     private Long clientOTP;
     @NotNull
-    @NotEmpty
     private String clientEmail;
+    @NotNull
+    private String ZoomSessionFormId;
 }

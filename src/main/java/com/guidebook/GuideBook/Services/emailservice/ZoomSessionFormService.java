@@ -64,7 +64,7 @@ public class ZoomSessionFormService {
         String clientOTPForVerification = String.valueOf(zoomSessionOTPVerify.getClientOTP());
         ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
         Optional<ZoomSessionForm> formOptional =
-                zoomSessionFormRepository.findByClientEmail(zoomSessionOTPVerify.getClientEmail());
+                zoomSessionFormRepository.findByZoomSessionFormId(zoomSessionOTPVerify.getZoomSessionFormId());
 
         if (formOptional.isPresent()) {
             ZoomSessionForm form = formOptional.get();
@@ -74,24 +74,38 @@ public class ZoomSessionFormService {
                 // Max attempts reached
                 response.setZoomSessionFormMessage("3 wrong attempts to the OTP has cancelled the form. Redirecting to student profile page.");
                 response.setZoomSessionFormMessageCode(0); //code to redirect to student profile page
+                zoomSessionFormRepository.delete(form);
+                return response;
             }
 
             if (form.getClientOTPExpiration().before(now)) {
                 // OTP is expired
                 response.setZoomSessionFormMessage("Out of OTP time: Redirecting to student profile page.");
                 response.setZoomSessionFormMessageCode(0);
+                zoomSessionFormRepository.delete(form);
+                return response;
             }
 
             if (form.getClientOTP().equals(clientOTPForVerification)) {
                 // OTP is valid
                 response.setZoomSessionFormMessage("OTP has been verified.");
-                response.setZoomSessionFormMessageCode(2); //code for otp verification sucess
+                response.setZoomSessionFormMessageCode(2); //code for otp verification success
+                return response;
             } else {
                 // OTP is invalid
                 form.setClientOtpAttempts(form.getClientOtpAttempts() + 1);
                 zoomSessionFormRepository.save(form); // Update the attempts count
-                response.setZoomSessionFormMessage("Wrong OTP: Attempts remaining: " + (3 - form.getClientOtpAttempts()));
-                response.setZoomSessionFormMessageCode(-1); //code for wrong attempt of otp
+
+                if(form.getClientOtpAttempts() == 3){
+                    zoomSessionFormRepository.delete(form);
+                    response.setZoomSessionFormMessage("3 wrong attempts to the OTP has cancelled the form. Redirecting to student profile page.");
+                    response.setZoomSessionFormMessageCode(0); //code to redirect to student profile page
+                } else {
+                    response.setZoomSessionFormMessage("Wrong OTP: Attempts remaining: " + (3 - form.getClientOtpAttempts()));
+                    response.setZoomSessionFormMessageCode(-1); //code for wrong attempt of otp
+                }
+
+                return response;
             }
         } else {
             response.setZoomSessionFormMessage("No form found for the provided email.");

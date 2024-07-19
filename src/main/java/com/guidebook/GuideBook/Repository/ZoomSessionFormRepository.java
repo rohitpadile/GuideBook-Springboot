@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface ZoomSessionFormRepository extends JpaRepository<ZoomSessionForm, String> {
 
     Optional<ZoomSessionForm> findByClientEmail(String clientEmail);
+
+
+    Optional<ZoomSessionForm> findByZoomSessionFormId(String s);
 }
