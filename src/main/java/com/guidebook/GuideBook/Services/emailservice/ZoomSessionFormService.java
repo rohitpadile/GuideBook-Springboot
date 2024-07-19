@@ -90,7 +90,7 @@ public class ZoomSessionFormService {
             if (form.getClientOTP().equals(clientOTPForVerification)) {
                 // OTP is valid
                 response.setZoomSessionFormMessage("OTP has been verified.");
-                response.setZoomSessionFormMessageCode(2); //code for otp verification success
+                response.setZoomSessionFormMessageCode(2); //OTP VERIFICATION SUCCESS CODE
 //                form.setIsVerified(1);
 //                DO THIS ONLY WHEN WE TELL CLIENT, THAT WE ARE CONTACTING STUDENT ABOUT THE CONFIRMATION
                 return response;

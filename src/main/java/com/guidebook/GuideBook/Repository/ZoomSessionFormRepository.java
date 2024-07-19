@@ -14,4 +14,6 @@ public interface ZoomSessionFormRepository extends JpaRepository<ZoomSessionForm
     Optional<ZoomSessionForm> findByClientEmail(String clientEmail);
     Optional<ZoomSessionForm> findByZoomSessionFormId(String id);
     void deleteByIsVerified(Integer isVerified); //SCHEDULED TALK EVERY 60 SECONDS
+    long countByIsVerified(Integer isVerified);//SCHEDULED TALK EVERY 60 SECONDS
+
 }
