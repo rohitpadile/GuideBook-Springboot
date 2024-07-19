@@ -5,6 +5,7 @@ import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerify;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class ZoomSessionFormService {
         this.zoomSessionFormRepository = zoomSessionFormRepository;
         this.emailServiceImpl = emailServiceImpl;
     }
-
+    @Transactional
     public ZoomSessionFormMessageResponse submitForm(ZoomSessionFormRequest formDTO) {
         ZoomSessionForm form = ZoomSessionForm.builder()
                 .clientFirstName(formDTO.getClientFirstName())
@@ -60,7 +61,7 @@ public class ZoomSessionFormService {
         response.setZoomSessionFormId(savedForm.getZoomSessionFormId());
         return response;
     }
-
+    @Transactional
     public ZoomSessionFormMessageResponse verifyOTP(ZoomSessionOTPVerify zoomSessionOTPVerify) {
         String clientOTPForVerification = String.valueOf(zoomSessionOTPVerify.getClientOTP());
         ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
@@ -117,6 +118,7 @@ public class ZoomSessionFormService {
 
         return response;
     }
+    @Transactional
     public ZoomSessionFormMessageResponse resendOTP(String clientEmail) {
         ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
         Optional<ZoomSessionForm> formOptional = zoomSessionFormRepository.findByClientEmail(clientEmail);
@@ -125,17 +127,27 @@ public class ZoomSessionFormService {
             ZoomSessionForm form = formOptional.get();
             String newOtp = generateOTP();
             form.setClientOTP(newOtp);
-            form.setClientOTPExpiration(new Date(System.currentTimeMillis() + 5 * 60 * 1000)); // 5 minutes from now
-            zoomSessionFormRepository.save(form);
+            form.setClientOTPExpiration(new Date(System.currentTimeMillis() + 5 * 60 * 1000)); // 5 minutes from new otp
+
 
             // Send new OTP via email
-            String subject = "Your New OTP from GuideBook";
-            String text = "Your new OTP is " + newOtp + ". It is valid for 5 minutes.";
+            // Send OTP email
+            String subject = "GuideBookX: OTP(One Time Password) for Verifying Zoom session form email";
+            String text = "Dear " + form.getClientFirstName() + ",\n\n" +
+                    "Welcome to GuideBook! Your NEW OTP for verification is: " + newOtp + ".\n\n" +
+                    "This OTP is valid for the next 5 minutes.\n\n" +
+                    "Thank you for choosing GuideBook. We are dedicated to providing you with the best experience.\n\n" +
+                    "Best Regards,\n" +
+                    "GuideBook Team";
             emailServiceImpl.sendSimpleMessage(form.getClientEmail(), subject, text);
 
             response.setZoomSessionFormMessage("New OTP has been sent to your email.");
+            response.setZoomSessionFormMessageCode(1); //code for sending email
+            response.setZoomSessionFormId(form.getZoomSessionFormId());
+            zoomSessionFormRepository.save(form);
         } else {
             response.setZoomSessionFormMessage("No form found for the provided email.");
+            response.setZoomSessionFormMessageCode(0); //redirect to student profile page
         }
 
         return response;

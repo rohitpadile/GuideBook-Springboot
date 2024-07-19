@@ -35,10 +35,10 @@ public class ZoomSessionFormController {
         ZoomSessionFormMessageResponse responseMessage = zoomSessionFormService.verifyOTP(zoomSessionOTPVerify);
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
-//
-//    @PostMapping("/zoomSessionFormResendOTP")
-//    public ResponseEntity<ZoomSessionFormMessageResponse> resendOTP(@RequestParam String clientEmail) {
-//        ZoomSessionFormMessageResponse response = zoomSessionFormService.resendOTP(clientEmail);
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
+
+    @PostMapping("/zoomSessionFormResendOTP")
+    public ResponseEntity<ZoomSessionFormMessageResponse> resendOTP(@RequestParam String clientEmail) {
+        ZoomSessionFormMessageResponse response = zoomSessionFormService.resendOTP(clientEmail);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
