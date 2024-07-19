@@ -39,6 +39,8 @@ public class ZoomSessionForm {
     @Temporal(TemporalType.TIMESTAMP)
     private Date clientOTPExpiration; // OTP expiration time
 
+    private Integer isVerified;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;

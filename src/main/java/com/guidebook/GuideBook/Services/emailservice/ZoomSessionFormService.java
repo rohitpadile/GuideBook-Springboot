@@ -33,6 +33,7 @@ public class ZoomSessionFormService {
                 .clientCollege(formDTO.getClientCollege())
                 .clientProofDocLink(formDTO.getClientProofDocLink())
                 .clientOtpAttempts(0) // Initialize OTP attempts
+                .isVerified(0)
                 .build();
 
         // Generate OTP and set expiration
@@ -90,6 +91,8 @@ public class ZoomSessionFormService {
                 // OTP is valid
                 response.setZoomSessionFormMessage("OTP has been verified.");
                 response.setZoomSessionFormMessageCode(2); //code for otp verification success
+//                form.setIsVerified(1);
+//                DO THIS ONLY WHEN WE TELL CLIENT, THAT WE ARE CONTACTING STUDENT ABOUT THE CONFIRMATION
                 return response;
             } else {
                 // OTP is invalid
