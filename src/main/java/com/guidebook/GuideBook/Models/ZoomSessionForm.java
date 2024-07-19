@@ -23,6 +23,7 @@ public class ZoomSessionForm {
     private String clientFirstName;
     private String clientMiddleName;
     private String clientLastName;
+    @Column(unique = true)
     private String clientEmail;
 
     @Pattern(regexp = "^\\+?[0-9. ()-]{6,20}$", message = "Invalid phone number")
@@ -32,6 +33,11 @@ public class ZoomSessionForm {
     private String clientCollege;
 
     private String clientProofDocLink;
+
+    private String clientOTP; // OTP field
+    private Integer clientOtpAttempts;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date clientOTPExpiration; // OTP expiration time
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

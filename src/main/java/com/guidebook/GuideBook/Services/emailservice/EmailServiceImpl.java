@@ -11,10 +11,11 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class EmailServiceImpl implements EmailService {
-
 
     private final JavaMailSender emailSender;
     @Autowired
@@ -24,7 +25,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("noreply@yourdomain.com");
+        message.setFrom("guidebookx@gmail.com");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);

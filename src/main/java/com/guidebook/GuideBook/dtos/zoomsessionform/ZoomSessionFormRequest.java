@@ -1,4 +1,4 @@
-package com.guidebook.GuideBook.dtos;
+package com.guidebook.GuideBook.dtos.zoomsessionform;
 
 
 import jakarta.validation.constraints.NotEmpty;
@@ -15,21 +15,17 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class ZoomSessionFormRequest {
     @NotNull
-    @NotEmpty
     private String clientFirstName;
 
     private String clientMiddleName;
 
     @NotNull
-    @NotEmpty
     private String clientLastName;
 
     @NotNull
-    @NotEmpty
     private String clientEmail;
 
     @NotNull
-    @NotEmpty
     @Pattern(regexp = "^\\+?[0-9. ()-]{6,20}$", message = "Invalid phone number")
     private String clientPhoneNumber;
 
@@ -38,10 +34,8 @@ public class ZoomSessionFormRequest {
     private Integer clientAge;
 
     @NotNull
-    @NotEmpty
     private String clientCollege;
 
     @NotNull
-    @NotEmpty
     private String clientProofDocLink;
 }
