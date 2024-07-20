@@ -3,6 +3,8 @@ package com.guidebook.GuideBook.Controller;
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Services.StudentService;
 import com.guidebook.GuideBook.dtos.*;
+import com.guidebook.GuideBook.dtos.filterstudents.FilteredStudentDetails;
+import com.guidebook.GuideBook.dtos.filterstudents.FilteredStudentListRequest;
 import com.guidebook.GuideBook.exceptions.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

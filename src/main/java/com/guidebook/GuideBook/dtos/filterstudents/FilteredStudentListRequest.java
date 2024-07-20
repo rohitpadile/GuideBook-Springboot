@@ -1,4 +1,4 @@
-package com.guidebook.GuideBook.dtos;
+package com.guidebook.GuideBook.dtos.filterstudents;
 
 import com.guidebook.GuideBook.Models.StudentClassType;
 import jakarta.validation.constraints.Min;

@@ -1,7 +1,7 @@
 package com.guidebook.GuideBook.Repository.cutomrepository;
 
 import com.guidebook.GuideBook.Models.*;
-import com.guidebook.GuideBook.dtos.FilteredStudentListRequest;
+import com.guidebook.GuideBook.dtos.filterstudents.FilteredStudentListRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.guidebook.GuideBook.dtos;
+package com.guidebook.GuideBook.dtos.filterstudents;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
