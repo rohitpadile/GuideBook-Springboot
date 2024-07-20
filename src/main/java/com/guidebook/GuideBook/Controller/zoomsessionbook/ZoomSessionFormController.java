@@ -1,6 +1,6 @@
-package com.guidebook.GuideBook.Controller;
+package com.guidebook.GuideBook.Controller.zoomsessionbook;
 
-import com.guidebook.GuideBook.Services.emailservice.ZoomSessionFormService;
+import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionFormService;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageResponse;
 
@@ -41,4 +41,8 @@ public class ZoomSessionFormController {
         ZoomSessionFormMessageResponse response = zoomSessionFormService.resendOTP(clientEmail);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    //CODE A METHOD THAT ACTIVATES WHEN FINAL BOOK SESSION CONFIRMED AND EMAIL IS TO BE SEND TO
+    //THE STUDENT ABOUT THE CONFIRMATION , TIMING, AND ZOOM LINK FOR THE SESSION
+
 }

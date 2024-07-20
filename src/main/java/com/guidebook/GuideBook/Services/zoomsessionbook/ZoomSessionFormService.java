@@ -1,7 +1,8 @@
-package com.guidebook.GuideBook.Services.emailservice;
+package com.guidebook.GuideBook.Services.zoomsessionbook;
 
 import com.guidebook.GuideBook.Models.ZoomSessionForm;
 import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
+import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerify;
@@ -131,7 +132,6 @@ public class ZoomSessionFormService {
 
 
             // Send new OTP via email
-            // Send OTP email
             String subject = "GuideBookX: OTP(One Time Password) for Verifying Zoom session form email";
             String text = "Dear " + form.getClientFirstName() + ",\n\n" +
                     "Welcome to GuideBook! Your NEW OTP for verification is: " + newOtp + ".\n\n" +

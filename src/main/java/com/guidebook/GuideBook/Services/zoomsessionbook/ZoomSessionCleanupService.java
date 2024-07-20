@@ -1,4 +1,4 @@
-package com.guidebook.GuideBook.Services.emailservice;
+package com.guidebook.GuideBook.Services.zoomsessionbook;
 
 import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
 import jakarta.transaction.Transactional;

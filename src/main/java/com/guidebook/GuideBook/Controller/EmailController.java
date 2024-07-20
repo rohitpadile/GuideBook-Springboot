@@ -1,6 +1,6 @@
 //package com.guidebook.GuideBook.Controller;
 //
-//import com.guidebook.GuideBook.Services.emailservice.ZoomSessionFormService;
+//import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionFormService;
 //import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTP;
 //import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerify;
 //import org.springframework.beans.factory.annotation.Autowired;
