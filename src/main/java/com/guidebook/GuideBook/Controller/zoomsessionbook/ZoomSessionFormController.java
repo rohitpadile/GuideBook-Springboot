@@ -4,7 +4,8 @@ import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionFormService;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageResponse;
 
-import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerify;
+import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPResendRequest;
+import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerifyRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,14 +32,14 @@ public class ZoomSessionFormController {
     }
 
     @PostMapping("/zoomSessionFormVerifyOTP")
-    public ResponseEntity<ZoomSessionFormMessageResponse> verifyOTP(@RequestBody @Valid ZoomSessionOTPVerify zoomSessionOTPVerify) {
-        ZoomSessionFormMessageResponse responseMessage = zoomSessionFormService.verifyOTP(zoomSessionOTPVerify);
+    public ResponseEntity<ZoomSessionFormMessageResponse> verifyOTP(@RequestBody @Valid ZoomSessionOTPVerifyRequest zoomSessionOTPVerifyRequest) {
+        ZoomSessionFormMessageResponse responseMessage = zoomSessionFormService.verifyOTP(zoomSessionOTPVerifyRequest);
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
     @PostMapping("/zoomSessionFormResendOTP")
-    public ResponseEntity<ZoomSessionFormMessageResponse> resendOTP(@RequestParam String clientEmail) {
-        ZoomSessionFormMessageResponse response = zoomSessionFormService.resendOTP(clientEmail);
+    public ResponseEntity<ZoomSessionFormMessageResponse> resendOTP(@RequestBody ZoomSessionOTPResendRequest request) {
+        ZoomSessionFormMessageResponse response = zoomSessionFormService.resendOTP(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

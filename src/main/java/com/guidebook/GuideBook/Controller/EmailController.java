@@ -2,7 +2,7 @@
 //
 //import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionFormService;
 //import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTP;
-//import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerify;
+//import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerifyRequest;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.http.ResponseEntity;
 //import org.springframework.web.bind.annotation.*;
@@ -25,7 +25,7 @@
 //    }
 //
 //    @PostMapping("/verifyOtp")
-//    public ResponseEntity<Map<String, Boolean>> verifyOtp(@RequestBody ZoomSessionOTPVerify zoomSessionOTPVerify) {
+//    public ResponseEntity<Map<String, Boolean>> verifyOtp(@RequestBody ZoomSessionOTPVerifyRequest zoomSessionOTPVerify) {
 //        boolean verified = zoomSessionFormService.verifyOtp(zoomSessionOTPVerify.getClientPhoneNumber(), zoomSessionOTPVerify.getClientEmail(), zoomSessionOTPVerify.getClientOTP());
 //        Map<String, Boolean> response = new HashMap<>();
 //        response.put("verified", verified);

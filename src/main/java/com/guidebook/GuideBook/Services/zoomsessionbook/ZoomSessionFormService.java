@@ -5,7 +5,8 @@ import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
 import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageResponse;
-import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerify;
+import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPResendRequest;
+import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerifyRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,11 +64,11 @@ public class ZoomSessionFormService {
         return response;
     }
     @Transactional
-    public ZoomSessionFormMessageResponse verifyOTP(ZoomSessionOTPVerify zoomSessionOTPVerify) {
-        String clientOTPForVerification = String.valueOf(zoomSessionOTPVerify.getClientOTP());
+    public ZoomSessionFormMessageResponse verifyOTP(ZoomSessionOTPVerifyRequest zoomSessionOTPVerifyRequest) {
+        String clientOTPForVerification = String.valueOf(zoomSessionOTPVerifyRequest.getClientOTP());
         ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
         Optional<ZoomSessionForm> formOptional =
-                zoomSessionFormRepository.findByZoomSessionFormId(zoomSessionOTPVerify.getZoomSessionFormId());
+                zoomSessionFormRepository.findByZoomSessionFormId(zoomSessionOTPVerifyRequest.getZoomSessionFormId());
 
         if (formOptional.isPresent()) {
             ZoomSessionForm form = formOptional.get();
@@ -120,12 +121,15 @@ public class ZoomSessionFormService {
         return response;
     }
     @Transactional
-    public ZoomSessionFormMessageResponse resendOTP(String clientEmail) {
+    public ZoomSessionFormMessageResponse resendOTP(ZoomSessionOTPResendRequest request) {
         ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
-        Optional<ZoomSessionForm> formOptional = zoomSessionFormRepository.findByClientEmail(clientEmail);
-        //CHANGE HERE TO FIND BY ID - OTHERWISE IF TWO FORMS WITH SAME EMAIL ARE THERE - SERVER IS TO BE CRASHED
+        Optional<ZoomSessionForm> formOptional = zoomSessionFormRepository.findByZoomSessionFormId(request.getZoomSessionFormId());
+
+//IMPORTANT NOTE:-
+
         //TWO FORMS WITH SAME EMAIL CAN APPEAR WHEN SENT OTP BUTTON IS CLICKED TWICE
         //BUT ONLY THE LATEST ONE'S FORM ID WILL BE STORED AT FRONTEND STATE
+
         if (formOptional.isPresent()) {
             ZoomSessionForm form = formOptional.get();
             String newOtp = generateOTP();
