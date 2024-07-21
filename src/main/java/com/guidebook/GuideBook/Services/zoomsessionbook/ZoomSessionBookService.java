@@ -79,7 +79,16 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         if(checkForm.isPresent()){
             ZoomSessionForm form = checkForm.get();
             if(form.getIsVerified() == 1){
-
+                GetZoomSessionFormDetailsResponse.builder()
+                        .clientFirstName(form.getClientFirstName())
+                        .clientMiddleName(form.getClientMiddleName())
+                        .clientLastName(form.getClientLastName())
+                        .clientCollege(form.getClientCollege())
+                        .clientAge(form.getClientAge())
+                        .clientEmail(form.getClientEmail())
+                        .clientPhoneNumber(form.getClientPhoneNumber())
+                        .clientProofDocLink(form.getClientProofDocLink())
+                        .build();
             } else {
                 //SEND A DTO TO THE FRONTEND SAYING THAT THE FORM IS NOT VERIFIED
                 //PLEASE DISCARD SCHEDULING THE SESSION
