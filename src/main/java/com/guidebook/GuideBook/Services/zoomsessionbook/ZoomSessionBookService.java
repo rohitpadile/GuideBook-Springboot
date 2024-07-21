@@ -5,11 +5,16 @@ import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
 import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageResponse;
+import com.guidebook.GuideBook.util.EncryptionUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE STUDENT
+    @Value("${domainname}")
+    private String domainName;
     private final EmailServiceImpl emailServiceImpl;
     private final ZoomSessionFormRepository zoomSessionFormRepository;
     @Autowired
@@ -19,7 +24,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         this.emailServiceImpl = emailServiceImpl;
     }
 
-
+    @Transactional
     public void handleZoomSessionFormSuccess(ZoomSessionConfirmationRequest request) {
         // Retrieve the form details from the database
         ZoomSessionForm form = zoomSessionFormRepository.findByZoomSessionFormId(request.getZoomSessionFormId())
@@ -38,21 +43,30 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         form.setIsVerified(1); //FORM IS MARKED AS VERIFIED SO NOT TO DELETE IT VIA SCHEDULED TASKS
         zoomSessionFormRepository.save(form);
     }
-
-    private String prepareEmailContent(ZoomSessionForm form) {
+    @Transactional
+    private String prepareEmailContent(ZoomSessionForm form) {//THROWS AN EXCEPTION RELATED TO ENCPYPTED LINK
+        String link = null;
+        try {
+            String encryptedFormId = EncryptionUtil.encrypt(form.getZoomSessionFormId());
+            link = domainName + "/" + encryptedFormId;
+        } catch (Exception e) {
+            e.printStackTrace();//THROWS AN EXCEPTION RELATED TO ENCPYPTED LINK
+        }
         // Prepare the email content with form details
         StringBuilder content = new StringBuilder();
         content.append("Dear Student,\n\n");
         content.append("New request for Zoom session. Here are the details:\n\n");
-        content.append("First Name: ").append(form.getClientFirstName()).append("\n");
-        content.append("Middle Name: ").append(form.getClientMiddleName()).append("\n");
-        content.append("Last Name: ").append(form.getClientLastName()).append("\n");
+        content.append("Full Name: ").append(form.getClientFirstName()).append(" ");
+        content.append(form.getClientMiddleName()).append(" ");
+        content.append(form.getClientLastName()).append("\n");
         content.append("Email: ").append(form.getClientEmail()).append("\n");
         content.append("Phone Number: ").append(form.getClientPhoneNumber()).append("\n");
         content.append("Age: ").append(form.getClientAge()).append("\n");
         content.append("College: ").append(form.getClientCollege()).append("\n");
         content.append("Proof Document Link: ").append(form.getClientProofDocLink()).append("\n");
-        content.append("\nPlease confirm your availability for the Zoom session by clicking on this link below:\n\n");
+        content.append("CONFIRM THE SESSION ONLY IF CLIENT ID, FEE RECEIPT IS VALID COLLEGE ID, RECEIPT  OTHERWISE ACTIONS ARE TO BE TAKEN BY THE COMPANY.");
+        content.append("\nPlease confirm your availability for the Zoom session by clicking on this link:" + link + "\n\n");
+
         content.append("Best regards,\n");
         content.append("GuideBookX Team");
         return content.toString();
