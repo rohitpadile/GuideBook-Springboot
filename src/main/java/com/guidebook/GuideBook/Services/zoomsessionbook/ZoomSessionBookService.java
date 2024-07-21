@@ -3,18 +3,20 @@ package com.guidebook.GuideBook.Services.zoomsessionbook;
 import com.guidebook.GuideBook.Models.ZoomSessionForm;
 import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
 import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
+import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
-import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageResponse;
 import com.guidebook.GuideBook.util.EncryptionUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE STUDENT
-    @Value("${domainname}")
-    private String domainName;
+    @Value("${website.domain.name}")
+    private String websiteDomainName;
     private final EmailServiceImpl emailServiceImpl;
     private final ZoomSessionFormRepository zoomSessionFormRepository;
     @Autowired
@@ -29,7 +31,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         // Retrieve the form details from the database
         ZoomSessionForm form = zoomSessionFormRepository.findByZoomSessionFormId(request.getZoomSessionFormId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid form ID"));
-        //THROW FORM NOT FOUND EXCEPTION HERE
+        //THROW CUSTOM FORM NOT FOUND EXCEPTION HERE
 
         // Prepare the email content
         String emailContent = prepareEmailContent(form);
@@ -48,7 +50,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         String link = null;
         try {
             String encryptedFormId = EncryptionUtil.encrypt(form.getZoomSessionFormId());
-            link = domainName + "/" + encryptedFormId;
+            link = websiteDomainName + "/" + encryptedFormId;
         } catch (Exception e) {
             e.printStackTrace();//THROWS AN EXCEPTION RELATED TO ENCPYPTED LINK
         }
@@ -64,11 +66,20 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         content.append("Age: ").append(form.getClientAge()).append("\n");
         content.append("College: ").append(form.getClientCollege()).append("\n");
         content.append("Proof Document Link: ").append(form.getClientProofDocLink()).append("\n");
-        content.append("CONFIRM THE SESSION ONLY IF CLIENT ID, FEE RECEIPT IS VALID COLLEGE ID, RECEIPT  OTHERWISE ACTIONS ARE TO BE TAKEN BY THE COMPANY.");
+        content.append("CONFIRM THE SESSION ONLY IF CLIENT ID, FEE RECEIPT IS VALID COLLEGE ID, RECEIPT  OTHERWISE STRICT ACTIONS ARE TAKEN BY THE COMPANY.");
         content.append("\nPlease confirm your availability for the Zoom session by clicking on this link:" + link + "\n\n");
 
         content.append("Best regards,\n");
         content.append("GuideBookX Team");
         return content.toString();
+    }
+
+    public GetZoomSessionFormDetailsResponse getZoomSessionVerifiedFormDetails(String formId) {
+        Optional<ZoomSessionForm> checkForm = zoomSessionFormRepository.findByZoomSessionFormId(formId);
+        if(checkForm.isPresent()){
+
+        } else {
+            //THROW CUSTOM FORM NOT FOUND EXCEPTION
+        }
     }
 }

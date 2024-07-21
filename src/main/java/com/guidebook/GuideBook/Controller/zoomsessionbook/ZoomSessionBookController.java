@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.Controller.zoomsessionbook;
 
 import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionBookService;
 
+import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,11 @@ public class ZoomSessionBookController {
             ){
         zoomSessionBookService.handleZoomSessionFormSuccess(zoomSessionConfirmationRequest);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/fetchZoomSessionVerifiedFormDetailsSecret/{formId}")
+    public ResponseEntity<GetZoomSessionFormDetailsResponse> getZoomSessionVerifiedFormDetails(@PathVariable String formId){
+        GetZoomSessionFormDetailsResponse res = zoomSessionBookService.getZoomSessionVerifiedFormDetails(formId);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }
