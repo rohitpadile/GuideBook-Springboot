@@ -79,7 +79,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         if(checkForm.isPresent()){
             ZoomSessionForm form = checkForm.get();
             if(form.getIsVerified() == 1){
-                GetZoomSessionFormDetailsResponse.builder()
+                return GetZoomSessionFormDetailsResponse.builder()
                         .clientFirstName(form.getClientFirstName())
                         .clientMiddleName(form.getClientMiddleName())
                         .clientLastName(form.getClientLastName())
@@ -88,15 +88,21 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                         .clientEmail(form.getClientEmail())
                         .clientPhoneNumber(form.getClientPhoneNumber())
                         .clientProofDocLink(form.getClientProofDocLink())
-                        .isVerified(true)
+                        .isVerified(form.getIsVerified())
+                        .createdOn(form.getCreatedOn())
                         .build();
             } else {
                 //SEND A DTO TO THE FRONTEND SAYING THAT THE FORM IS NOT VERIFIED
                 //PLEASE DISCARD SCHEDULING THE SESSION
                 //IF SCHEDULED EVEN AFTER WARNING, YOUR ACCOUNT WILL BE REMOVED AND BLOCK FROM THE PLATFORM
+                return GetZoomSessionFormDetailsResponse.builder()
+                        .isVerified(form.getIsVerified())
+                        .createdOn(form.getCreatedOn())
+                        .build();
             }
         } else {
             //THROW CUSTOM FORM NOT FOUND EXCEPTION
+            throw new IllegalArgumentException();
         }
     }
 }

@@ -21,6 +21,6 @@ public class GetZoomSessionFormDetailsResponse {
     private Integer clientAge;
     private String clientCollege;
     private String clientProofDocLink;
-    private Boolean isVerified;
+    private Integer isVerified;
     private Date createdOn;
 }
