@@ -123,7 +123,9 @@ public class ZoomSessionFormService {
     public ZoomSessionFormMessageResponse resendOTP(String clientEmail) {
         ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
         Optional<ZoomSessionForm> formOptional = zoomSessionFormRepository.findByClientEmail(clientEmail);
-
+        //CHANGE HERE TO FIND BY ID - OTHERWISE IF TWO FORMS WITH SAME EMAIL ARE THERE - SERVER IS TO BE CRASHED
+        //TWO FORMS WITH SAME EMAIL CAN APPEAR WHEN SENT OTP BUTTON IS CLICKED TWICE
+        //BUT ONLY THE LATEST ONE'S FORM ID WILL BE STORED AT FRONTEND STATE
         if (formOptional.isPresent()) {
             ZoomSessionForm form = formOptional.get();
             String newOtp = generateOTP();

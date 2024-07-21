@@ -50,7 +50,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         String link = null;
         try {
             String encryptedFormId = EncryptionUtil.encrypt(form.getZoomSessionFormId());
-            link = websiteDomainName + "/" + encryptedFormId;
+            link = websiteDomainName + "/schedule-zoom-session/" + encryptedFormId;
         } catch (Exception e) {
             e.printStackTrace();//THROWS AN EXCEPTION RELATED TO ENCPYPTED LINK
         }
@@ -67,7 +67,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         content.append("College: ").append(form.getClientCollege()).append("\n");
         content.append("Proof Document Link: ").append(form.getClientProofDocLink()).append("\n");
         content.append("CONFIRM THE SESSION ONLY IF CLIENT ID, FEE RECEIPT IS VALID COLLEGE ID, RECEIPT  OTHERWISE STRICT ACTIONS ARE TAKEN BY THE COMPANY.");
-        content.append("\nPlease confirm your availability for the Zoom session by clicking on this link:" + link + "\n\n");
+        content.append("\nPlease confirm your availability for the Zoom session by clicking on this link: " + link + "\n\n");
 
         content.append("Best regards,\n");
         content.append("GuideBookX Team");
