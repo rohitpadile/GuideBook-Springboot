@@ -77,7 +77,14 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
     public GetZoomSessionFormDetailsResponse getZoomSessionVerifiedFormDetails(String formId) {
         Optional<ZoomSessionForm> checkForm = zoomSessionFormRepository.findByZoomSessionFormId(formId);
         if(checkForm.isPresent()){
+            ZoomSessionForm form = checkForm.get();
+            if(form.getIsVerified() == 1){
 
+            } else {
+                //SEND A DTO TO THE FRONTEND SAYING THAT THE FORM IS NOT VERIFIED
+                //PLEASE DISCARD SCHEDULING THE SESSION
+                //IF SCHEDULED EVEN AFTER WARNING, YOUR ACCOUNT WILL BE REMOVED AND BLOCK FROM THE PLATFORM
+            }
         } else {
             //THROW CUSTOM FORM NOT FOUND EXCEPTION
         }
