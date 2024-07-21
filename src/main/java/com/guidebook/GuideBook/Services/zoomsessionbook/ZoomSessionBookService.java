@@ -88,6 +88,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                         .clientEmail(form.getClientEmail())
                         .clientPhoneNumber(form.getClientPhoneNumber())
                         .clientProofDocLink(form.getClientProofDocLink())
+                        .isVerified(true)
                         .build();
             } else {
                 //SEND A DTO TO THE FRONTEND SAYING THAT THE FORM IS NOT VERIFIED
