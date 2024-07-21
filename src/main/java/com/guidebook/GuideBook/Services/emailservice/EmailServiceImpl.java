@@ -31,19 +31,18 @@ public class EmailServiceImpl implements EmailService {
         message.setText(text);
         emailSender.send(message);
     }
-//    @Override
-//    public void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment) throws MessagingException {
-//        MimeMessage message = emailSender.createMimeMessage();
-//        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-//
-//        helper.setFrom("noreply@yourdomain.com");
-//        helper.setTo(to);
-//        helper.setSubject(subject);
-//        helper.setText(text);
-//
-//        FileSystemResource file = new FileSystemResource(new File(pathToAttachment));
-//        helper.addAttachment("Invoice", file);
-//
-//        emailSender.send(message);
-//    }
+    public void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment) throws MessagingException {
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setFrom("noreply@yourdomain.com");
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(text);
+
+        FileSystemResource file = new FileSystemResource(new File(pathToAttachment));
+        helper.addAttachment("Invoice", file);
+
+        emailSender.send(message);
+    }
 }

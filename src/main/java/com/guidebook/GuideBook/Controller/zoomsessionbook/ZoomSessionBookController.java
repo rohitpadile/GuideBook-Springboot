@@ -1,7 +1,8 @@
 package com.guidebook.GuideBook.Controller.zoomsessionbook;
 
-import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionFormService;
+import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionBookService;
 
+import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,18 +13,20 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/admin/")
 public class ZoomSessionBookController {
-    private final ZoomSessionFormService zoomSessionFormService;
+    private final ZoomSessionBookService zoomSessionBookService;
 
     @Autowired
-    public ZoomSessionBookController(ZoomSessionFormService zoomSessionFormService) {
-        this.zoomSessionFormService = zoomSessionFormService;
+    public ZoomSessionBookController(ZoomSessionBookService zoomSessionBookService) {
+        this.zoomSessionBookService = zoomSessionBookService;
     }
 
     //CODE A METHOD THAT ACTIVATES WHEN FINAL BOOK SESSION CONFIRMED AND EMAIL IS TO BE SEND TO
     //THE STUDENT ABOUT THE CONFIRMATION , TIMING, AND ZOOM LINK FOR THE SESSION
-    @GetMapping("/zoomSessionBook")
-    public ResponseEntity<Void> handleConfirmationFromStudent(){
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PostMapping("/zoomSessionFormSuccess")
+    public ResponseEntity<Void> handleZoomSessionFormSuccess(
+            @RequestBody @Valid ZoomSessionConfirmationRequest zoomSessionConfirmationRequest
+            ){
+        zoomSessionBookService.handleZoomSessionFormSuccess(zoomSessionConfirmationRequest);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }
