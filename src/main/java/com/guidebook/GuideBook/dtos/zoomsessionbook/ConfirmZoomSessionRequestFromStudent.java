@@ -7,10 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @Slf4j
 @Builder
-public class ConfirmZoomSessionRequestFromStudent {
-    private String studentWorkEmail;
-    private String ZoomSessionFormId;
-    private String zoomSessionFeedbackCode; //this code determines the form id and studentWorkEmail
-    //this code helps in tracking which sessions had successful feedbacks and associated student details and client details(Or form details)
+public class ConfirmZoomSessionRequestFromStudent { //DTO about the confirmation to both student and client
+    private String studentWorkEmail; //fetched from encrypted url
+    private String ZoomSessionFormId;// fetched from encrypted url
+    private String zoomSessionTime;
+    private String zoomSessionMeetingId;
+    private String zoomSessionPasscode;
+    private String zoomSessionMeetingLink;
 
+    private String studentMessageToClient; //When not available. + when available(optional).
 }

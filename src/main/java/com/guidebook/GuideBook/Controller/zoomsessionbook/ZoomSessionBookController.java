@@ -44,6 +44,6 @@ public class ZoomSessionBookController {
             @RequestBody @Valid ConfirmZoomSessionRequestFromStudent request
             ){
         ConfirmZoomSessionRequestFromStudent res = zoomSessionBookService.confirmZoomSessionFromStudent(request);
-        return new ResponseEntity<>(request, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(request, HttpStatus.OK);
     }
 }
