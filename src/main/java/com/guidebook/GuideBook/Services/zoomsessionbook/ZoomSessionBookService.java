@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Service
@@ -58,7 +60,8 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             String encryptedFormId = EncryptionUtil.encrypt(form.getZoomSessionFormId());
             String encryptedStudentWorkEmail = EncryptionUtil.encrypt(studentWorkEmail);
             String encryptedData = encryptedFormId + "." + encryptedStudentWorkEmail;
-            link = websiteDomainName + "/schedule-zoom-session/" + encryptedData;
+            String encodedEncryptedData = URLEncoder.encode(encryptedData, StandardCharsets.UTF_8.toString());
+            link = websiteDomainName + "/schedule-zoom-session/" + encodedEncryptedData;
         } catch (Exception e) {
             e.printStackTrace(); // throw custom encryption exception
         }
