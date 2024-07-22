@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.Controller.zoomsessionbook;
 
 import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionBookService;
 
+import com.guidebook.GuideBook.dtos.zoomsessionbook.ConfirmZoomSessionRequestFromStudent;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ public class ZoomSessionBookController {
 
     //CODE A METHOD THAT ACTIVATES WHEN FINAL BOOK SESSION CONFIRMED AND EMAIL IS TO BE SEND TO
     //THE STUDENT ABOUT THE CONFIRMATION , TIMING, AND ZOOM LINK FOR THE SESSION
+    //BELOW IT IS!
     @PostMapping("/zoomSessionFormSuccess")
     public ResponseEntity<Void> handleZoomSessionFormSuccess(
             @RequestBody @Valid ZoomSessionConfirmationRequest zoomSessionConfirmationRequest
@@ -35,5 +37,13 @@ public class ZoomSessionBookController {
     public ResponseEntity<GetZoomSessionFormDetailsResponse> getZoomSessionVerifiedFormDetails(@PathVariable String formId){
         GetZoomSessionFormDetailsResponse res = zoomSessionBookService.getZoomSessionVerifiedFormDetails(formId);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/confirmZoomSessionFromStudent")
+    public ResponseEntity<ConfirmZoomSessionRequestFromStudent> confirmZoomSessionFromStudent(
+            @RequestBody @Valid ConfirmZoomSessionRequestFromStudent request
+            ){
+        ConfirmZoomSessionRequestFromStudent res = zoomSessionBookService.confirmZoomSessionFromStudent(request);
+        return new ResponseEntity<>(request, HttpStatus.ACCEPTED);
     }
 }

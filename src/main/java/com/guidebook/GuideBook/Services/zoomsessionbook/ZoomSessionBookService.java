@@ -3,6 +3,7 @@ package com.guidebook.GuideBook.Services.zoomsessionbook;
 import com.guidebook.GuideBook.Models.ZoomSessionForm;
 import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
 import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
+import com.guidebook.GuideBook.dtos.zoomsessionbook.ConfirmZoomSessionRequestFromStudent;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
 import com.guidebook.GuideBook.util.EncryptionUtil;
@@ -104,5 +105,9 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             //THROW CUSTOM FORM NOT FOUND EXCEPTION
             throw new IllegalArgumentException();
         }
+    }
+
+    public ConfirmZoomSessionRequestFromStudent confirmZoomSessionFromStudent(ConfirmZoomSessionRequestFromStudent request) {
+
     }
 }
