@@ -52,13 +52,15 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         zoomSessionFormRepository.save(form);
     }
     @Transactional
-    private String prepareEmailContent(ZoomSessionForm form, String studentWorkEmail) {//THROWS AN EXCEPTION RELATED TO ENCPYPTED LINK
+    private String prepareEmailContent(ZoomSessionForm form, String studentWorkEmail) {
         String link = null;
         try {
-            String encryptedFormIdAndStudentWorkEmail = EncryptionUtil.encrypt(form.getZoomSessionFormId() + ":" + studentWorkEmail);
-            link = websiteDomainName + "/schedule-zoom-session/" + encryptedFormIdAndStudentWorkEmail;
+            String encryptedFormId = EncryptionUtil.encrypt(form.getZoomSessionFormId());
+            String encryptedStudentWorkEmail = EncryptionUtil.encrypt(studentWorkEmail);
+            String encryptedData = encryptedFormId + "." + encryptedStudentWorkEmail;
+            link = websiteDomainName + "/schedule-zoom-session/" + encryptedData;
         } catch (Exception e) {
-            e.printStackTrace();//THROWS AN EXCEPTION RELATED TO ENCPYPTED LINK
+            e.printStackTrace(); // throw custom encryption exception
         }
         // Prepare the email content with form details
         StringBuilder content = new StringBuilder();
