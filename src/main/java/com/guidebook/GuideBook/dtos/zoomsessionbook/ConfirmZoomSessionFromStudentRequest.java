@@ -1,15 +1,20 @@
 package com.guidebook.GuideBook.dtos.zoomsessionbook;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 @Data
-@Slf4j
 @Builder
-public class ConfirmZoomSessionRequestFromStudent { //DTO about the confirmation to both student and client
+@Valid
+public class ConfirmZoomSessionFromStudentRequest { //DTO about the confirmation to both student and client
+    @NotNull
     private String studentWorkEmail; //fetched from encrypted url
+    @NotNull
     private String ZoomSessionFormId;// fetched from encrypted url
+    @NotNull
+    private Integer isAvailable;
     private String zoomSessionTime;
     private String zoomSessionMeetingId;
     private String zoomSessionPasscode;

@@ -2,7 +2,7 @@ package com.guidebook.GuideBook.Controller.zoomsessionbook;
 
 import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionBookService;
 
-import com.guidebook.GuideBook.dtos.zoomsessionbook.ConfirmZoomSessionRequestFromStudent;
+import com.guidebook.GuideBook.dtos.zoomsessionbook.ConfirmZoomSessionFromStudentRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
 import jakarta.validation.Valid;
@@ -39,11 +39,11 @@ public class ZoomSessionBookController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @GetMapping("/confirmZoomSessionFromStudent")
-    public ResponseEntity<ConfirmZoomSessionRequestFromStudent> confirmZoomSessionFromStudent(
-            @RequestBody @Valid ConfirmZoomSessionRequestFromStudent request
+    @PostMapping("/confirmZoomSessionFromStudent")
+    public ResponseEntity<ConfirmZoomSessionFromStudentRequest> confirmZoomSessionFromStudent(
+            @RequestBody  ConfirmZoomSessionFromStudentRequest request
             ){
-        ConfirmZoomSessionRequestFromStudent res = zoomSessionBookService.confirmZoomSessionFromStudent(request);
-        return new ResponseEntity<>(request, HttpStatus.OK);
+        zoomSessionBookService.confirmZoomSessionFromStudent(request);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
