@@ -24,4 +24,6 @@ public class GetZoomSessionFormDetailsResponse {
     private Integer isVerified;
     private String clientFeedbackFormLink;
     private Date createdOn;
+
+    private String
 }

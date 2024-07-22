@@ -21,7 +21,7 @@ public class ZoomSessionFeedbackForm {
     String zoomSessionFeedbackFormId;
 
     String zoomSessionFeedbackFormPara1;
-    Integer zoomSessionFeedbackFormRating; //OUT OF 5 - CREATE A STAR PATTERN IN REACT CHANGE THE COLOR OF TOTAL STARTS
+    Float zoomSessionFeedbackFormRating; //OUT OF 5 - CREATE A STAR PATTERN IN REACT CHANGE THE COLOR OF TOTAL STARTS
     //WHEN MOUSE IS HOVERED ON IT.
 
 

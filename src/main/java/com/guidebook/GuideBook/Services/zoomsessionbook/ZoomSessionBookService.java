@@ -40,7 +40,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         //THROW CUSTOM FORM NOT FOUND EXCEPTION HERE
 
         // Prepare the email content
-        String emailContent = prepareEmailContent(form);
+        String emailContent = prepareEmailContent(form, request.getStudentWorkEmail());
 
         // Send the email to the student
         emailServiceImpl.sendSimpleMessage(request.getStudentWorkEmail(),
@@ -52,11 +52,11 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         zoomSessionFormRepository.save(form);
     }
     @Transactional
-    private String prepareEmailContent(ZoomSessionForm form) {//THROWS AN EXCEPTION RELATED TO ENCPYPTED LINK
+    private String prepareEmailContent(ZoomSessionForm form, String studentWorkEmail) {//THROWS AN EXCEPTION RELATED TO ENCPYPTED LINK
         String link = null;
         try {
-            String encryptedFormId = EncryptionUtil.encrypt(form.getZoomSessionFormId());
-            link = websiteDomainName + "/schedule-zoom-session/" + encryptedFormId;
+            String encryptedFormIdAndStudentWorkEmail = EncryptionUtil.encrypt(form.getZoomSessionFormId() + ":" + studentWorkEmail);
+            link = websiteDomainName + "/schedule-zoom-session/" + encryptedFormIdAndStudentWorkEmail;
         } catch (Exception e) {
             e.printStackTrace();//THROWS AN EXCEPTION RELATED TO ENCPYPTED LINK
         }
@@ -150,6 +150,26 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                 clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink());
 
         emailServiceImpl.sendSimpleMessage(student.getStudentWorkEmail(), studentSubject, studentText);
+
+        //MAKE A TRANSACTION HERE - FILL THE studentWorkEmail,
+        // fk_formId, feePaid( set a application.property for fee, right now = 0),
+        //KEEP the fk_feedbackId empty
+        //FIND A FACTOR THAT IS DETERMINES THAT SESSION HAD HAPPENED,
+        // AND PREVENTS DELETION OF CURRENT INSTANCE OF TRANSACTION.
+        //CLIENT MAY OR MAY NOT SUBMIT THE FEEDBACK FORM, MAYBE FORGET, THAT DOES NOT MEAN
+        //SESSION HAS NOT HAPPENED.
+        //FIND THAT FACTOR, THEN SIGNAL THE TRANSACTION AND SET isComplete = 1 or NULL
+
+        //ONE WAY
+        //SEND A MEET-CODE TO CLIENT, TELLING CLIENT TO SEND MEET-CODE TO STUDENT IN THE MEETING
+        //STUDENT HAS TO PASTE THE MEET CODE IN A COMPONENT(LINK SENT VIA CONFIRMATION OF SESSION EMAIL)
+        // - IF MATCHES, THEN SESSION IS COMPLETED
+
+        //THIS APPROACH SHOULD WORK IF THE CLIENT CO-OPERATES WITH US.
+        //CLIENT WILL SEND THE MEET-CODE TO STUDENT ONLY IF THE CLIENT'S PURPOSE IS FULLFILLED.
+        //THAT WILL ENSURE CLIENT THAT STUDENT HAS TO TAKE A MEET WITH HIM/HER OTHERWISE THE SESSION IS
+        //NOT BE COUNTED IN FOR THE STUDENT'S PROFILE.
+
 
     }
 
