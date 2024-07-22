@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Service
 public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE STUDENT
-    @Value("${website.domain.name}")
+    @Value("${websitedomainname}")
     private String websiteDomainName;
     private final EmailServiceImpl emailServiceImpl;
     private final ZoomSessionFormRepository zoomSessionFormRepository;
@@ -89,15 +89,16 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                         .clientEmail(form.getClientEmail())
                         .clientPhoneNumber(form.getClientPhoneNumber())
                         .clientProofDocLink(form.getClientProofDocLink())
-                        .isVerified(form.getIsVerified())
+//                        .isVerified(form.getIsVerified()) DO NOT SEND THIS TO FRONTEND -STUDENT DON'T KNOW WHAT IT MEANS
+//                        .clientFeedbackFormLink() //COMPLETE THIS
                         .createdOn(form.getCreatedOn())
                         .build();
-            } else {
+            } else { //RARE CASE
                 //SEND A DTO TO THE FRONTEND SAYING THAT THE FORM IS NOT VERIFIED
                 //PLEASE DISCARD SCHEDULING THE SESSION
                 //IF SCHEDULED EVEN AFTER WARNING, YOUR ACCOUNT WILL BE REMOVED AND BLOCK FROM THE PLATFORM
                 return GetZoomSessionFormDetailsResponse.builder()
-                        .isVerified(form.getIsVerified())
+//                        .isVerified(form.getIsVerified())
                         .createdOn(form.getCreatedOn())
                         .build();
             }
@@ -112,4 +113,8 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         return ConfirmZoomSessionRequestFromStudent.builder().build(); //remove this later
 
     }
+
+//    private String clientFeedbackFormLinkGenerator(String studentWorkEmail, String zoomSessionFormId){
+//
+//    }
 }
