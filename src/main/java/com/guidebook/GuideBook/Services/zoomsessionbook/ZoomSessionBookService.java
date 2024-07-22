@@ -108,6 +108,8 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
     }
 
     public ConfirmZoomSessionRequestFromStudent confirmZoomSessionFromStudent(ConfirmZoomSessionRequestFromStudent request) {
+        //SEND EMAIL TO THE CLIENT DEPENDING UPON AVAILABILITY
+        return ConfirmZoomSessionRequestFromStudent.builder().build(); //remove this later
 
     }
 }

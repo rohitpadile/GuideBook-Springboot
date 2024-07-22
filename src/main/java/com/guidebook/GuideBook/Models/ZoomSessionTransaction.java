@@ -10,10 +10,10 @@ import lombok.experimental.FieldDefaults;
 @Data //getters and setters
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Transaction {
+public class ZoomSessionTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    String transactionId;
+    String zoomSessionTransactionId;
 
     @ManyToOne
     @JoinColumn(name = "fk_transactionId_clientEmail", referencedColumnName = "clientEmail")

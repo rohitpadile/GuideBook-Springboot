@@ -2,7 +2,6 @@ package com.guidebook.GuideBook.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
@@ -39,7 +38,7 @@ public class Client {
 
     @OneToMany(mappedBy = "Client")
             @JsonIgnore
-    List<Transaction> clientTransactionList;
+    List<ZoomSessionTransaction> clientZoomSessionTransactionList;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
