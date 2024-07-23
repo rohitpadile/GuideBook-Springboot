@@ -41,7 +41,7 @@ public class ZoomSessionForm {
 
     private Integer isVerified;
 
-    @CreationTimestamp
+    @CreationTimestamp //be default uses database server time
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;
 
