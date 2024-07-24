@@ -8,6 +8,7 @@ import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ConfirmZoomSessionFromStudentRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
+import com.guidebook.GuideBook.enums.ZoomSessionBookStatus;
 import com.guidebook.GuideBook.util.EncryptionUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                         form.getClientLastName(),
                 emailContent);
         form.setIsVerified(1); //FORM IS MARKED AS VERIFIED SO NOT TO DELETE IT VIA SCHEDULED TASKS
+        form.setZoomSessionBookStatus(ZoomSessionBookStatus.PENDING);
         zoomSessionFormRepository.save(form);
     }
     @Transactional
@@ -101,6 +103,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                         .clientProofDocLink(form.getClientProofDocLink())
                         .isVerified(form.getIsVerified())
 //                        .clientFeedbackFormLink() //COMPLETE THIS
+                        .bookStatus(form.getZoomSessionBookStatus().toString())
                         .createdOn(form.getCreatedOn())
                         .build();
             } else { //RARE CASE
@@ -117,7 +120,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             throw new IllegalArgumentException();
         }
     }
-
+//    @Transactional
     public void confirmZoomSessionFromStudent(ConfirmZoomSessionFromStudentRequest request) {
         // Find student details using formId or other means
         Student student = studentRepository.findByStudentWorkEmail(request.getStudentWorkEmail());
@@ -143,23 +146,27 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             clientSubject = "Zoom Session Unavailability Notification";
             clientText = String.format("Dear %s,\n\n%s is not available for the meeting anytime soon.\nStudent has left a message for you:\n%s",
                     clientName, studentName, request.getStudentMessageToClient());
+
+            studentSubject = "Zoom Session Cancellation";
+            studentText = String.format("Your zoom session with %s is Cancelled.\n\nFollowing are the client details\n\nClient Name: %s\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s\nClient College: %s\nProof Document: %s\n\n",
+                    clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink());
+
+            form.setZoomSessionBookStatus(ZoomSessionBookStatus.CANCELLED);
+            zoomSessionFormRepository.save(form);
         } else {
             clientSubject = "Zoom Session Confirmation";
             clientText = String.format("Dear %s,\n\n%s has accepted your Zoom session request and has scheduled the meeting.\n\nFollowing are the details of the meeting:\n\n1. Time: %s\n2. Meeting ID: %s\n3. Passcode: %s\n4. Meeting Link: %s\n\nKindly do not share these details with anyone. Only the email with which you have registered is permitted to be in the meeting otherwise the meeting will be cancelled.\n\nIf you have any issues regarding the email, please send an email to us at help.guidebookx@gmail.com",
                     clientName, studentName, request.getZoomSessionTime(), request.getZoomSessionMeetingId(), request.getZoomSessionPasscode(), request.getZoomSessionMeetingLink());
-        }
-        emailServiceImpl.sendSimpleMessage(clientEmail, clientSubject, clientText);
 
-        // Email to the student
-        if(request.getIsAvailable()==1){
             studentSubject = "Zoom Session Confirmation";
             studentText = String.format("Your Zoom meeting with %s is scheduled as per the following details:\n\nClient Name: %s\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s\nClient College: %s\nProof Document: %s\n\n1. Time: %s\n2. Meeting ID: %s\n3. Passcode: %s\n4. Meeting Link: %s\n\n\nYou are helping someone in need. Keep up the great work!\n\n",
                     clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink(),request.getZoomSessionTime(), request.getZoomSessionMeetingId(), request.getZoomSessionPasscode(), request.getZoomSessionMeetingLink());
-        } else {
-            studentSubject = "Zoom Session Cancellation";
-            studentText = String.format("Your zoom session with %s is Cancelled.\n\nFollowing are the client details\n\nClient Name: %s\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s\nClient College: %s\nProof Document: %s\n\n",
-                    clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink());
+
+            form.setZoomSessionBookStatus(ZoomSessionBookStatus.BOOKED);
+            zoomSessionFormRepository.save(form);
         }
+
+        emailServiceImpl.sendSimpleMessage(clientEmail, clientSubject, clientText);
         emailServiceImpl.sendSimpleMessage(student.getStudentWorkEmail(), studentSubject, studentText);
 
         //MAKE A TRANSACTION HERE - FILL THE studentWorkEmail,

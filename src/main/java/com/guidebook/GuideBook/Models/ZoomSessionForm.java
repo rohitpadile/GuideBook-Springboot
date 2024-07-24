@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.Models;
 
+import com.guidebook.GuideBook.enums.ZoomSessionBookStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -41,6 +42,8 @@ public class ZoomSessionForm {
 
     private Integer isVerified;
 
+    @Enumerated(value = EnumType.STRING)
+    ZoomSessionBookStatus zoomSessionBookStatus;
     @CreationTimestamp //be default uses database server time
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;
