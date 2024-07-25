@@ -7,6 +7,7 @@ import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageRespon
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPResendRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerifyRequest;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = {"http://guidebookx.s3-website.ap-south-1.amazonaws.com", "http://localhost:3000", "http://localhost:8080"})
 @RestController
 @RequestMapping("/api/v1/admin/")
+@Slf4j
 public class ZoomSessionFormController {
 
 
@@ -28,6 +30,7 @@ public class ZoomSessionFormController {
     @PostMapping("/zoomSessionFormSubmit")
     public ResponseEntity<ZoomSessionFormMessageResponse> submitForm(@RequestBody @Valid ZoomSessionFormRequest formDTO) {
         ZoomSessionFormMessageResponse response = zoomSessionFormService.submitForm(formDTO);
+        log.error("Response is {}", response);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

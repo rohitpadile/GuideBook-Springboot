@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.Services.zoomsessionbook;
 
+import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Models.ZoomSessionForm;
 import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
 import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
@@ -8,6 +9,7 @@ import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageRespon
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPResendRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerifyRequest;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ZoomSessionFormService {
     private final EmailServiceImpl emailServiceImpl;
     private final ZoomSessionFormRepository zoomSessionFormRepository;
@@ -24,7 +27,7 @@ public class ZoomSessionFormService {
         this.zoomSessionFormRepository = zoomSessionFormRepository;
         this.emailServiceImpl = emailServiceImpl;
     }
-    @Transactional
+//    @Transactional
     public ZoomSessionFormMessageResponse submitForm(ZoomSessionFormRequest formDTO) {
         ZoomSessionForm form = ZoomSessionForm.builder()
                 .clientFirstName(formDTO.getClientFirstName())
@@ -61,9 +64,10 @@ public class ZoomSessionFormService {
         response.setZoomSessionFormMessage("OTP has been sent to your email.");
         response.setZoomSessionFormMessageCode(1); //code for sending email
         response.setZoomSessionFormId(savedForm.getZoomSessionFormId());
+        log.error("Response is {}", response);
         return response;
     }
-    @Transactional
+//    @Transactional
     public ZoomSessionFormMessageResponse verifyOTP(ZoomSessionOTPVerifyRequest zoomSessionOTPVerifyRequest) {
         String clientOTPForVerification = String.valueOf(zoomSessionOTPVerifyRequest.getClientOTP());
         ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
@@ -120,7 +124,7 @@ public class ZoomSessionFormService {
 
         return response;
     }
-    @Transactional
+//    @Transactional
     public ZoomSessionFormMessageResponse resendOTP(ZoomSessionOTPResendRequest request) {
         ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
         Optional<ZoomSessionForm> formOptional = zoomSessionFormRepository.findByZoomSessionFormId(request.getZoomSessionFormId());

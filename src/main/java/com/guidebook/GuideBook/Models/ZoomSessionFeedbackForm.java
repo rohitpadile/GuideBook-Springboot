@@ -19,8 +19,9 @@ public class ZoomSessionFeedbackForm {
     @GeneratedValue(strategy = GenerationType.UUID)
     String zoomSessionFeedbackFormId;
 
-    @Enumerated(value = EnumType.STRING)
-    ZoomSessionFeebackFormOverallFeedback overallFeedback;
+//    @Enumerated(value = EnumType.STRING)
+//    ZoomSessionFeebackFormOverallFeedback overallFeedback;
+    String overallFeedback;
     @Lob
 //    @Column(length = 10000)
     String purposeFulfilled;
@@ -30,8 +31,4 @@ public class ZoomSessionFeedbackForm {
 
     @Lob
     String feedbackForCompany;
-
-    @OneToOne(mappedBy = "zoomSessionFeedbackForm")
-            @JsonIgnore
-    ZoomSessionTransactionFree zoomSessionTransactionFree;
 }

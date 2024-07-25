@@ -2,9 +2,12 @@ package com.guidebook.GuideBook.Services.zoomsessionbook;
 
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Models.ZoomSessionForm;
-import com.guidebook.GuideBook.Models.ZoomSessionTransactionFree;
+//import com.guidebook.GuideBook.Models.ZoomSessionTransactionFree;
+import com.guidebook.GuideBook.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.Repository.StudentRepository;
 import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
+import com.guidebook.GuideBook.Repository.ZoomSessionTransactionRepository;
+import com.guidebook.GuideBook.Services.ZoomSessionTransactionService;
 import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ConfirmZoomSessionFromStudentRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsResponse;
@@ -24,19 +27,19 @@ import java.util.Optional;
 public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE STUDENT
     @Value("${websitedomainname}")
     private String websiteDomainName;
-    private final EmailServiceImpl emailServiceImpl;
-    private final ZoomSessionFormRepository zoomSessionFormRepository;
-    private final ZoomSessionTransactionFreeService transactionFreeService;
+    private EmailServiceImpl emailServiceImpl;
+    private ZoomSessionFormRepository zoomSessionFormRepository;
+    private ZoomSessionTransactionService zoomSessionTransactionService;
     private StudentRepository studentRepository;
     @Autowired
     public ZoomSessionBookService(ZoomSessionFormRepository zoomSessionFormRepository,
                                   EmailServiceImpl emailServiceImpl,
                                   StudentRepository studentRepository,
-                                  ZoomSessionTransactionFreeService transactionFreeService) {
+                                  ZoomSessionTransactionService zoomSessionTransactionService) {
         this.zoomSessionFormRepository = zoomSessionFormRepository;
         this.emailServiceImpl = emailServiceImpl;
         this.studentRepository = studentRepository;
-        this.transactionFreeService = transactionFreeService;
+        this.zoomSessionTransactionService = zoomSessionTransactionService;
     }
 
     @Transactional
@@ -56,7 +59,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                         form.getClientLastName(),
                 emailContent);
         form.setIsVerified(1); //FORM IS MARKED AS VERIFIED SO NOT TO DELETE IT VIA SCHEDULED TASKS
-        form.setZoomSessionBookStatus(ZoomSessionBookStatus.PENDING);
+        form.setZoomSessionBookStatus(ZoomSessionBookStatus.PENDING.toString());
         zoomSessionFormRepository.save(form);
     }
     @Transactional
@@ -96,7 +99,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         if(checkForm.isPresent()){
             ZoomSessionForm form = checkForm.get();
             if(form.getIsVerified() == 1){
-                
+
                 return GetZoomSessionFormDetailsResponse.builder()
                         .clientFirstName(form.getClientFirstName())
                         .clientMiddleName(form.getClientMiddleName())
@@ -145,13 +148,13 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 
         //MAKE A TRANSACTION HERE - FILL THE studentWorkEmail,
         // fk_formId, feePaid( set a application.property for fee, right now = 0),
-        ZoomSessionTransactionFree transactionFree =
-                transactionFreeService.createTransactionFree(student,form);
-        //Create a feedback form link
+        ZoomSessionTransaction transaction =
+                zoomSessionTransactionService.createFreeTransaction(student,form);
+//        //Create a feedback form link
         String feedbackPageLink = null;
         try {
             String encryptedTransactionId =
-                    EncryptionUtil.encrypt(transactionFree.getZoomSessionTransactionFreeId()); //encrypted transx id
+                    EncryptionUtil.encrypt(transaction.getZoomSessionTransactionId()); //encrypted transx id
             String encryptedData = encryptedTransactionId;
             String encodedEncryptedData = URLEncoder.encode(encryptedData, StandardCharsets.UTF_8.toString());
             feedbackPageLink = websiteDomainName + "/feedback-zoom-session/" + encodedEncryptedData;
@@ -175,7 +178,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             studentText = String.format("Your zoom session with %s is Cancelled.\n\nFollowing are the client details\n\nClient Name: %s\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s\nClient College: %s\nProof Document: %s\n\n",
                     clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink());
 
-            form.setZoomSessionBookStatus(ZoomSessionBookStatus.CANCELLED);
+            form.setZoomSessionBookStatus(ZoomSessionBookStatus.CANCELLED.toString());
             zoomSessionFormRepository.save(form);
         } else {
             clientSubject = "Zoom Session Confirmation";
@@ -192,9 +195,9 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                             "\n\nYou are helping someone in need. Keep up the great work!\n\n" +
                             "\n\nBest regards,\n" +
                             "GuidebookX Team",
-                    clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink(),request.getZoomSessionTime(), request.getZoomSessionMeetingId(), request.getZoomSessionPasscode(), request.getZoomSessionMeetingLink(), feedbackPageLink);
+                    clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink(),request.getZoomSessionTime(), request.getZoomSessionMeetingId(), request.getZoomSessionPasscode(), request.getZoomSessionMeetingLink(), feedbackPageLink/*, "sample feedback link hardcoded"*/);
 
-            form.setZoomSessionBookStatus(ZoomSessionBookStatus.BOOKED);
+            form.setZoomSessionBookStatus(ZoomSessionBookStatus.BOOKED.toString());
             zoomSessionFormRepository.save(form);
         }
 

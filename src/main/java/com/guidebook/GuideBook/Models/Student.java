@@ -54,8 +54,7 @@ public class Student {
             inverseJoinColumns = @JoinColumn(name = "languageId")
     )
     private List<Language> studentLanguageList;//owning side
-    @OneToMany(mappedBy = "student")
-    private List<ZoomSessionTransactionFree> studentZoomSessionTransactionFreeList;
+
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

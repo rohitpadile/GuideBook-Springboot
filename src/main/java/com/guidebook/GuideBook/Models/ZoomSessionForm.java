@@ -43,8 +43,10 @@ public class ZoomSessionForm {
 
     private Integer isVerified;
 
-    @Enumerated(value = EnumType.STRING)
-    ZoomSessionBookStatus zoomSessionBookStatus;
+//    @Enumerated(value = EnumType.STRING)
+//    ZoomSessionBookStatus zoomSessionBookStatus;
+    String zoomSessionBookStatus; //using to string from enums to work this errors out
+
     @CreationTimestamp //be default uses database server time
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;
@@ -55,9 +57,5 @@ public class ZoomSessionForm {
 
     @Version
     private Integer version;
-//
-    @OneToOne(mappedBy = "zoomSessionForm", optional = true,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
-    private ZoomSessionTransactionFree zoomSessionTransactionFree;
 
 }
