@@ -38,7 +38,7 @@
 //
 //    @OneToMany(mappedBy = "Client")
 //            @JsonIgnore
-//    List<ZoomSessionTransaction> clientZoomSessionTransactionList;
+//    List<ZoomSessionTransactionFree> clientZoomSessionTransactionList;
 //
 //    @CreationTimestamp
 //    @Temporal(TemporalType.TIMESTAMP)

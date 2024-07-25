@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.Services.zoomsessionbook;
 
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Models.ZoomSessionForm;
+import com.guidebook.GuideBook.Models.ZoomSessionTransactionFree;
 import com.guidebook.GuideBook.Repository.StudentRepository;
 import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
 import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
@@ -25,14 +26,17 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
     private String websiteDomainName;
     private final EmailServiceImpl emailServiceImpl;
     private final ZoomSessionFormRepository zoomSessionFormRepository;
+    private final ZoomSessionTransactionFreeService transactionFreeService;
     private StudentRepository studentRepository;
     @Autowired
     public ZoomSessionBookService(ZoomSessionFormRepository zoomSessionFormRepository,
                                   EmailServiceImpl emailServiceImpl,
-                                  StudentRepository studentRepository) {
+                                  StudentRepository studentRepository,
+                                  ZoomSessionTransactionFreeService transactionFreeService) {
         this.zoomSessionFormRepository = zoomSessionFormRepository;
         this.emailServiceImpl = emailServiceImpl;
         this.studentRepository = studentRepository;
+        this.transactionFreeService = transactionFreeService;
     }
 
     @Transactional
@@ -57,13 +61,13 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
     }
     @Transactional
     private String prepareEmailContent(ZoomSessionForm form, String studentWorkEmail) {
-        String link = null;
+        String Pagelink = null;
         try {
             String encryptedFormId = EncryptionUtil.encrypt(form.getZoomSessionFormId());
             String encryptedStudentWorkEmail = EncryptionUtil.encrypt(studentWorkEmail);
             String encryptedData = encryptedFormId + "." + encryptedStudentWorkEmail;
             String encodedEncryptedData = URLEncoder.encode(encryptedData, StandardCharsets.UTF_8.toString());
-            link = websiteDomainName + "/schedule-zoom-session/" + encodedEncryptedData;
+            Pagelink = websiteDomainName + "/schedule-zoom-session/" + encodedEncryptedData;
         } catch (Exception e) {
             e.printStackTrace(); // throw custom encryption exception
         }
@@ -80,7 +84,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         content.append("College: ").append(form.getClientCollege()).append("\n");
         content.append("Proof Document Link: ").append(form.getClientProofDocLink()).append("\n");
         content.append("CONFIRM THE SESSION ONLY IF CLIENT ID, FEE RECEIPT IS VALID COLLEGE ID, RECEIPT  OTHERWISE STRICT ACTIONS ARE TAKEN BY THE COMPANY.");
-        content.append("\nPlease confirm your availability for the Zoom session by clicking on this link: " + link + "\n\n");
+        content.append("\nPlease confirm your availability for the Zoom session by clicking on this link: " + Pagelink + "\n\n");
 
         content.append("Best regards,\n");
         content.append("GuideBookX Team");
@@ -92,6 +96,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         if(checkForm.isPresent()){
             ZoomSessionForm form = checkForm.get();
             if(form.getIsVerified() == 1){
+                
                 return GetZoomSessionFormDetailsResponse.builder()
                         .clientFirstName(form.getClientFirstName())
                         .clientMiddleName(form.getClientMiddleName())
@@ -121,7 +126,9 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         }
     }
 //    @Transactional
-    public void confirmZoomSessionFromStudent(ConfirmZoomSessionFromStudentRequest request) {
+    public void confirmZoomSessionFromStudent(
+            ConfirmZoomSessionFromStudentRequest request)
+    {
         // Find student details using formId or other means
         Student student = studentRepository.findByStudentWorkEmail(request.getStudentWorkEmail());
         String studentName = student.getStudentName();
@@ -131,17 +138,34 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             throw new RuntimeException("Zoom session form not found");
             //THROW CUSTOM FORM NOT FOUND EXCEPTION HERE
         }
-
         // Fetch client details from formDetails
         ZoomSessionForm form = optionalForm.get();
         String clientName = form.getClientFirstName() + " " + form.getClientLastName();
         String clientEmail = form.getClientEmail();
+
+        //MAKE A TRANSACTION HERE - FILL THE studentWorkEmail,
+        // fk_formId, feePaid( set a application.property for fee, right now = 0),
+        ZoomSessionTransactionFree transactionFree =
+                transactionFreeService.createTransactionFree(student,form);
+        //Create a feedback form link
+        String feedbackPageLink = null;
+        try {
+            String encryptedTransactionId =
+                    EncryptionUtil.encrypt(transactionFree.getZoomSessionTransactionFreeId()); //encrypted transx id
+            String encryptedData = encryptedTransactionId;
+            String encodedEncryptedData = URLEncoder.encode(encryptedData, StandardCharsets.UTF_8.toString());
+            feedbackPageLink = websiteDomainName + "/feedback-zoom-session/" + encodedEncryptedData;
+        } catch (Exception e) {
+            e.printStackTrace(); // throw custom encryption exception
+        }
+
 
         String clientSubject;
         String clientText;
         String studentSubject;
         String studentText;
         // Email to the client
+
         if (request.getIsAvailable() == 0) {
             clientSubject = "Zoom Session Unavailability Notification";
             clientText = String.format("Dear %s,\n\n%s is not available for the meeting anytime soon.\nStudent has left a message for you:\n%s",
@@ -159,8 +183,16 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                     clientName, studentName, request.getZoomSessionTime(), request.getZoomSessionMeetingId(), request.getZoomSessionPasscode(), request.getZoomSessionMeetingLink());
 
             studentSubject = "Zoom Session Confirmation";
-            studentText = String.format("Your Zoom meeting with %s is scheduled as per the following details:\n\nClient Name: %s\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s\nClient College: %s\nProof Document: %s\n\n1. Time: %s\n2. Meeting ID: %s\n3. Passcode: %s\n4. Meeting Link: %s\n\n\nYou are helping someone in need. Keep up the great work!\n\n",
-                    clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink(),request.getZoomSessionTime(), request.getZoomSessionMeetingId(), request.getZoomSessionPasscode(), request.getZoomSessionMeetingLink());
+            studentText = String.format("Your Zoom meeting with %s is scheduled as per the following details:" +
+                            "\n\nClient Name: %s\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s" +
+                            "\nClient College: %s\nProof Document: %s\n\n1. Time: %s\n2. Meeting ID: %s\n" +
+                            "3. Passcode: %s\n4. Meeting Link: %s\n\nFeedback form link: %s" +
+                            "\n\nAt the end of the session, you need to send the feedback link to the client and convince him/her to " +
+                            "fill the form, then only the session will be counted in your account and on your profile. Best of Luck!" +
+                            "\n\nYou are helping someone in need. Keep up the great work!\n\n" +
+                            "\n\nBest regards,\n" +
+                            "GuidebookX Team",
+                    clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink(),request.getZoomSessionTime(), request.getZoomSessionMeetingId(), request.getZoomSessionPasscode(), request.getZoomSessionMeetingLink(), feedbackPageLink);
 
             form.setZoomSessionBookStatus(ZoomSessionBookStatus.BOOKED);
             zoomSessionFormRepository.save(form);
@@ -169,25 +201,10 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         emailServiceImpl.sendSimpleMessage(clientEmail, clientSubject, clientText);
         emailServiceImpl.sendSimpleMessage(student.getStudentWorkEmail(), studentSubject, studentText);
 
-        //MAKE A TRANSACTION HERE - FILL THE studentWorkEmail,
-        // fk_formId, feePaid( set a application.property for fee, right now = 0),
-        //KEEP the fk_feedbackId empty
-        //FIND A FACTOR THAT IS DETERMINES THAT SESSION HAD HAPPENED,
-        // AND PREVENTS DELETION OF CURRENT INSTANCE OF TRANSACTION.
-        //CLIENT MAY OR MAY NOT SUBMIT THE FEEDBACK FORM, MAYBE FORGET, THAT DOES NOT MEAN
-        //SESSION HAS NOT HAPPENED.
-        //FIND THAT FACTOR, THEN SIGNAL THE TRANSACTION AND SET isComplete = 1 or NULL
 
-        //ONE WAY
-        //SEND A MEET-CODE TO CLIENT, TELLING CLIENT TO SEND MEET-CODE TO STUDENT IN THE MEETING
-        //STUDENT HAS TO PASTE THE MEET CODE IN A COMPONENT(LINK SENT VIA CONFIRMATION OF SESSION EMAIL)
-        // - IF MATCHES, THEN SESSION IS COMPLETED
-
-        //THIS APPROACH SHOULD WORK IF THE CLIENT CO-OPERATES WITH US.
-        //CLIENT WILL SEND THE MEET-CODE TO STUDENT ONLY IF THE CLIENT'S PURPOSE IS FULLFILLED.
-        //THAT WILL ENSURE CLIENT THAT STUDENT HAS TO TAKE A MEET WITH HIM/HER OTHERWISE THE SESSION IS
-        //NOT BE COUNTED IN FOR THE STUDENT'S PROFILE.
-
+//        return ConfirmZoomSessionFromStudentResponse.builder()
+//                .feedbackPageLink(feedbackPageLink)
+//                .build();
 
     }
 

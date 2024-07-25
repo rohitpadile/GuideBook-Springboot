@@ -55,7 +55,7 @@ public class Student {
     )
     private List<Language> studentLanguageList;//owning side
     @OneToMany(mappedBy = "student")
-    private List<ZoomSessionTransaction> studentZoomSessionTransactionList;
+    private List<ZoomSessionTransactionFree> studentZoomSessionTransactionFreeList;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

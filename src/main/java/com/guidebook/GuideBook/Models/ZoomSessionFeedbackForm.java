@@ -1,9 +1,8 @@
 package com.guidebook.GuideBook.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.guidebook.GuideBook.enums.ZoomSessionFeebackFormOverallFeedback;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
@@ -20,9 +19,19 @@ public class ZoomSessionFeedbackForm {
     @GeneratedValue(strategy = GenerationType.UUID)
     String zoomSessionFeedbackFormId;
 
-    String zoomSessionFeedbackFormPara1;
-    Float zoomSessionFeedbackFormRating; //OUT OF 5 - CREATE A STAR PATTERN IN REACT CHANGE THE COLOR OF TOTAL STARTS
-    //WHEN MOUSE IS HOVERED ON IT.
+    @Enumerated(value = EnumType.STRING)
+    ZoomSessionFeebackFormOverallFeedback overallFeedback;
+    @Lob
+//    @Column(length = 10000)
+    String purposeFulfilled;
+    @Lob
+//    @Column(length = 10000)
+    String moreFeedbackAboutStudent;
 
+    @Lob
+    String feedbackForCompany;
 
+    @OneToOne(mappedBy = "zoomSessionFeedbackForm")
+            @JsonIgnore
+    ZoomSessionTransactionFree zoomSessionTransactionFree;
 }

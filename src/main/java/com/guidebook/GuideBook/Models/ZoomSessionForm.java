@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.guidebook.GuideBook.enums.ZoomSessionBookStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
@@ -54,4 +55,9 @@ public class ZoomSessionForm {
 
     @Version
     private Integer version;
+//
+    @OneToOne(mappedBy = "zoomSessionForm", optional = true,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private ZoomSessionTransactionFree zoomSessionTransactionFree;
+
 }
