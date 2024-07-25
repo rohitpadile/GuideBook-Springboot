@@ -27,6 +27,7 @@ import java.util.Optional;
 public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE STUDENT
     @Value("${websitedomainname}")
     private String websiteDomainName;
+    private static final String ENCRYPTION_KEY = "1234567890123456";
     private EmailServiceImpl emailServiceImpl;
     private ZoomSessionFormRepository zoomSessionFormRepository;
     private ZoomSessionTransactionService zoomSessionTransactionService;
@@ -153,14 +154,13 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 //        //Create a feedback form link
         String feedbackPageLink = null;
         try {
-            String encryptedTransactionId =
-                    EncryptionUtil.encrypt(transaction.getZoomSessionTransactionId()); //encrypted transx id
-            String encryptedData = encryptedTransactionId;
-            String encodedEncryptedData = URLEncoder.encode(encryptedData, StandardCharsets.UTF_8.toString());
+            String encryptedTransactionId = EncryptionUtil.encrypt2(transaction.getZoomSessionTransactionId(), ENCRYPTION_KEY);
+            String encodedEncryptedData = URLEncoder.encode(encryptedTransactionId, StandardCharsets.UTF_8.toString());
             feedbackPageLink = websiteDomainName + "/feedback-zoom-session/" + encodedEncryptedData;
         } catch (Exception e) {
-            e.printStackTrace(); // throw custom encryption exception
+            e.printStackTrace(); // Handle encryption exception appropriately
         }
+
 
 
         String clientSubject;
@@ -203,12 +203,6 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 
         emailServiceImpl.sendSimpleMessage(clientEmail, clientSubject, clientText);
         emailServiceImpl.sendSimpleMessage(student.getStudentWorkEmail(), studentSubject, studentText);
-
-
-//        return ConfirmZoomSessionFromStudentResponse.builder()
-//                .feedbackPageLink(feedbackPageLink)
-//                .build();
-
     }
 
 //    private String clientFeedbackFormLinkGenerator(String studentWorkEmail, String zoomSessionFormId){
