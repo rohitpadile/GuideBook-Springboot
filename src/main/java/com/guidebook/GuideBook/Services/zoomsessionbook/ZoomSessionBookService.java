@@ -17,6 +17,7 @@ import com.guidebook.GuideBook.util.EncryptionUtil;
 import com.guidebook.GuideBook.util.EncryptionUtilForFeedbackForm;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Base64Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -156,16 +157,13 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 
         //COMMENTED CODE FOR ENCRYPTION
         //CREATE A URL with domain name + /feedback-zoom-session/ + encrypted url(with transaction.getZoomSessionTransactionId() in it)
-        EncryptionUtilForFeedbackForm encryptionUtilForFeedbackForm = new EncryptionUtilForFeedbackForm();
-//        String encryptedId = encryptionUtilForFeedbackForm.encrypt(transaction.getZoomSessionTransactionId());
-//        String feedbackPageLink =  websiteDomainName +  "/feedback-zoom-session/" + encryptedId;
         String feedbackPageLink = "ERROR IN CREATING FEEDBACK FORM LINK: PLEASE CONTACT COMPANY VIA MAIL";
-        try{
-            String encryptedId = encryptionUtilForFeedbackForm.encrypt(transaction.getZoomSessionTransactionId());
-            String encodedId = URLEncoder.encode(encryptedId, StandardCharsets.UTF_8.toString());
-            feedbackPageLink =  websiteDomainName +  "/feedback-zoom-session/" + encodedId;
-        }catch (Exception e){
-            log.error("Error at encryption for transaction id into feedback link : {}", e.getMessage());
+        try {
+            String transactionId = transaction.getZoomSessionTransactionId();
+            String encodedId = EncryptionUtilForFeedbackForm.encode(transactionId); // Custom encode
+            feedbackPageLink = websiteDomainName + "/feedback-zoom-session/" + URLEncoder.encode(encodedId, StandardCharsets.UTF_8.toString());
+        } catch (Exception e) {
+            log.error("Error at encoding transaction id into feedback link: {}", e.getMessage());
         }
 
         String clientSubject;
