@@ -31,4 +31,6 @@ public class ZoomSessionFeedbackForm {
 
     @Lob
     String feedbackForCompany;
+
+    Integer isSubmitted;
 }
