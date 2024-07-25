@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Base64;
 
 @Component
-public class EncryptionUtilForFeedbackForm {
+public class EncryptionUtilForFeedbackForm {//encrypting uuid
 
     private static final String DELIMITER = "-";
     private static final String ENCODED_FORMAT = "feed%s-back%s-form%s-for%s-session%s";

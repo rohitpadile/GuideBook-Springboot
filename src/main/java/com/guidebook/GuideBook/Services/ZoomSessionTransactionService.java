@@ -25,4 +25,13 @@ public class ZoomSessionTransactionService {
         zoomSessionTransaction.setTransactionAmount(0.00);
         return zoomSessionTransactionRepository.save(zoomSessionTransaction);
     }
+
+    public ZoomSessionTransaction getZoomSessionTransactionById(String zoomSessionTransactionId){
+        return zoomSessionTransactionRepository.findByZoomSessionTransactionId(zoomSessionTransactionId);
+    }
+    public ZoomSessionTransaction saveZoomSessionTransaction(ZoomSessionTransaction transaction){
+        return zoomSessionTransactionRepository.save(transaction);
+    }
+
+
 }

@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ZoomSessionTransactionRepository extends JpaRepository<ZoomSessionTransaction, String> {
 
+    ZoomSessionTransaction findByZoomSessionTransactionId(String id);
+
 }

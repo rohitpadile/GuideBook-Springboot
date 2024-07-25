@@ -172,7 +172,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         String studentText;
         // Email to the client
 
-        if (request.getIsAvailable() == 0) {
+        if (request.getIsAvailable() == 0) { //Session cancelled from student
             clientSubject = "Zoom Session Unavailability Notification";
             clientText = String.format("Dear %s,\n\n%s is not available for the meeting anytime soon.\nStudent has left a message for you:\n%s",
                     clientName, studentName, request.getStudentMessageToClient());
@@ -183,22 +183,51 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 
             form.setZoomSessionBookStatus(ZoomSessionBookStatus.CANCELLED.toString());
             zoomSessionFormRepository.save(form);
-        } else {
+        } else { //Session Booked from student
             clientSubject = "Zoom Session Confirmation";
-            clientText = String.format("Dear %s,\n\n%s has accepted your Zoom session request and has scheduled the meeting.\n\nFollowing are the details of the meeting:\n\n1. Time: %s\n2. Meeting ID: %s\n3. Passcode: %s\n4. Meeting Link: %s\n\nKindly do not share these details with anyone. Only the email with which you have registered is permitted to be in the meeting otherwise the meeting will be cancelled.\n\nIf you have any issues regarding the email, please send an email to us at help.guidebookx@gmail.com",
-                    clientName, studentName, request.getZoomSessionTime(), request.getZoomSessionMeetingId(), request.getZoomSessionPasscode(), request.getZoomSessionMeetingLink());
+            clientText = String.format("Dear %s,\n\n%s has accepted your Zoom session request and has" +
+                            " scheduled the meeting.\n\nFollowing are the details of the meeting:\n\n" +
+                            "1. Time: %s\n" +
+                            "2. Meeting ID: %s\n" +
+                            "3. Passcode: %s\n" +
+                            "4. Meeting Link: %s\n\n" +
+                            "At the end of the session, please give the feedback.\n" +
+                            "Fill the form, then only the session will be counted in " +
+                            "student's account and he can provide more such sessions in the future." +
+                            "\nThank you for your co-operation. Have a great session\n\n" +
+                            "Feedback link: %s\n\n\n" +
+
+                            "NOTE: Kindly do not share these details with anyone. Only the email with which " +
+                            "you have registered is permitted to be in the meeting otherwise the meeting " +
+                            "will be cancelled.\n\nIf you have any issues regarding the email, please send " +
+                            "an email to us at help.guidebookx@gmail.com",
+                    clientName,
+                    studentName,
+                    request.getZoomSessionTime(),
+                    request.getZoomSessionMeetingId(),
+                    request.getZoomSessionPasscode(),
+                    request.getZoomSessionMeetingLink(),
+                    feedbackPageLink);
 
             studentSubject = "Zoom Session Confirmation";
             studentText = String.format("Your Zoom meeting with %s is scheduled as per the following details:" +
                             "\n\nClient Name: %s\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s" +
                             "\nClient College: %s\nProof Document: %s\n\n1. Time: %s\n2. Meeting ID: %s\n" +
-                            "3. Passcode: %s\n4. Meeting Link: %s\n\nFeedback form link: %s" +
-                            "\n\nAt the end of the session, you need to send the feedback link to the client and convince him/her to " +
-                            "fill the form, then only the session will be counted in your account and on your profile. Best of Luck!" +
-                            "\n\nYou are helping someone in need. Keep up the great work!\n\n" +
+                            "3. Passcode: %s\n4. Meeting Link: %s\n" +
+                            "\n\nYou are helping someone in need. Keep up the great work and have a great session!\n\n" +
                             "\n\nBest regards,\n" +
                             "GuidebookX Team",
-                    clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink(),request.getZoomSessionTime(), request.getZoomSessionMeetingId(), request.getZoomSessionPasscode(), request.getZoomSessionMeetingLink(), feedbackPageLink/*, "sample feedback link hardcoded"*/);
+                    clientName,
+                    clientName,
+                    clientEmail,
+                    form.getClientPhoneNumber(),
+                    form.getClientAge(),
+                    form.getClientCollege(),
+                    form.getClientProofDocLink(),
+                    request.getZoomSessionTime(),
+                    request.getZoomSessionMeetingId(),
+                    request.getZoomSessionPasscode(),
+                    request.getZoomSessionMeetingLink());
 
             form.setZoomSessionBookStatus(ZoomSessionBookStatus.BOOKED.toString());
             zoomSessionFormRepository.save(form);
