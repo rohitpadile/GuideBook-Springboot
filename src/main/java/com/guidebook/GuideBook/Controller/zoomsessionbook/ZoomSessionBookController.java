@@ -41,7 +41,7 @@ public class ZoomSessionBookController {
     }
 
     @PostMapping("/confirmZoomSessionFromStudent")
-    public ResponseEntity<ConfirmZoomSessionFromStudentRequest> confirmZoomSessionFromStudent(
+    public ResponseEntity<Void> confirmZoomSessionFromStudent(
             @RequestBody  ConfirmZoomSessionFromStudentRequest request
             ){
         zoomSessionBookService.confirmZoomSessionFromStudent(request);
