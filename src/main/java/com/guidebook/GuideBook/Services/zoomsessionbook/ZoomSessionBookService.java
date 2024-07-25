@@ -14,7 +14,9 @@ import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsRes
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
 import com.guidebook.GuideBook.enums.ZoomSessionBookStatus;
 import com.guidebook.GuideBook.util.EncryptionUtil;
+import com.guidebook.GuideBook.util.EncryptionUtilForFeedbackForm;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,10 +26,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE STUDENT
     @Value("${websitedomainname}")
     private String websiteDomainName;
-    private static final String ENCRYPTION_KEY = "1234567890123456";
     private EmailServiceImpl emailServiceImpl;
     private ZoomSessionFormRepository zoomSessionFormRepository;
     private ZoomSessionTransactionService zoomSessionTransactionService;
@@ -151,17 +153,20 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         // fk_formId, feePaid( set a application.property for fee, right now = 0),
         ZoomSessionTransaction transaction =
                 zoomSessionTransactionService.createFreeTransaction(student,form);
-//        //Create a feedback form link
-        String feedbackPageLink = null;
-        try {
-            String encryptedTransactionId = EncryptionUtil.encrypt2(transaction.getZoomSessionTransactionId(), ENCRYPTION_KEY);
-            String encodedEncryptedData = URLEncoder.encode(encryptedTransactionId, StandardCharsets.UTF_8.toString());
-            feedbackPageLink = websiteDomainName + "/feedback-zoom-session/" + encodedEncryptedData;
-        } catch (Exception e) {
-            e.printStackTrace(); // Handle encryption exception appropriately
+
+        //COMMENTED CODE FOR ENCRYPTION
+        //CREATE A URL with domain name + /feedback-zoom-session/ + encrypted url(with transaction.getZoomSessionTransactionId() in it)
+        EncryptionUtilForFeedbackForm encryptionUtilForFeedbackForm = new EncryptionUtilForFeedbackForm();
+//        String encryptedId = encryptionUtilForFeedbackForm.encrypt(transaction.getZoomSessionTransactionId());
+//        String feedbackPageLink =  websiteDomainName +  "/feedback-zoom-session/" + encryptedId;
+        String feedbackPageLink = "ERROR IN CREATING FEEDBACK FORM LINK: PLEASE CONTACT COMPANY VIA MAIL";
+        try{
+            String encryptedId = encryptionUtilForFeedbackForm.encrypt(transaction.getZoomSessionTransactionId());
+            String encodedId = URLEncoder.encode(encryptedId, StandardCharsets.UTF_8.toString());
+            feedbackPageLink =  websiteDomainName +  "/feedback-zoom-session/" + encodedId;
+        }catch (Exception e){
+            log.error("Error at encryption for transaction id into feedback link : {}", e.getMessage());
         }
-
-
 
         String clientSubject;
         String clientText;
