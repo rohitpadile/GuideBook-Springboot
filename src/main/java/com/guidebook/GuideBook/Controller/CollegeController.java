@@ -36,6 +36,7 @@ public class CollegeController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+
 //    @GetMapping("/collegesForExam")
 //    public ResponseEntity<GetAllCollegeListForClubsResponse> getCollegesForClubs(){
 //        GetAllCollegeListForClubsResponse res = collegeService.getCollegesForClubs();

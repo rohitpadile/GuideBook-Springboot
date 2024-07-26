@@ -48,7 +48,7 @@ public class ZoomSessionFormService {
                     String.format(
                             "Sorry, as per company's terms and conditions, you cannot book more than 1 session within %d hour(s) of booking a session",
                             bookingRestrictionService.getTimeBeforeBookSessionNotAllowed()));
-            response.setZoomSessionFormMessageCode(0); // Code for redirecting him away
+            response.setZoomSessionFormMessageCode(0); // Code for redirecting him to student profile page
             log.error("Response is {}", response);
             return response;
 
