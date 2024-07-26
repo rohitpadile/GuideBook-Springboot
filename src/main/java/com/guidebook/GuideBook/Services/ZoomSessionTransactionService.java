@@ -20,8 +20,8 @@ public class ZoomSessionTransactionService {
     //for free transaction
     public ZoomSessionTransaction createFreeTransaction(Student student, ZoomSessionForm form) {
         ZoomSessionTransaction zoomSessionTransaction = new ZoomSessionTransaction();
-        zoomSessionTransaction.setZoomSessionFormId(form.getZoomSessionFormId());
-        zoomSessionTransaction.setStudentWorkEmail(student.getStudentWorkEmail());
+        zoomSessionTransaction.setZoomSessionForm(form);
+        zoomSessionTransaction.setStudent(student);
         zoomSessionTransaction.setTransactionAmount(0.00);
         return zoomSessionTransactionRepository.save(zoomSessionTransaction);
     }

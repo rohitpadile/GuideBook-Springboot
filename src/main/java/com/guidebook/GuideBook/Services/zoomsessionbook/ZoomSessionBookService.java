@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.Services.zoomsessionbook;
 
+import com.guidebook.GuideBook.Models.BookingRestriction;
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Models.ZoomSessionForm;
 //import com.guidebook.GuideBook.Models.ZoomSessionTransactionFree;
@@ -7,6 +8,7 @@ import com.guidebook.GuideBook.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.Repository.StudentRepository;
 import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
 import com.guidebook.GuideBook.Repository.ZoomSessionTransactionRepository;
+import com.guidebook.GuideBook.Services.BookingRestrictionService;
 import com.guidebook.GuideBook.Services.ZoomSessionTransactionService;
 import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ConfirmZoomSessionFromStudentRequest;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -35,15 +38,18 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
     private ZoomSessionFormRepository zoomSessionFormRepository;
     private ZoomSessionTransactionService zoomSessionTransactionService;
     private StudentRepository studentRepository;
+    private final BookingRestrictionService bookingRestrictionService;
     @Autowired
     public ZoomSessionBookService(ZoomSessionFormRepository zoomSessionFormRepository,
                                   EmailServiceImpl emailServiceImpl,
                                   StudentRepository studentRepository,
-                                  ZoomSessionTransactionService zoomSessionTransactionService) {
+                                  ZoomSessionTransactionService zoomSessionTransactionService,
+                                  BookingRestrictionService bookingRestrictionService) {
         this.zoomSessionFormRepository = zoomSessionFormRepository;
         this.emailServiceImpl = emailServiceImpl;
         this.studentRepository = studentRepository;
         this.zoomSessionTransactionService = zoomSessionTransactionService;
+        this.bookingRestrictionService = bookingRestrictionService;
     }
 
     @Transactional
@@ -64,6 +70,14 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                 emailContent);
         form.setIsVerified(1); //FORM IS MARKED AS VERIFIED SO NOT TO DELETE IT VIA SCHEDULED TASKS
         form.setZoomSessionBookStatus(ZoomSessionBookStatus.PENDING.toString());
+
+        //SAVE THE FORM'S CLIENT EMAIL IN OUR BookingRestriction TABLE WHICH WILL DELETE IT AFTER X HOURS
+        // Save the form's client email in the new table
+        BookingRestriction newRestriction = new BookingRestriction();
+        newRestriction.setClientEmail(form.getClientEmail());
+        newRestriction.setCreatedOn(new Date()); // This will be set automatically by @CreationTimestamp
+        bookingRestrictionService.save(newRestriction);
+
         zoomSessionFormRepository.save(form);
     }
     @Transactional

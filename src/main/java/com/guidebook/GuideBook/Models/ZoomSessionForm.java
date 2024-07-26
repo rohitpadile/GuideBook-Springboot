@@ -58,4 +58,9 @@ public class ZoomSessionForm {
     @Version
     private Integer version;
 
+    @OneToOne(mappedBy = "zoomSessionForm")
+    private ZoomSessionTransaction zoomSessionTransaction;
+
+
+
 }

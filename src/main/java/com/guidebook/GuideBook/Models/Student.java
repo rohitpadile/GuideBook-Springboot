@@ -68,5 +68,9 @@ public class Student {
     @JsonIgnore
     private Integer version;
 
+
+    @OneToMany(mappedBy = "student")
+    @JsonIgnore
+    private List<ZoomSessionTransaction> zoomSessionTransactions;
 }
 

@@ -38,7 +38,7 @@ public class ZoomSessionFeedbackFormService {
                 .getZoomSessionTransactionById(
                         request.getZoomSessionTransactionId());
 
-        transaction.setZoomSessionFeedbackFormId(savedForm.getZoomSessionFeedbackFormId());
+        transaction.setZoomSessionFeedbackForm(savedForm);
         zoomSessionTransactionService.saveZoomSessionTransaction(transaction);
         //saved transaction with the feedback form id - that officially completes one session.
 
@@ -47,7 +47,7 @@ public class ZoomSessionFeedbackFormService {
     public GetSubmittionStatusForFeedbackFormResponse getSubmittionStatusForFeedbackForm(String transactionId) {
 
         ZoomSessionTransaction transaction = zoomSessionTransactionService.getZoomSessionTransactionById(transactionId);
-        if(transaction.getZoomSessionFeedbackFormId() != null){
+        if(transaction.getZoomSessionFeedbackForm().getZoomSessionFeedbackFormId() != null){
             return GetSubmittionStatusForFeedbackFormResponse.builder()
                     .isSubmitted(1)
                     .build();

@@ -1,8 +1,11 @@
 package com.guidebook.GuideBook.Services.zoomsessionbook;
 
+import com.guidebook.GuideBook.Models.BookingRestriction;
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Models.ZoomSessionForm;
+import com.guidebook.GuideBook.Repository.BookingRestrictionRepository;
 import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
+import com.guidebook.GuideBook.Services.BookingRestrictionService;
 import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageResponse;
@@ -10,9 +13,12 @@ import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPResendRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerifyRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
@@ -21,14 +27,33 @@ import java.util.Optional;
 public class ZoomSessionFormService {
     private final EmailServiceImpl emailServiceImpl;
     private final ZoomSessionFormRepository zoomSessionFormRepository;
+    private final BookingRestrictionService bookingRestrictionService;
     @Autowired
     public ZoomSessionFormService(ZoomSessionFormRepository zoomSessionFormRepository,
-                                  EmailServiceImpl emailServiceImpl) {
+                                  EmailServiceImpl emailServiceImpl,
+                                  BookingRestrictionService bookingRestrictionService) {
         this.zoomSessionFormRepository = zoomSessionFormRepository;
         this.emailServiceImpl = emailServiceImpl;
+        this.bookingRestrictionService = bookingRestrictionService;
     }
 //    @Transactional
     public ZoomSessionFormMessageResponse submitForm(ZoomSessionFormRequest formDTO) {
+
+        //DONT LET THE SAME CLIENT EMAIL BOOK ANOTHER SESSION WITHIN X HOURS (SPECIFIED IN APPLICATION PROPERTIES)
+        Optional<BookingRestriction> restriction = bookingRestrictionService.findByClientEmail(formDTO.getClientEmail());
+
+        if (restriction.isPresent()) {
+            ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
+            response.setZoomSessionFormMessage(
+                    String.format(
+                            "Sorry, as per company's terms and conditions, you cannot book more than 1 session within %d hour(s) of booking a session",
+                            bookingRestrictionService.getTimeBeforeBookSessionNotAllowed()));
+            response.setZoomSessionFormMessageCode(0); // Code for redirecting him away
+            log.error("Response is {}", response);
+            return response;
+
+        }
+
         ZoomSessionForm form = ZoomSessionForm.builder()
                 .clientFirstName(formDTO.getClientFirstName())
                 .clientMiddleName(formDTO.getClientMiddleName())
