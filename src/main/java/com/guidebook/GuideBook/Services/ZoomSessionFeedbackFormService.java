@@ -47,7 +47,7 @@ public class ZoomSessionFeedbackFormService {
     public GetSubmittionStatusForFeedbackFormResponse getSubmittionStatusForFeedbackForm(String transactionId) {
 
         ZoomSessionTransaction transaction = zoomSessionTransactionService.getZoomSessionTransactionById(transactionId);
-        if(transaction.getZoomSessionFeedbackForm().getZoomSessionFeedbackFormId() != null){
+        if(transaction.getZoomSessionFeedbackForm() != null){
             return GetSubmittionStatusForFeedbackFormResponse.builder()
                     .isSubmitted(1)
                     .build();

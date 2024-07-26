@@ -14,6 +14,7 @@ import com.guidebook.GuideBook.dtos.GetStudentBasicDetailsResponse;
 import com.guidebook.GuideBook.exceptions.*;
 import com.guidebook.GuideBook.mapper.StudentMapper;
 import com.guidebook.GuideBook.mapper.StudentProfileMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,7 +78,7 @@ public class StudentService {
     }
 
 
-
+    @Transactional //THIS CAN THROW ERROR - KEEP A WATCH
     public Student addStudent(AddStudentRequest addStudentRequest) throws
             CollegeNotFoundException,
             BranchNotFoundException,
