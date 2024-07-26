@@ -27,7 +27,7 @@ public class BookingRestrictionService {
     private int timeBeforeBookSessionNotAllowed; // Time in hours
 
     // Run this task every hour
-    @Scheduled(fixedRate = 3600000)
+    @Scheduled(fixedRate = 60000) //Change this to 3600000 later //using it for production use now
     @Transactional
     public void deleteExpiredEntries() {
         Calendar calendar = Calendar.getInstance();
