@@ -73,13 +73,13 @@ public class ZoomSessionFormService {
         form.setClientOTPExpiration(new Date(System.currentTimeMillis() + 5 * 60 * 1000)); // 5 minutes from now
 
         // Send OTP email
-        String subject = "GuideBookX: OTP(One Time Password) for Verifying Zoom session form email";
+        String subject = "GuidebookX: OTP(One Time Password) for Verifying Zoom session form email";
         String text = "Dear " + formDTO.getClientFirstName() + ",\n\n" +
-                "Welcome to GuideBook! Your OTP for verification is: " + otp + ".\n\n" +
+                "Welcome to GuidebookX! Your OTP for verification is: " + otp + ".\n\n" +
                 "This OTP is valid for the next 5 minutes.\n\n" +
-                "Thank you for choosing GuideBook. We are dedicated to providing you with the best experience.\n\n" +
+                "Thank you for choosing GuideBookX. We are dedicated to providing you with the best experience.\n\n" +
                 "Best Regards,\n" +
-                "GuideBook Team";
+                "GuideBookX Team";
         emailServiceImpl.sendSimpleMessage(formDTO.getClientEmail(), subject, text);
 
         // Save the form and return the response message
@@ -168,12 +168,12 @@ public class ZoomSessionFormService {
 
             // Send new OTP via email
             String subject = "GuideBookX: OTP(One Time Password) for Verifying Zoom session form email";
-            String text = "Dear " + form.getClientFirstName() + ",\n\n" +
-                    "Welcome to GuideBook! Your NEW OTP for verification is: " + newOtp + ".\n\n" +
+            String text = "Dear " + form.getClientFirstName() + form.getClientLastName() + ",\n\n" +
+                    "Welcome to GuideBookX! Your NEW OTP for verification is: " + newOtp + ".\n\n" +
                     "This OTP is valid for the next 5 minutes.\n\n" +
                     "Thank you for choosing GuideBook. We are dedicated to providing you with the best experience.\n\n" +
                     "Best Regards,\n" +
-                    "GuideBook Team";
+                    "GuideBookX Team";
             emailServiceImpl.sendSimpleMessage(form.getClientEmail(), subject, text);
 
             response.setZoomSessionFormMessage("New OTP has been sent to your email.");

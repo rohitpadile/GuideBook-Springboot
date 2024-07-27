@@ -74,7 +74,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         // Send the email to the student
         emailServiceImpl.sendSimpleMessage(request.getStudentWorkEmail(),
                 "Zoom Session Request from " +
-                        form.getClientFirstName() +
+                        form.getClientFirstName() + " " +
                         form.getClientLastName(),
                 emailContent);
         form.setIsVerified(1); //FORM IS MARKED AS VERIFIED SO NOT TO DELETE IT VIA SCHEDULED TASKS
@@ -105,18 +105,22 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         StringBuilder content = new StringBuilder();
         content.append("Dear Student,\n\n");
         content.append("New request for Zoom session. Here are the details:\n\n");
-        content.append("Full Name: ").append(form.getClientFirstName()).append(" ");
-        content.append(form.getClientMiddleName()).append(" ");
+        content.append("Full Name: \t").append(form.getClientFirstName()).append(" ");
+        if(!(form.getClientMiddleName()==null) && !form.getClientMiddleName().isEmpty()){
+            content.append(form.getClientMiddleName()).append(" ");
+        }
         content.append(form.getClientLastName()).append("\n");
-        content.append("Email: ").append(form.getClientEmail()).append("\n");
-        content.append("Phone Number: ").append(form.getClientPhoneNumber()).append("\n");
-        content.append("Age: ").append(form.getClientAge()).append("\n");
-        content.append("College: ").append(form.getClientCollege()).append("\n");
-        content.append("Proof Document Link: ").append(form.getClientProofDocLink()).append("\n");
-        content.append("CONFIRM THE SESSION ONLY IF CLIENT ID, FEE RECEIPT IS VALID COLLEGE ID, RECEIPT  OTHERWISE STRICT ACTIONS ARE TAKEN BY THE COMPANY.");
-        content.append("\nPlease confirm your availability for the Zoom session by clicking on this link: " + Pagelink + "\n\n");
+        content.append("Email: \t").append(form.getClientEmail()).append("\n");
+        content.append("Phone Number: \t").append(form.getClientPhoneNumber()).append("\n");
+        content.append("Age: \t").append(form.getClientAge()).append("\n");
+        content.append("College: \t").append(form.getClientCollege()).append("\n");
+        content.append("Proof Document Link: \n").append(form.getClientProofDocLink()).append("\n");
+        content.append("\nImportant Note: Confirm the session only if the College Id, Fee Receipt " +
+                "and Adhar Card match and are valid. Otherwise strict actions are to be taken" +
+                " by the Company.");
+        content.append("\n\nPlease confirm your availability for the Zoom session by clicking on this link: \n" + Pagelink);
 
-        content.append("Best regards,\n");
+        content.append("\n\nBest regards,\n");
         content.append("GuideBookX Team");
         return content.toString();
     }
@@ -197,11 +201,16 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 
         if (request.getIsAvailable() == 0) { //Session cancelled from student
             clientSubject = "Zoom Session Unavailability Notification";
-            clientText = String.format("Dear %s,\n\n%s is not available for the meeting anytime soon.\nStudent has left a message for you:\n%s",
+            clientText = String.format("Dear %s,\n\n%s is not available for the meeting anytime soon.\nStudent has left a message for you:\n\nMessage: %s",
                     clientName, studentName, request.getStudentMessageToClient());
 
             studentSubject = "Zoom Session Cancellation";
-            studentText = String.format("Your zoom session with %s is Cancelled.\n\nFollowing are the client details\n\nClient Name: %s\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s\nClient College: %s\nProof Document: %s\n\n",
+            studentText = String.format("Your zoom session with %s is Cancelled." +
+                            "\n\nFollowing are the client details\n\nClient Name: %s" +
+                            "\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s" +
+                            "\nClient College: %s\nProof Document: \n%s" +
+                            "\n\nBest regards,\n" +
+                            "GuidebookX Team",
                     clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink());
 
             form.setZoomSessionBookStatus(ZoomSessionBookStatus.CANCELLED.toString());
@@ -213,12 +222,12 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                             "1. Time: %s\n" +
                             "2. Meeting ID: %s\n" +
                             "3. Passcode: %s\n" +
-                            "4. Meeting Link: %s\n\n" +
+                            "4. Meeting Link: \n%s\n\n" +
                             "At the end of the session, please give the feedback.\n" +
-                            "Fill the form, then only the session will be counted in " +
+                            "Important Note: Fill the form, then only the session will be counted in " +
                             "student's account and he can provide more such sessions in the future." +
                             "\nThank you for your co-operation. Have a great session\n\n" +
-                            "Feedback link: %s\n\n\n" +
+                            "Feedback link: %s\n\n" +
 
                             "NOTE: Kindly do not share these details with anyone. Only the email with which " +
                             "you have registered is permitted to be in the meeting otherwise the meeting " +
@@ -235,9 +244,9 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             studentSubject = "Zoom Session Confirmation";
             studentText = String.format("Your Zoom meeting with %s is scheduled as per the following details:" +
                             "\n\nClient Name: %s\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s" +
-                            "\nClient College: %s\nProof Document: %s\n\n1. Time: %s\n2. Meeting ID: %s\n" +
-                            "3. Passcode: %s\n4. Meeting Link: %s\n" +
-                            "\n\nYou are helping someone in need. Keep up the great work and have a great session!\n\n" +
+                            "\nClient College: %s\nProof Document: \n%s\n\n1. Time: %s\n2. Meeting ID: %s\n" +
+                            "3. Passcode: %s\n4. Meeting Link: \n%s\n\n" +
+                            "You are helping someone in need. Keep up the great work and have a great session!" +
                             "\n\nBest regards,\n" +
                             "GuidebookX Team",
                     clientName,
