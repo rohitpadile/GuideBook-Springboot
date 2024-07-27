@@ -21,4 +21,5 @@ public class ConfirmZoomSessionFromStudentRequest { //DTO about the confirmation
     private String zoomSessionMeetingLink;
 
     private String studentMessageToClient; //When not available. + when available(optional).
+
 }

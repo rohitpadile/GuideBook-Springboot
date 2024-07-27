@@ -17,6 +17,7 @@ public class StudentProfileMapper {
         return StudentProfile.builder()
                 .studentWorkEmail(request.getStudentWorkEmail())
                 .studentMis(request.getStudentMis())
+                .studentProfileSessionsConducted(0L)
                 .build();
     }
 }
