@@ -28,6 +28,8 @@ public class CollegeController {
                 collegeService.getCollegeListForExamRequest(examName);
         return new ResponseEntity<>(getCollegeListForExamResponse, HttpStatus.OK);
     }
+
+
     @PostMapping("/addCollegeWithBranches")
     public ResponseEntity<Void> addCollegeWithBranches(@RequestBody @Valid AddCollegeRequest addCollegeRequest)
             throws EntranceExamNotFoundException

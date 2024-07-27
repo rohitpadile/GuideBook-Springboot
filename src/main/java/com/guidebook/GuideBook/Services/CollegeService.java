@@ -45,10 +45,23 @@ public class CollegeService {
 
     // Method to retrieve all colleges
     public GetCollegeListForExamResponse getCollegeListForExamRequest(String examName) {
-        List<College> colleges = customCollegeRepositoryImpl.findCollegeByEntranceExamNameIgnoreCase(examName);
         GetCollegeListForExamResponse getCollegeListForExamResponse = new GetCollegeListForExamResponse();
-        for(College clg : colleges){
-            getCollegeListForExamResponse.getCollegeNameList().add(clg.getCollegeName());
+
+        //IF SOMEONE CHANGED THE STATIC CONTENT OF THE PAGE AND GAVE RANDOM NAME TO EXAM-NAME, STILL WE
+        //HAVE TO SHOW ALL THE COLLEGES
+        //CODE FOR THAT CASE
+        List<College> colleges = customCollegeRepositoryImpl.findCollegeByEntranceExamNameIgnoreCase(examName);
+        if(colleges == null || colleges.isEmpty() || examName.equalsIgnoreCase("all")){
+            //WRONG EXAM NAME ENTERED! - SOMEONE CHEATING ON THE PAGE
+            //RETURN ALL THE COLLEGES IN THE LIST
+            colleges = collegeRepository.findAll();
+            for(College clg : colleges){
+                getCollegeListForExamResponse.getCollegeNameList().add(clg.getCollegeName());
+            }
+        } else {
+            for(College clg : colleges){
+                getCollegeListForExamResponse.getCollegeNameList().add(clg.getCollegeName());
+            }
         }
         return getCollegeListForExamResponse;
     }
