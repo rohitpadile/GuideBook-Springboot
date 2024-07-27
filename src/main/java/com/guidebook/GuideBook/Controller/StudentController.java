@@ -40,7 +40,8 @@ public class StudentController {
             throws CollegeNotFoundException,
             BranchNotFoundException,
             StudentClassTypeNotFoundException,
-            StudentCategoryNotFoundException
+            StudentCategoryNotFoundException,
+            LanguageNotFoundException
     {
         Student addedStudent = studentService.addStudent(addStudentRequest);
         return new ResponseEntity<>(addedStudent, HttpStatus.CREATED);

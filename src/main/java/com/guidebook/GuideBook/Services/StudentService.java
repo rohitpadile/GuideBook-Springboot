@@ -15,6 +15,7 @@ import com.guidebook.GuideBook.exceptions.*;
 import com.guidebook.GuideBook.mapper.StudentMapper;
 import com.guidebook.GuideBook.mapper.StudentProfileMapper;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class StudentService {
     private LanguageService languageService;
     private CollegeService collegeService;
@@ -83,7 +85,8 @@ public class StudentService {
             CollegeNotFoundException,
             BranchNotFoundException,
             StudentClassTypeNotFoundException,
-            StudentCategoryNotFoundException
+            StudentCategoryNotFoundException,
+            LanguageNotFoundException
     {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
         StudentProfile newStudentProfile = StudentProfileMapper.mapToStudentProfile(addStudentRequest);
@@ -115,18 +118,9 @@ public class StudentService {
             );
         }
 
-        List<Language> languageList = new ArrayList<>();
-        for (String studentLanguageName : addStudentRequest.getStudentLanguageNames()) {
-            Language language = languageService.GetLanguageByLanguageNameIgnoreCase(studentLanguageName);
-            if (language == null) {
-                // Language does not exist, create a new one
-                language = new Language();
-                language.setLanguageName(studentLanguageName);
-                language = languageService.addLanguage(language); // SAVE THE NEW LANGUAGE TO THE DATABASE
-            }
-            languageList.add(language); //add the language to the studentLanguageList
-        }
-        newStudent.setStudentLanguageList(languageList);
+/////////////////////////SEPARATE PRIVATE METHOD TO ADD LANGUAGE LIST ////////////////////////////////////
+        Boolean languageListAddedSuccess = addStudentLanguageList(addStudentRequest ,newStudent);
+        log.info("Language list added boolean : {}", languageListAddedSuccess);
 
         //Do for studentClassType also
         if((studentClassTypeService.getStudentClassTypeByStudentClassTypeName(addStudentRequest.getStudentClassType())) == null){
@@ -156,9 +150,21 @@ public class StudentService {
         for(Language language : languageList){
             response.getLanguagesSpoken().add(language.getLanguageName());
         }
-
         return response;
+    }
 
+    private boolean addStudentLanguageList(AddStudentRequest addStudentRequest, Student newStudent)
+    throws LanguageNotFoundException{
+        List<Language> languageList = new ArrayList<>();
+        for (String studentLanguageName : addStudentRequest.getStudentLanguageNames()) {
+            Language language = languageService.GetLanguageByLanguageNameIgnoreCase(studentLanguageName);
+            if (language == null) {
+                throw new LanguageNotFoundException("Language not found : " + studentLanguageName);
+            }
+            languageList.add(language); //add the language to the studentLanguageList if not null
+        }
+        newStudent.setStudentLanguageList(languageList);
+        return true;
     }
 }
 
