@@ -118,7 +118,7 @@ public class StudentService {
             );
         }
 
-/////////////////////////SEPARATE PRIVATE METHOD TO ADD LANGUAGE LIST ////////////////////////////////////
+/////////////////////////SEPARATE PRIVATE METHOD TO ADD LANGUAGE LIST @Transactional ////////////////////////////////////
         Boolean languageListAddedSuccess = addStudentLanguageList(addStudentRequest ,newStudent);
         log.info("Language list added boolean : {}", languageListAddedSuccess);
 
@@ -152,7 +152,7 @@ public class StudentService {
         }
         return response;
     }
-
+    @Transactional
     private boolean addStudentLanguageList(AddStudentRequest addStudentRequest, Student newStudent)
     throws LanguageNotFoundException{
         List<Language> languageList = new ArrayList<>();

@@ -3,6 +3,7 @@ package com.guidebook.GuideBook.Controller.zoomsessionbook;
 import com.guidebook.GuideBook.Services.ZoomSessionFeedbackFormService;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.GetSubmittionStatusForFeedbackFormResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.SubmitZoomSessionFeedbackFormRequest;
+import com.guidebook.GuideBook.exceptions.StudentProfileContentNotFoundException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class ZoomSessionFeedbackFormController {
     @PostMapping("/submitZoomSessionFeedbackForm")
     public ResponseEntity<Void> submitZoomSessionFeedbackForm(
             @RequestBody @Valid SubmitZoomSessionFeedbackFormRequest request)
+    throws StudentProfileContentNotFoundException
     {
         zoomSessionFeedbackFormService.submitZoomSessionFeedbackForm(request);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
