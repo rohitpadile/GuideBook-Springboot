@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -100,6 +101,15 @@ public class CollegeService {
 
     public College getCollegeByCollegeNameIgnoreCase(String name){
         return collegeRepository.findCollegeByCollegeNameIgnoreCase(name);
+    }
+
+    public List<String> getAllCollegeNameList(){
+        List<String> result = new ArrayList<>();
+        List<College> colleges = collegeRepository.findAll();
+        for(College clg : colleges){
+            result.add(clg.getCollegeName());
+        }
+        return result;
     }
 
 //    public GetAllCollegeListForClubsResponse getCollegesForClubs() {

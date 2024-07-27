@@ -1,6 +1,7 @@
 package com.guidebook.GuideBook.Services;
 
 import com.guidebook.GuideBook.Models.Branch;
+import com.guidebook.GuideBook.Models.College;
 import com.guidebook.GuideBook.Repository.BranchRepository;
 import com.guidebook.GuideBook.Repository.cutomrepository.CustomBranchRepositoryImpl;
 import com.guidebook.GuideBook.dtos.AddBranchRequest;
@@ -11,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -49,6 +51,14 @@ public class BranchService {
 
     public List<Branch> getAllbranches() {
         return branchRepository.findAll();
+    }
+    public List<String> getAllBranchNameList(){
+        List<String> result = new ArrayList<>();
+        List<Branch> branches = branchRepository.findAll();
+        for(Branch branch : branches){
+            result.add(branch.getBranchName());
+        }
+        return result;
     }
 
     public GetAllBranchNameListForCollegeResponse getAllBranchNameListForCollege(GetAllBranchNameListForCollegeRequest request) {

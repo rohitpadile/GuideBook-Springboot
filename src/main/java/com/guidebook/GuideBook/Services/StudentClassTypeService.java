@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.Services;
 
+import com.guidebook.GuideBook.Models.Branch;
 import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Models.StudentClassType;
 import com.guidebook.GuideBook.Repository.StudentClassTypeRepository;
@@ -8,6 +9,7 @@ import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllStudentClassTyp
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,6 +40,15 @@ public class StudentClassTypeService {
             response.getAllStudentClassTypeNamesList().add(classType.getStudentClassTypeName());
         }
         return response;
+    }
+
+    public List<String> getAllStudentClassTypeNameList(){
+        List<String> result = new ArrayList<>();
+        List<StudentClassType> studentClassTypes = studentClassTypeRepository.findAll();
+        for(StudentClassType studentClassType : studentClassTypes){
+            result.add(studentClassType.getStudentClassTypeName());
+        }
+        return result;
     }
 }
 

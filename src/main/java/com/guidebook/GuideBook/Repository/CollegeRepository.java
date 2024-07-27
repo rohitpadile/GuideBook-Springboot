@@ -13,4 +13,5 @@ import java.util.Set;
 public interface CollegeRepository extends JpaRepository<College, Long> {
     College findCollegeByCollegeNameIgnoreCase(String name);
 
+
 }

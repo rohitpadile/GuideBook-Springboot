@@ -1,12 +1,14 @@
 package com.guidebook.GuideBook.Services;
 
 import com.guidebook.GuideBook.Models.StudentCategory;
+import com.guidebook.GuideBook.Models.StudentClassType;
 import com.guidebook.GuideBook.Repository.StudentCategoryRepository;
 import com.guidebook.GuideBook.dtos.AddStudentCategoryRequest;
 import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllStudentCategoryNameListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,4 +39,14 @@ public class StudentCategoryService {
         newStudentCategory.setStudentCategoryName(addStudentCategoryRequest.getStudentCategory());
         return studentCategoryRepository.save(newStudentCategory);
     }
+
+    public List<String> getAllStudentCategoryNameList(){
+        List<String> result = new ArrayList<>();
+        List<StudentCategory> studentCategoryList = studentCategoryRepository.findAll();
+        for(StudentCategory studentCategory : studentCategoryList){
+            result.add(studentCategory.getStudentCategoryName());
+        }
+        return result;
+    }
 }
+
