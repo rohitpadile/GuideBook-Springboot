@@ -123,4 +123,14 @@ public class StudentProfileService {
         return response;
     }
 
+    public StudentProfile getStudentProfileForFeedbackFormSuccess(String studentWorkEmail)
+            throws StudentProfileContentNotFoundException {
+
+        return studentProfileRepository.findStudentProfileByStudentWorkEmail(studentWorkEmail);
+    }
+
+    public void updateStudentProfile(StudentProfile studentProfile){
+        studentProfileRepository.save(studentProfile);
+    }
+
 }
