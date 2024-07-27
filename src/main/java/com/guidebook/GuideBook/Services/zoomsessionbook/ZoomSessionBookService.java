@@ -14,6 +14,7 @@ import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ConfirmZoomSessionFromStudentRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
+import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageResponse;
 import com.guidebook.GuideBook.enums.ZoomSessionBookStatus;
 import com.guidebook.GuideBook.util.EncryptionUtil;
 import com.guidebook.GuideBook.util.EncryptionUtilForFeedbackForm;
@@ -26,6 +27,8 @@ import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 
@@ -59,6 +62,12 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                 .orElseThrow(() -> new IllegalArgumentException("Invalid form ID"));
         //THROW CUSTOM FORM NOT FOUND EXCEPTION HERE
 
+        //Dont let him click on Book session multiple times - spamming email for student
+        Optional<BookingRestriction> restriction = bookingRestrictionService.findByClientEmail(form.getClientEmail());
+        if (restriction.isPresent()) {
+            log.info("Client Email just went into restriction: {}", form.getClientEmail());
+            return;
+        }
         // Prepare the email content
         String emailContent = prepareEmailContent(form, request.getStudentWorkEmail());
 
@@ -174,7 +183,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         String feedbackPageLink = "ERROR IN CREATING FEEDBACK FORM LINK: PLEASE CONTACT COMPANY VIA MAIL";
         try {
             String transactionId = transaction.getZoomSessionTransactionId();
-            String encodedId = EncryptionUtilForFeedbackForm.encode(transactionId); // Custom encode
+            String encodedId = EncryptionUtilForFeedbackForm.encode(transactionId, studentName); // Custom encode
             feedbackPageLink = websiteDomainName + "/feedback-zoom-session/" + URLEncoder.encode(encodedId, StandardCharsets.UTF_8.toString());
         } catch (Exception e) {
             log.error("Error at encoding transaction id into feedback link: {}", e.getMessage());
@@ -217,7 +226,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                             "an email to us at help.guidebookx@gmail.com",
                     clientName,
                     studentName,
-                    request.getZoomSessionTime(),
+                    convertTo12HourFormat(request.getZoomSessionTime()),
                     request.getZoomSessionMeetingId(),
                     request.getZoomSessionPasscode(),
                     request.getZoomSessionMeetingLink(),
@@ -238,7 +247,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                     form.getClientAge(),
                     form.getClientCollege(),
                     form.getClientProofDocLink(),
-                    request.getZoomSessionTime(),
+                    convertTo12HourFormat(request.getZoomSessionTime()),
                     request.getZoomSessionMeetingId(),
                     request.getZoomSessionPasscode(),
                     request.getZoomSessionMeetingLink());
@@ -254,4 +263,16 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 //    private String clientFeedbackFormLinkGenerator(String studentWorkEmail, String zoomSessionFormId){
 //
 //    }
+
+    private static String convertTo12HourFormat(String dateTimeStr) {
+        // Define the input and output formatters
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm a");
+
+        // Parse the input string to LocalDateTime
+        LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, inputFormatter);
+
+        // Format the LocalDateTime to 12-hour format with AM/PM and day-month-year format
+        return dateTime.format(outputFormatter);
+    }
 }
