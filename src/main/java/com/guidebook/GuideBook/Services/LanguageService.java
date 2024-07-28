@@ -21,8 +21,10 @@ public class LanguageService {
         this.languageRepository = languageRepository;
     }
 
-    public Language addLanguage(Language language) {
-        return languageRepository.save(language);
+    public Language addLanguage(String languageName) {
+        Language newLanguage = new Language();
+        newLanguage.setLanguageName(languageName);
+        return languageRepository.save(newLanguage);
     }
 
     public Language GetLanguageByLanguageNameIgnoreCase(String name) throws LanguageNotFoundException {

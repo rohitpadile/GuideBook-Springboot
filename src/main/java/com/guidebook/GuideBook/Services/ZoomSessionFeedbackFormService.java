@@ -48,10 +48,10 @@ public class ZoomSessionFeedbackFormService {
 
         transaction.setZoomSessionFeedbackForm(savedForm);
 
-        //Increase the session count of student by 1
-//        StudentProfile studentProfile = studentProfileService.getStudentProfileForFeedbackFormSuccess(transaction.getStudent().getStudentWorkEmail());
-//        studentProfile.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted() + 1);
-//        studentProfileService.updateStudentProfile(studentProfile);
+//        Increase the session count of student by 1
+        StudentProfile studentProfile = studentProfileService.getStudentProfileForFeedbackFormSuccess(transaction.getStudent().getStudentWorkEmail());
+        studentProfile.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted() + 1);
+        studentProfileService.updateStudentProfile(studentProfile);
 
         zoomSessionTransactionService.saveZoomSessionTransaction(transaction);
 

@@ -15,9 +15,9 @@ public class UpdateStudentProfileRequest {
     private List<CityOfCoaching> studentProfileCityOfCoaching;
     private List<ExamScoreDetails> studentProfileExamScoreDetails;
     private List<OtherExamScoreDetails> studentProfileOtherExamScoreDetails;
-    private List<AcademicActivity> studentProfileAcademicActivity;
-    private List<CoCurricularActivity> studentProfileCoCurricularActivity;
-    private List<ExtraCurricularActivity> studentProfileExtraCurricularActivity;
+    private List<ActivityAndAchievements> studentProfileActivityAndAchievements;
+//    private List<CoCurricularActivity> studentProfileCoCurricularActivity;
+//    private List<ExtraCurricularActivity> studentProfileExtraCurricularActivity;
     private List<TutoringExperience> studentProfileTutoringExperience;
     private List<ExternalLink> studentProfileExternalLinks;
 }

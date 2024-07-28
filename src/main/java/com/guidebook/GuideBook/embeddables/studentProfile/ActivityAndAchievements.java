@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class AcademicActivity {
+public class ActivityAndAchievements {
     private String activity;
 }

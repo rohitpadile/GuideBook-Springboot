@@ -16,4 +16,5 @@ public class GetStudentBasicDetailsResponse {
     String classType;
     List<String> languagesSpoken = new ArrayList<>();
     String publicEmail;
+    String category;
 }

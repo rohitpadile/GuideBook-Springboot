@@ -55,16 +55,18 @@ public class StudentProfile {
     @ElementCollection
     @CollectionTable(name = "studentprofile_AcademicActivity", joinColumns = @JoinColumn(name = "studentProfileId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
-    List<AcademicActivity> studentProfileAcademicActivity; //activity included achievements too
+    List<ActivityAndAchievements> studentProfileActivityAndAchievements; //activity included achievements too
 
-    @ElementCollection
-    @CollectionTable(name = "studentprofile_CoCurricularActivity", joinColumns = @JoinColumn(name = "studentProfileId"))
-    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
-    List<CoCurricularActivity> studentProfileCoCurricularActivity;
-    @ElementCollection
-    @CollectionTable(name = "studentprofile_ExtraCurricularActivity", joinColumns = @JoinColumn(name = "studentProfileId"))
-    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
-    List<ExtraCurricularActivity> studentProfileExtraCurricularActivity;
+//    @ElementCollection
+//    @CollectionTable(name = "studentprofile_CoCurricularActivity", joinColumns = @JoinColumn(name = "studentProfileId"))
+//    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
+//            @JsonIgnore
+//    List<CoCurricularActivity> studentProfileCoCurricularActivity;
+//    @ElementCollection
+//    @CollectionTable(name = "studentprofile_ExtraCurricularActivity", joinColumns = @JoinColumn(name = "studentProfileId"))
+//    @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
+//            @JsonIgnore
+//    List<ExtraCurricularActivity> studentProfileExtraCurricularActivity;
     @ElementCollection
     @CollectionTable(name = "studentprofile_TutoringExperience", joinColumns = @JoinColumn(name = "studentProfileId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete

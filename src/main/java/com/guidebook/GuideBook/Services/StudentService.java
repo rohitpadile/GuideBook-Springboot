@@ -91,8 +91,6 @@ public class StudentService {
             LanguageNotFoundException
     {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
-        StudentProfile newStudentProfile = StudentProfileMapper.mapToStudentProfile(addStudentRequest);
-        studentProfileService.addStudentProfileWithAddStudent(newStudentProfile); //Saving a profile for this student in studentprofile table
 
         if((collegeService.getCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName())) == null){
             throw new CollegeNotFoundException("College not found: " + addStudentRequest.getStudentCollegeName());
@@ -131,7 +129,8 @@ public class StudentService {
         } else {
             newStudent.setStudentClassType(studentClassTypeService.getStudentClassTypeByStudentClassTypeName(addStudentRequest.getStudentClassType()));
         }
-
+        StudentProfile newStudentProfile = StudentProfileMapper.mapToStudentProfile(addStudentRequest);
+        studentProfileService.addStudentProfileWithAddStudent(newStudentProfile); //Saving a profile for this student in studentprofile table
         return studentRepository.save(newStudent);
     }
 
@@ -147,6 +146,7 @@ public class StudentService {
         response.setGrade(student.getGrade());
         response.setCetPercentile(student.getCetPercentile());
         response.setClassType(student.getStudentClassType().getStudentClassTypeName());
+        response.setCategory(student.getStudentCategory().getStudentCategoryName());
 
         List<Language> languageList = student.getStudentLanguageList();
         for(Language language : languageList){
