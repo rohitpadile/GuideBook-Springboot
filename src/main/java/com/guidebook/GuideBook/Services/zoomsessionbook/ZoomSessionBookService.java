@@ -339,6 +339,9 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             throw new ZoomSessionNotFoundException("Zoom session form not found at cancelZoomSessionFromClient() method");
         }
         ZoomSessionForm form = checkForm.get();
+        if(form.getZoomSessionBookStatus().equalsIgnoreCase(ZoomSessionBookStatus.BOOKED.toString())){
+
+        }
         form.setZoomSessionBookStatus(ZoomSessionBookStatus.CANCELLED.toString());
         zoomSessionFormRepository.save(form);
 

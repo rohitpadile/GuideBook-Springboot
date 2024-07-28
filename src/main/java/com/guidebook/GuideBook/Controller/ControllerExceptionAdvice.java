@@ -59,4 +59,34 @@ public class ControllerExceptionAdvice {
         log.error("CollegeClubNotFoundException occurred : {}" , collegeClubNotFoundException);
         return new ResponseEntity<>(collegeClubNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = EncryptionFailedException.class)
+    public ResponseEntity<String> takeAction(EncryptionFailedException encryptionFailedException){
+        log.error("EncryptionFailedException occurred : {}" , encryptionFailedException);
+        return new ResponseEntity<>(encryptionFailedException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = ZoomSessionNotFoundException.class)
+    public ResponseEntity<String> takeAction(ZoomSessionNotFoundException zoomSessionNotFoundException){
+        log.error("ZoomSessionNotFoundException occurred : {}" , zoomSessionNotFoundException);
+        return new ResponseEntity<>(zoomSessionNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = TransactionNotFoundException.class)
+    public ResponseEntity<String> takeAction(TransactionNotFoundException transactionNotFoundException){
+        log.error("TransactionNotFoundException occurred : {}" , transactionNotFoundException);
+        return new ResponseEntity<>(transactionNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = LanguageNotFoundException.class)
+    public ResponseEntity<String> takeAction(LanguageNotFoundException languageNotFoundException){
+        log.error("LanguageNotFoundException occurred : {}" , languageNotFoundException);
+        return new ResponseEntity<>(languageNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = FilteredStudentListNotFoundException.class)
+    public ResponseEntity<String> takeAction(FilteredStudentListNotFoundException filteredStudentListNotFoundException){
+        log.error("FilteredStudentListNotFoundException occurred : {}" , filteredStudentListNotFoundException);
+        return new ResponseEntity<>(filteredStudentListNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
