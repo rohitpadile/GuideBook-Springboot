@@ -25,7 +25,7 @@ public class ZoomSessionForm {
     private String clientFirstName;
     private String clientMiddleName;
     private String clientLastName;
-    @Column(unique = true)
+    @Column(nullable = false)
     private String clientEmail;
 
     @Pattern(regexp = "^\\+?[0-9. ()-]{6,20}$", message = "Invalid phone number")

@@ -36,7 +36,7 @@ public class ZoomSessionFormService {
         this.emailServiceImpl = emailServiceImpl;
         this.bookingRestrictionService = bookingRestrictionService;
     }
-//    @Transactional
+    @Transactional
     public ZoomSessionFormMessageResponse submitForm(ZoomSessionFormRequest formDTO) {
 
         //DONT LET THE SAME CLIENT EMAIL BOOK ANOTHER SESSION WITHIN X HOURS (SPECIFIED IN APPLICATION PROPERTIES)
@@ -92,7 +92,7 @@ public class ZoomSessionFormService {
         log.error("Response is {}", response);
         return response;
     }
-//    @Transactional
+    @Transactional
     public ZoomSessionFormMessageResponse verifyOTP(ZoomSessionOTPVerifyRequest zoomSessionOTPVerifyRequest) {
         String clientOTPForVerification = String.valueOf(zoomSessionOTPVerifyRequest.getClientOTP());
         ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
@@ -149,7 +149,7 @@ public class ZoomSessionFormService {
 
         return response;
     }
-//    @Transactional
+    @Transactional
     public ZoomSessionFormMessageResponse resendOTP(ZoomSessionOTPResendRequest request) {
         ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
         Optional<ZoomSessionForm> formOptional = zoomSessionFormRepository.findByZoomSessionFormId(request.getZoomSessionFormId());

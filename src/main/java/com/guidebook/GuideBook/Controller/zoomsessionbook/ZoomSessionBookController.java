@@ -3,9 +3,7 @@ package com.guidebook.GuideBook.Controller.zoomsessionbook;
 //import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionBookService;
 
 import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionBookService;
-import com.guidebook.GuideBook.dtos.zoomsessionbook.ConfirmZoomSessionFromStudentRequest;
-import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsResponse;
-import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
+import com.guidebook.GuideBook.dtos.zoomsessionbook.*;
 import com.guidebook.GuideBook.exceptions.EncryptionFailedException;
 import com.guidebook.GuideBook.exceptions.ZoomSessionNotFoundException;
 import jakarta.validation.Valid;
@@ -36,6 +34,23 @@ public class ZoomSessionBookController {
     {
         zoomSessionBookService.handleZoomSessionFormSuccess(zoomSessionConfirmationRequest);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/cancelZoomSessionFromClient")
+    public ResponseEntity<Void> cancelZoomSessionFromClient(
+            @RequestBody @Valid CancelZoomSessionFromClientRequest request
+            ) throws ZoomSessionNotFoundException
+    {
+        zoomSessionBookService.cancelZoomSessionFromClient(request);
+        return new ResponseEntity<>( HttpStatus.OK);
+    }
+    @PostMapping("/cancelZoomSessionCheckStatus")
+    public ResponseEntity<CancellationStatusZoomSessionResponse> cancelZoomSessionStatus(
+            @RequestBody @Valid CancellationStatusZoomSessionRequest request
+    ) throws ZoomSessionNotFoundException
+    {
+        CancellationStatusZoomSessionResponse res = zoomSessionBookService.cancelZoomSessionCheckStatus(request);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @GetMapping("/fetchZoomSessionVerifiedFormDetailsSecret/{formId}")

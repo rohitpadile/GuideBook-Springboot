@@ -147,6 +147,7 @@ public class StudentService {
         response.setCetPercentile(student.getCetPercentile());
         response.setClassType(student.getStudentClassType().getStudentClassTypeName());
         response.setCategory(student.getStudentCategory().getStudentCategoryName());
+        response.setCollege(student.getStudentCollege().getCollegeName());
 
         List<Language> languageList = student.getStudentLanguageList();
         for(Language language : languageList){

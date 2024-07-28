@@ -9,6 +9,7 @@ import com.guidebook.GuideBook.dtos.zoomsessionbook.SubmitZoomSessionFeedbackFor
 import com.guidebook.GuideBook.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.exceptions.TransactionNotFoundException;
 import com.guidebook.GuideBook.mapper.StudentProfileMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class ZoomSessionFeedbackFormService {
     }
 
 //THIS CAN ALSO BE A @Transactional
+    @Transactional
     public void submitZoomSessionFeedbackForm(SubmitZoomSessionFeedbackFormRequest request)
             throws StudentProfileContentNotFoundException, TransactionNotFoundException {
         //Make a new feedback form and stores it uuid in the transaction unit

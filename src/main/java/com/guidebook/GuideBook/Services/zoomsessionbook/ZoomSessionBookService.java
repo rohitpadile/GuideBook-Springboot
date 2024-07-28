@@ -7,22 +7,18 @@ import com.guidebook.GuideBook.Models.ZoomSessionForm;
 import com.guidebook.GuideBook.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.Repository.StudentRepository;
 import com.guidebook.GuideBook.Repository.ZoomSessionFormRepository;
-import com.guidebook.GuideBook.Repository.ZoomSessionTransactionRepository;
 import com.guidebook.GuideBook.Services.BookingRestrictionService;
 import com.guidebook.GuideBook.Services.ZoomSessionTransactionService;
 import com.guidebook.GuideBook.Services.emailservice.EmailServiceImpl;
-import com.guidebook.GuideBook.dtos.zoomsessionbook.ConfirmZoomSessionFromStudentRequest;
-import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsResponse;
-import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
-import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageResponse;
+import com.guidebook.GuideBook.dtos.zoomsessionbook.*;
 import com.guidebook.GuideBook.enums.ZoomSessionBookStatus;
 import com.guidebook.GuideBook.exceptions.EncryptionFailedException;
 import com.guidebook.GuideBook.exceptions.ZoomSessionNotFoundException;
 import com.guidebook.GuideBook.util.EncryptionUtil;
 import com.guidebook.GuideBook.util.EncryptionUtilForFeedbackForm;
+import com.guidebook.GuideBook.util.EncryptionUtilForZoomSessionCancel;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Base64Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -76,15 +72,18 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             log.info("Client Email just went into restriction: {}", form.getClientEmail());
             return;
         }
-        // Prepare the email content
-        String emailContent = prepareEmailContent(form, request.getStudentWorkEmail());
-
-        // Send the email to the student
+        // Prepare and send the email content to the student
+        String studentEmailContent = prepareEmailContentForStudent(form, request.getStudentWorkEmail());
         emailServiceImpl.sendSimpleMessage(request.getStudentWorkEmail(),
-                "Zoom Session Request from " +
-                        form.getClientFirstName() + " " +
-                        form.getClientLastName(),
-                emailContent);
+                "Zoom Session Request from " + form.getClientFirstName() + " " + form.getClientLastName(),
+                studentEmailContent);
+
+        // Prepare and send the email content to the client
+        String clientEmailContent = prepareEmailContentForClient(form, request.getStudentWorkEmail() );
+        emailServiceImpl.sendSimpleMessage(form.getClientEmail(),
+                "Zoom Session Request Confirmation",
+                clientEmailContent);
+
         form.setIsVerified(1); //FORM IS MARKED AS VERIFIED SO NOT TO DELETE IT VIA SCHEDULED TASKS
         form.setZoomSessionBookStatus(ZoomSessionBookStatus.PENDING.toString());
 
@@ -98,7 +97,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         zoomSessionFormRepository.save(form);
     }
     @Transactional
-    private String prepareEmailContent(ZoomSessionForm form, String studentWorkEmail)
+    private String prepareEmailContentForStudent(ZoomSessionForm form, String studentWorkEmail)
     throws EncryptionFailedException {
         String Pagelink = null;
         try {
@@ -130,6 +129,36 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                 " by the Company.");
         content.append("\n\nPlease confirm your availability for the Zoom session by clicking on this link: \n" + Pagelink);
 
+        content.append("\n\nBest regards,\n");
+        content.append("GuideBookX Team");
+        return content.toString();
+    }
+    @Transactional
+    private String prepareEmailContentForClient(ZoomSessionForm form, String studentWorkEmail)
+            throws EncryptionFailedException
+    {
+        String cancelPageLink = null;
+        try {
+            String encryptedFormId = EncryptionUtilForZoomSessionCancel.encrypt(form.getZoomSessionFormId(),  studentWorkEmail);
+            cancelPageLink = websiteDomainName + "/cancel-zoom-session/" + encryptedFormId;
+        } catch (Exception e) {
+            throw new EncryptionFailedException("Encryption for form id failed: " + e.getMessage());
+        }
+
+        StringBuilder content = new StringBuilder();
+        content.append("Dear ").append(form.getClientFirstName()).append(" ").append(form.getClientLastName()).append(",\n\n");
+        content.append("Thank you for your Zoom session request. Here are the details you submitted:\n\n");
+        content.append("Full Name: ").append(form.getClientFirstName()).append(" ");
+        if (form.getClientMiddleName() != null && !form.getClientMiddleName().isEmpty()) {
+            content.append(form.getClientMiddleName()).append(" ");
+        }
+        content.append(form.getClientLastName()).append("\n");
+        content.append("Email: ").append(form.getClientEmail()).append("\n");
+        content.append("Phone Number: ").append(form.getClientPhoneNumber()).append("\n");
+        content.append("Age: ").append(form.getClientAge()).append("\n");
+        content.append("College: ").append(form.getClientCollege()).append("\n");
+        content.append("Proof Document Link: \n").append(form.getClientProofDocLink()).append("\n");
+        content.append("\nIf you wish to cancel the session, please click on the link below:\n").append(cancelPageLink);
         content.append("\n\nBest regards,\n");
         content.append("GuideBookX Team");
         return content.toString();
@@ -171,7 +200,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         }
 
     }
-//    @Transactional
+    @Transactional
     public void confirmZoomSessionFromStudent(
             ConfirmZoomSessionFromStudentRequest request)
             throws ZoomSessionNotFoundException, EncryptionFailedException {
@@ -300,5 +329,91 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 
         // Format the LocalDateTime to 12-hour format with AM/PM and day-month-year format
         return dateTime.format(outputFormatter);
+    }
+
+    public void cancelZoomSessionFromClient(CancelZoomSessionFromClientRequest request)
+            throws ZoomSessionNotFoundException
+    {
+        Optional<ZoomSessionForm> checkForm = zoomSessionFormRepository.findByZoomSessionFormId(request.getZoomSessionFormId());
+        if(!checkForm.isPresent()){
+            throw new ZoomSessionNotFoundException("Zoom session form not found at cancelZoomSessionFromClient() method");
+        }
+        ZoomSessionForm form = checkForm.get();
+        form.setZoomSessionBookStatus(ZoomSessionBookStatus.CANCELLED.toString());
+        zoomSessionFormRepository.save(form);
+
+        // Prepare and send the email content to the student
+        String studentEmailContent = prepareCancelEmailContentForStudent(form);
+        emailServiceImpl.sendSimpleMessage(request.getStudentWorkEmail(),
+                "Zoom Session Cancelled by Client",
+                studentEmailContent);
+
+        // Prepare and send the email content to the client
+        String clientEmailContent = prepareCancelEmailContentForClient(form);
+        emailServiceImpl.sendSimpleMessage(form.getClientEmail(),
+                "Zoom Session Cancellation Confirmation",
+                clientEmailContent);
+    }
+
+    private String prepareCancelEmailContentForStudent(ZoomSessionForm form) {
+        StringBuilder content = new StringBuilder();
+        content.append("Dear Student,\n\n");
+        content.append("We regret to inform you that the Zoom session with ")
+                .append(form.getClientFirstName()).append(" ")
+                .append(form.getClientLastName()).append(" has been cancelled by the client.\n\n");
+        content.append("Client Details:\n");
+        content.append("Full Name: ").append(form.getClientFirstName()).append(" ");
+        if(form.getClientMiddleName() != null && !form.getClientMiddleName().isEmpty()){
+            content.append(form.getClientMiddleName()).append(" ");
+        }
+        content.append(form.getClientLastName()).append("\n");
+        content.append("Email: ").append(form.getClientEmail()).append("\n");
+        content.append("Phone Number: ").append(form.getClientPhoneNumber()).append("\n");
+        content.append("Age: ").append(form.getClientAge()).append("\n");
+        content.append("College: ").append(form.getClientCollege()).append("\n");
+        content.append("Proof Document Link: \n").append(form.getClientProofDocLink()).append("\n");
+        content.append("\nWe apologize for any inconvenience caused.\n\n");
+        content.append("Best regards,\n");
+        content.append("GuideBookX Team");
+        return content.toString();
+    }
+
+    private String prepareCancelEmailContentForClient(ZoomSessionForm form) {
+        StringBuilder content = new StringBuilder();
+        content.append("Dear ").append(form.getClientFirstName()).append(" ").append(form.getClientLastName()).append(",\n\n");
+        content.append("Your Zoom session request has been successfully cancelled.\n\n");
+        content.append("Session Details:\n");
+        content.append("Full Name: ").append(form.getClientFirstName()).append(" ");
+        if(form.getClientMiddleName() != null && !form.getClientMiddleName().isEmpty()){
+            content.append(form.getClientMiddleName()).append(" ");
+        }
+        content.append(form.getClientLastName()).append("\n");
+        content.append("Email: ").append(form.getClientEmail()).append("\n");
+        content.append("Phone Number: ").append(form.getClientPhoneNumber()).append("\n");
+        content.append("Age: ").append(form.getClientAge()).append("\n");
+        content.append("College: ").append(form.getClientCollege()).append("\n");
+        content.append("Proof Document Link: \n").append(form.getClientProofDocLink()).append("\n");
+        content.append("\nWe apologize for any inconvenience caused.\n\n");
+        content.append("Best regards,\n");
+        content.append("GuideBookX Team");
+        return content.toString();
+    }
+
+    public CancellationStatusZoomSessionResponse cancelZoomSessionCheckStatus(CancellationStatusZoomSessionRequest request)
+            throws ZoomSessionNotFoundException
+    {
+        Optional<ZoomSessionForm> checkForm = zoomSessionFormRepository.findByZoomSessionFormId(request.getFormId());
+        if(!checkForm.isPresent()){
+            throw new ZoomSessionNotFoundException("Zoom session form not found at cancelZoomSessionStatus() method");
+        }
+        ZoomSessionForm form = checkForm.get();
+        CancellationStatusZoomSessionResponse response = new CancellationStatusZoomSessionResponse();
+        if(form.getZoomSessionBookStatus().equalsIgnoreCase(ZoomSessionBookStatus.CANCELLED.toString())){
+            log.info("Cancellation status is 1");
+            response.setStatus(1);
+        } else {
+            response.setStatus(0);
+        }
+        return response;
     }
 }
