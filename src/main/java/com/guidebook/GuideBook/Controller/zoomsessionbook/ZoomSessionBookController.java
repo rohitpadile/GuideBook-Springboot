@@ -6,6 +6,8 @@ import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionBookService;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ConfirmZoomSessionFromStudentRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
+import com.guidebook.GuideBook.exceptions.EncryptionFailedException;
+import com.guidebook.GuideBook.exceptions.ZoomSessionNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,14 +30,18 @@ public class ZoomSessionBookController {
     //BELOW IT IS!
     @PostMapping("/zoomSessionFormSuccess")
     public ResponseEntity<Void> handleZoomSessionFormSuccess(
-            @RequestBody @Valid ZoomSessionConfirmationRequest zoomSessionConfirmationRequest
-            ){
+            @RequestBody @Valid ZoomSessionConfirmationRequest zoomSessionConfirmationRequest)
+    throws ZoomSessionNotFoundException,
+            EncryptionFailedException
+    {
         zoomSessionBookService.handleZoomSessionFormSuccess(zoomSessionConfirmationRequest);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/fetchZoomSessionVerifiedFormDetailsSecret/{formId}")
-    public ResponseEntity<GetZoomSessionFormDetailsResponse> getZoomSessionVerifiedFormDetails(@PathVariable String formId){
+    public ResponseEntity<GetZoomSessionFormDetailsResponse> getZoomSessionVerifiedFormDetails(@PathVariable String formId)
+            throws ZoomSessionNotFoundException
+    {
         GetZoomSessionFormDetailsResponse res = zoomSessionBookService.getZoomSessionVerifiedFormDetails(formId);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
@@ -43,7 +49,7 @@ public class ZoomSessionBookController {
     @PostMapping("/confirmZoomSessionFromStudent")
     public ResponseEntity<Void> confirmZoomSessionFromStudent(
             @RequestBody  ConfirmZoomSessionFromStudentRequest request
-            ){
+            ) throws ZoomSessionNotFoundException, EncryptionFailedException {
         zoomSessionBookService.confirmZoomSessionFromStudent(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }

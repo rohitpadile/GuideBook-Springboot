@@ -5,6 +5,7 @@ import com.guidebook.GuideBook.Services.BranchService;
 import com.guidebook.GuideBook.dtos.AddBranchRequest;
 import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeRequest;
 import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeResponse;
+import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,10 @@ public class BranchController {
     }
 
     @PostMapping("/filteredBranches")
-    public ResponseEntity<GetAllBranchNameListForCollegeResponse> getAllBranchNameListForCollege(@RequestBody @Valid GetAllBranchNameListForCollegeRequest request){
+    public ResponseEntity<GetAllBranchNameListForCollegeResponse> getAllBranchNameListForCollege(
+            @RequestBody @Valid GetAllBranchNameListForCollegeRequest request)
+            throws BranchNotFoundException
+    {
         GetAllBranchNameListForCollegeResponse res = branchService.getAllBranchNameListForCollege(request);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }

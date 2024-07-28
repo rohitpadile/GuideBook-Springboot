@@ -4,6 +4,7 @@ import com.guidebook.GuideBook.Models.Language;
 import com.guidebook.GuideBook.Models.StudentClassType;
 import com.guidebook.GuideBook.Repository.LanguageRepository;
 import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllLanguageNameListResponse;
+import com.guidebook.GuideBook.exceptions.LanguageNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class LanguageService {
         return languageRepository.save(language);
     }
 
-    public Language GetLanguageByLanguageNameIgnoreCase(String name){
+    public Language GetLanguageByLanguageNameIgnoreCase(String name) throws LanguageNotFoundException {
         return languageRepository.findLanguageByLanguageNameIgnoreCase(name);
     }
 

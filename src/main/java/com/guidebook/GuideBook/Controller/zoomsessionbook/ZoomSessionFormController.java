@@ -6,6 +6,7 @@ import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageRespon
 
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPResendRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionOTPVerifyRequest;
+import com.guidebook.GuideBook.exceptions.ZoomSessionNotFoundException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,19 @@ public class ZoomSessionFormController {
     }
 
     @PostMapping("/zoomSessionFormVerifyOTP")
-    public ResponseEntity<ZoomSessionFormMessageResponse> verifyOTP(@RequestBody @Valid ZoomSessionOTPVerifyRequest zoomSessionOTPVerifyRequest) {
+    public ResponseEntity<ZoomSessionFormMessageResponse> verifyOTP(
+            @RequestBody @Valid ZoomSessionOTPVerifyRequest zoomSessionOTPVerifyRequest)
+            throws ZoomSessionNotFoundException
+    {
         ZoomSessionFormMessageResponse responseMessage = zoomSessionFormService.verifyOTP(zoomSessionOTPVerifyRequest);
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
     @PostMapping("/zoomSessionFormResendOTP")
-    public ResponseEntity<ZoomSessionFormMessageResponse> resendOTP(@RequestBody ZoomSessionOTPResendRequest request) {
+    public ResponseEntity<ZoomSessionFormMessageResponse> resendOTP(
+            @RequestBody ZoomSessionOTPResendRequest request)
+            throws ZoomSessionNotFoundException
+    {
         ZoomSessionFormMessageResponse response = zoomSessionFormService.resendOTP(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

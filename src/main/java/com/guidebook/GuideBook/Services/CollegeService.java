@@ -8,8 +8,10 @@ import com.guidebook.GuideBook.Repository.cutomrepository.CustomCollegeRepositor
 import com.guidebook.GuideBook.dtos.AddCollegeRequest;
 //import com.guidebook.GuideBook.dtos.GetAllCollegeListForClubsResponse;
 import com.guidebook.GuideBook.dtos.GetCollegeListForExamResponse;
+import com.guidebook.GuideBook.exceptions.CollegeNotFoundException;
 import com.guidebook.GuideBook.exceptions.EntranceExamNotFoundException;
 import com.guidebook.GuideBook.mapper.CollegeMapper;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,6 +68,7 @@ public class CollegeService {
         }
         return getCollegeListForExamResponse;
     }
+    @Transactional
     public void addCollegeWithBranches(AddCollegeRequest addCollegeRequest) throws EntranceExamNotFoundException {
         College newCollege = CollegeMapper.mapToCollege(addCollegeRequest);
 
@@ -87,7 +90,7 @@ public class CollegeService {
         for(String examName : addCollegeRequest.getCollegeEntranceExamNameSet()){
             if((entranceExamService.getEntranceExamByNameIgnoreCase(examName))==null){
                 throw new EntranceExamNotFoundException("Entrance exam not found: " + examName +"." +
-                        " Exams which exists might be added to the college Entrance Set");
+                        " Rolling back the whole method");
             } else {
                 //Exam found
                 //Add it to the collegeEntrance Set
@@ -99,7 +102,8 @@ public class CollegeService {
         collegeRepository.save(newCollege);
     }
 
-    public College getCollegeByCollegeNameIgnoreCase(String name){
+    public College getCollegeByCollegeNameIgnoreCase(String name)
+    throws CollegeNotFoundException {
         return collegeRepository.findCollegeByCollegeNameIgnoreCase(name);
     }
 

@@ -5,6 +5,7 @@ import com.guidebook.GuideBook.Models.StudentClassType;
 import com.guidebook.GuideBook.Repository.StudentCategoryRepository;
 import com.guidebook.GuideBook.dtos.AddStudentCategoryRequest;
 import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllStudentCategoryNameListResponse;
+import com.guidebook.GuideBook.exceptions.StudentCategoryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,8 @@ public class StudentCategoryService {
         return response;
     }
 
-    public StudentCategory getStudentCategoryByStudentCategoryNameIgnoreCase(String name){
+    public StudentCategory getStudentCategoryByStudentCategoryNameIgnoreCase(String name)
+    throws StudentCategoryNotFoundException {
         return studentCategoryRepository.findStudentCategoryByStudentCategoryNameIgnoreCase(name);
     }
 

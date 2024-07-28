@@ -7,6 +7,7 @@ import com.guidebook.GuideBook.Repository.cutomrepository.CustomBranchRepository
 import com.guidebook.GuideBook.dtos.AddBranchRequest;
 import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeRequest;
 import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeResponse;
+import com.guidebook.GuideBook.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.mapper.BranchMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,9 @@ public class BranchService {
         this.branchRepository = branchRepository;
         this.customBranchRepositoryImpl = customBranchRepositoryImpl;
     }
-    public Branch getBranchById(Long branchId){
+    public Branch getBranchById(Long branchId) throws BranchNotFoundException {
         return branchRepository.findById(branchId).orElseThrow(
-                () -> new EntityNotFoundException("Branch not found with id: " + branchId)
+                () -> new BranchNotFoundException("Branch not found with id: " + branchId)
         );
     }
 
@@ -61,7 +62,8 @@ public class BranchService {
         return result;
     }
 
-    public GetAllBranchNameListForCollegeResponse getAllBranchNameListForCollege(GetAllBranchNameListForCollegeRequest request) {
+    public GetAllBranchNameListForCollegeResponse getAllBranchNameListForCollege(GetAllBranchNameListForCollegeRequest request)
+    throws BranchNotFoundException{
         List<Branch> branches = customBranchRepositoryImpl.findBranchesForCollegeIgnoreCase(request);
         GetAllBranchNameListForCollegeResponse response = new GetAllBranchNameListForCollegeResponse();
 

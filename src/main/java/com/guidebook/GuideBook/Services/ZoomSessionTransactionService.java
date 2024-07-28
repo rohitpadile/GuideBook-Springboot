@@ -4,6 +4,7 @@ import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Models.ZoomSessionForm;
 import com.guidebook.GuideBook.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.Repository.ZoomSessionTransactionRepository;
+import com.guidebook.GuideBook.exceptions.TransactionNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,8 @@ public class ZoomSessionTransactionService {
         return zoomSessionTransactionRepository.save(zoomSessionTransaction);
     }
 
-    public ZoomSessionTransaction getZoomSessionTransactionById(String zoomSessionTransactionId){
+    public ZoomSessionTransaction getZoomSessionTransactionById(String zoomSessionTransactionId)
+    throws TransactionNotFoundException{
         return zoomSessionTransactionRepository.findByZoomSessionTransactionId(zoomSessionTransactionId);
     }
     public ZoomSessionTransaction saveZoomSessionTransaction(ZoomSessionTransaction transaction){

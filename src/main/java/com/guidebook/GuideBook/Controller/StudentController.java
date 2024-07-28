@@ -31,7 +31,10 @@ public class StudentController {
     }
 
     @PostMapping("/filteredStudentList")
-    public ResponseEntity<List<FilteredStudentDetails>> getFilteredStudentList(@RequestBody @Valid FilteredStudentListRequest filteredStudentListRequest){
+    public ResponseEntity<List<FilteredStudentDetails>> getFilteredStudentList(
+            @RequestBody @Valid FilteredStudentListRequest filteredStudentListRequest)
+            throws FilteredStudentListNotFoundException
+    {
         List<FilteredStudentDetails> response = studentService.getFilteredStudentList(filteredStudentListRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

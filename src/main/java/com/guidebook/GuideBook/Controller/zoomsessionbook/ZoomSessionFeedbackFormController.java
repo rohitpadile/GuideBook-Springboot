@@ -4,6 +4,7 @@ import com.guidebook.GuideBook.Services.ZoomSessionFeedbackFormService;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.GetSubmittionStatusForFeedbackFormResponse;
 import com.guidebook.GuideBook.dtos.zoomsessionbook.SubmitZoomSessionFeedbackFormRequest;
 import com.guidebook.GuideBook.exceptions.StudentProfileContentNotFoundException;
+import com.guidebook.GuideBook.exceptions.TransactionNotFoundException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,8 @@ public class ZoomSessionFeedbackFormController {
     @PostMapping("/submitZoomSessionFeedbackForm")
     public ResponseEntity<Void> submitZoomSessionFeedbackForm(
             @RequestBody @Valid SubmitZoomSessionFeedbackFormRequest request)
-    throws StudentProfileContentNotFoundException
+            throws StudentProfileContentNotFoundException,
+            TransactionNotFoundException
     {
         zoomSessionFeedbackFormService.submitZoomSessionFeedbackForm(request);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -34,6 +36,7 @@ public class ZoomSessionFeedbackFormController {
     @GetMapping("/getSubmittionStatusForFeedbackForm/{transactionId}")
     public ResponseEntity<GetSubmittionStatusForFeedbackFormResponse> getSubmittionStatusForFeedbackForm(
             @PathVariable String transactionId)
+            throws TransactionNotFoundException
     {
         GetSubmittionStatusForFeedbackFormResponse res = zoomSessionFeedbackFormService
                 .getSubmittionStatusForFeedbackForm(transactionId);

@@ -16,6 +16,8 @@ import com.guidebook.GuideBook.dtos.zoomsessionbook.GetZoomSessionFormDetailsRes
 import com.guidebook.GuideBook.dtos.zoomsessionbook.ZoomSessionConfirmationRequest;
 import com.guidebook.GuideBook.dtos.zoomsessionform.ZoomSessionFormMessageResponse;
 import com.guidebook.GuideBook.enums.ZoomSessionBookStatus;
+import com.guidebook.GuideBook.exceptions.EncryptionFailedException;
+import com.guidebook.GuideBook.exceptions.ZoomSessionNotFoundException;
 import com.guidebook.GuideBook.util.EncryptionUtil;
 import com.guidebook.GuideBook.util.EncryptionUtilForFeedbackForm;
 import jakarta.transaction.Transactional;
@@ -56,11 +58,17 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
     }
 
     @Transactional
-    public void handleZoomSessionFormSuccess(ZoomSessionConfirmationRequest request) {
+    public void handleZoomSessionFormSuccess(ZoomSessionConfirmationRequest request)
+    throws ZoomSessionNotFoundException,
+            EncryptionFailedException
+    {
         // Retrieve the form details from the database
-        ZoomSessionForm form = zoomSessionFormRepository.findByZoomSessionFormId(request.getZoomSessionFormId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid form ID"));
-        //THROW CUSTOM FORM NOT FOUND EXCEPTION HERE
+
+        Optional<ZoomSessionForm> checkForm = zoomSessionFormRepository.findByZoomSessionFormId(request.getZoomSessionFormId());
+        if(!checkForm.isPresent()){
+            throw new ZoomSessionNotFoundException("Zoom session not found at handleZoomSessionFormSuccess() method");
+        }
+        ZoomSessionForm form = checkForm.get();
 
         //Dont let him click on Book session multiple times - spamming email for student
         Optional<BookingRestriction> restriction = bookingRestrictionService.findByClientEmail(form.getClientEmail());
@@ -90,7 +98,8 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         zoomSessionFormRepository.save(form);
     }
     @Transactional
-    private String prepareEmailContent(ZoomSessionForm form, String studentWorkEmail) {
+    private String prepareEmailContent(ZoomSessionForm form, String studentWorkEmail)
+    throws EncryptionFailedException {
         String Pagelink = null;
         try {
             String encryptedFormId = EncryptionUtil.encrypt(form.getZoomSessionFormId());
@@ -99,21 +108,22 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             String encodedEncryptedData = URLEncoder.encode(encryptedData, StandardCharsets.UTF_8.toString());
             Pagelink = websiteDomainName + "/schedule-zoom-session/" + encodedEncryptedData;
         } catch (Exception e) {
-            e.printStackTrace(); // throw custom encryption exception
+//            e.printStackTrace(); // throw custom encryption exception
+            throw new EncryptionFailedException("Encryption for studentWorkEmail and form id failed" + e.getMessage());
         }
         // Prepare the email content with form details
         StringBuilder content = new StringBuilder();
         content.append("Dear Student,\n\n");
         content.append("New request for Zoom session. Here are the details:\n\n");
-        content.append("Full Name: \t").append(form.getClientFirstName()).append(" ");
+        content.append("Full Name: ").append(form.getClientFirstName()).append(" ");
         if(!(form.getClientMiddleName()==null) && !form.getClientMiddleName().isEmpty()){
             content.append(form.getClientMiddleName()).append(" ");
         }
         content.append(form.getClientLastName()).append("\n");
-        content.append("Email: \t").append(form.getClientEmail()).append("\n");
-        content.append("Phone Number: \t").append(form.getClientPhoneNumber()).append("\n");
-        content.append("Age: \t").append(form.getClientAge()).append("\n");
-        content.append("College: \t").append(form.getClientCollege()).append("\n");
+        content.append("Email: ").append(form.getClientEmail()).append("\n");
+        content.append("Phone Number: ").append(form.getClientPhoneNumber()).append("\n");
+        content.append("Age: ").append(form.getClientAge()).append("\n");
+        content.append("College: ").append(form.getClientCollege()).append("\n");
         content.append("Proof Document Link: \n").append(form.getClientProofDocLink()).append("\n");
         content.append("\nImportant Note: Confirm the session only if the College Id, Fee Receipt " +
                 "and Adhar Card match and are valid. Otherwise strict actions are to be taken" +
@@ -125,51 +135,53 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         return content.toString();
     }
 
-    public GetZoomSessionFormDetailsResponse getZoomSessionVerifiedFormDetails(String formId) {
+    public GetZoomSessionFormDetailsResponse getZoomSessionVerifiedFormDetails(String formId)
+            throws ZoomSessionNotFoundException
+    {
         Optional<ZoomSessionForm> checkForm = zoomSessionFormRepository.findByZoomSessionFormId(formId);
-        if(checkForm.isPresent()){
-            ZoomSessionForm form = checkForm.get();
-            if(form.getIsVerified() == 1){
+        if(!checkForm.isPresent()){
+            throw new ZoomSessionNotFoundException("Zoom session form not found at getZoomSessionVerifiedFormDetails() method");
 
-                return GetZoomSessionFormDetailsResponse.builder()
-                        .clientFirstName(form.getClientFirstName())
-                        .clientMiddleName(form.getClientMiddleName())
-                        .clientLastName(form.getClientLastName())
-                        .clientCollege(form.getClientCollege())
-                        .clientAge(form.getClientAge())
-                        .clientEmail(form.getClientEmail())
-                        .clientPhoneNumber(form.getClientPhoneNumber())
-                        .clientProofDocLink(form.getClientProofDocLink())
-                        .isVerified(form.getIsVerified())
-//                        .clientFeedbackFormLink() //COMPLETE THIS
-                        .bookStatus(form.getZoomSessionBookStatus().toString())
-                        .createdOn(form.getCreatedOn())
-                        .build();
-            } else { //RARE CASE
-                //SEND A DTO TO THE FRONTEND SAYING THAT THE FORM IS NOT VERIFIED
-                //PLEASE DISCARD SCHEDULING THE SESSION
-                //IF SCHEDULED EVEN AFTER WARNING, YOUR ACCOUNT WILL BE REMOVED AND BLOCK FROM THE PLATFORM
-                return GetZoomSessionFormDetailsResponse.builder()
-                        .isVerified(form.getIsVerified())
-                        .createdOn(form.getCreatedOn())
-                        .build();
-            }
-        } else {
-            //THROW CUSTOM FORM NOT FOUND EXCEPTION
-            throw new IllegalArgumentException();
         }
+        ZoomSessionForm form = checkForm.get();
+        if(form.getIsVerified() == 1){
+
+            return GetZoomSessionFormDetailsResponse.builder()
+                    .clientFirstName(form.getClientFirstName())
+                    .clientMiddleName(form.getClientMiddleName())
+                    .clientLastName(form.getClientLastName())
+                    .clientCollege(form.getClientCollege())
+                    .clientAge(form.getClientAge())
+                    .clientEmail(form.getClientEmail())
+                    .clientPhoneNumber(form.getClientPhoneNumber())
+                    .clientProofDocLink(form.getClientProofDocLink())
+                    .isVerified(form.getIsVerified())
+//                        .clientFeedbackFormLink() //COMPLETE THIS
+                    .bookStatus(form.getZoomSessionBookStatus().toString())
+                    .createdOn(form.getCreatedOn())
+                    .build();
+        } else { //RARE CASE
+            //SEND A DTO TO THE FRONTEND SAYING THAT THE FORM IS NOT VERIFIED
+            //PLEASE DISCARD SCHEDULING THE SESSION
+            //IF SCHEDULED EVEN AFTER WARNING, YOUR ACCOUNT WILL BE REMOVED AND BLOCK FROM THE PLATFORM
+            return GetZoomSessionFormDetailsResponse.builder()
+                    .isVerified(form.getIsVerified())
+                    .createdOn(form.getCreatedOn())
+                    .build();
+        }
+
     }
 //    @Transactional
     public void confirmZoomSessionFromStudent(
             ConfirmZoomSessionFromStudentRequest request)
-    {
+            throws ZoomSessionNotFoundException, EncryptionFailedException {
         // Find student details using formId or other means
         Student student = studentRepository.findByStudentWorkEmail(request.getStudentWorkEmail());
         String studentName = student.getStudentName();
 
         Optional<ZoomSessionForm> optionalForm = zoomSessionFormRepository.findByZoomSessionFormId(request.getZoomSessionFormId());
         if (!optionalForm.isPresent()) {
-            throw new RuntimeException("Zoom session form not found");
+            throw new ZoomSessionNotFoundException("Zoom session form not found at confirmZoomSessionFromStudent() method");
             //THROW CUSTOM FORM NOT FOUND EXCEPTION HERE
         }
         // Fetch client details from formDetails
@@ -191,6 +203,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             feedbackPageLink = websiteDomainName + "/feedback-zoom-session/" + URLEncoder.encode(encodedId, StandardCharsets.UTF_8.toString());
         } catch (Exception e) {
             log.error("Error at encoding transaction id into feedback link: {}", e.getMessage());
+            throw new EncryptionFailedException("Error Encrypting feedback link at confirmZoomSessionFromStudent() method");
         }
 
         String clientSubject;
@@ -201,12 +214,14 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 
         if (request.getIsAvailable() == 0) { //Session cancelled from student
             clientSubject = "Zoom Session Unavailability Notification";
-            clientText = String.format("Dear %s,\n\n%s is not available for the meeting anytime soon.\nStudent has left a message for you:\n\nMessage: %s",
+            clientText = String.format("Dear %s,\n\n%s is not available for the meeting anytime soon.\nStudent has left a message for you:\n\nMessage: %s" +
+                            "\n\nBest regards,\n" +
+                            "GuidebookX Team",
                     clientName, studentName, request.getStudentMessageToClient());
 
             studentSubject = "Zoom Session Cancellation";
             studentText = String.format("Your zoom session with %s is Cancelled." +
-                            "\n\nFollowing are the client details\n\nClient Name: %s" +
+                            "\n\nFollowing were the client details\n\nClient Name: %s" +
                             "\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s" +
                             "\nClient College: %s\nProof Document: \n%s" +
                             "\n\nBest regards,\n" +
@@ -232,7 +247,9 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                             "NOTE: Kindly do not share these details with anyone. Only the email with which " +
                             "you have registered is permitted to be in the meeting otherwise the meeting " +
                             "will be cancelled.\n\nIf you have any issues regarding the email, please send " +
-                            "an email to us at help.guidebookx@gmail.com",
+                            "an email to us at help.guidebookx@gmail.com" +
+                            "\n\nBest regards,\n" +
+                            "GuidebookX Team",
                     clientName,
                     studentName,
                     convertTo12HourFormat(request.getZoomSessionTime()),

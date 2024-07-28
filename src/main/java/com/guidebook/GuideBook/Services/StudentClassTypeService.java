@@ -6,6 +6,7 @@ import com.guidebook.GuideBook.Models.StudentClassType;
 import com.guidebook.GuideBook.Repository.StudentClassTypeRepository;
 import com.guidebook.GuideBook.dtos.AddStudentClassTypeRequest;
 import com.guidebook.GuideBook.dtos.selectStudentFiltering.GetAllStudentClassTypeNameListResponse;
+import com.guidebook.GuideBook.exceptions.StudentClassTypeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,8 @@ public class StudentClassTypeService {
         this.studentClassTypeRepository = studentClassTypeRepository;
     }
 
-    public StudentClassType getStudentClassTypeByStudentClassTypeName(String classType) {
+    public StudentClassType getStudentClassTypeByStudentClassTypeName(String classType)
+    throws StudentClassTypeNotFoundException {
         return studentClassTypeRepository.findStudentClassTypeByStudentClassTypeName(classType);
     }
 

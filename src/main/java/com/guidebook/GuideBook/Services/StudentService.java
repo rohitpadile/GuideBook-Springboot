@@ -59,7 +59,9 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public List<FilteredStudentDetails> getFilteredStudentList(FilteredStudentListRequest filteredStudentListRequest) {
+    public List<FilteredStudentDetails> getFilteredStudentList(FilteredStudentListRequest filteredStudentListRequest)
+            throws FilteredStudentListNotFoundException
+    {
         List<FilteredStudentDetails> list = new ArrayList<>();
         try {
             List<Student> studentList = customStudentRepositoryImpl.findStudentsByFiltersIgnoreCase(filteredStudentListRequest);
@@ -74,7 +76,7 @@ public class StudentService {
         } catch (Exception ex) {
             // Log the exception
             ex.printStackTrace();
-            throw new RuntimeException("Error fetching filtered student list", ex); // Example: Rethrow as a more specific exception
+            throw new FilteredStudentListNotFoundException("Error fetching filtered student list" + ex.getMessage()); // Example: Rethrow as a more specific exception
         }
         return list;
     }
