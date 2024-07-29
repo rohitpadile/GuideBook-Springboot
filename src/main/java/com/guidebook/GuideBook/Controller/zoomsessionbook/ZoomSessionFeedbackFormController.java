@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.awt.image.RescaleOp;
 
-@CrossOrigin(origins = {"http://guidebookx.s3-website.ap-south-1.amazonaws.com", "http://localhost:3000", "http://localhost:8080"})
+@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:8080",
+        "https://dwyh4gudx0a9x.cloudfront.net",
+        "https://guidebookx.com"})
 @RestController
 @RequestMapping("/api/v1/admin/")
 @Slf4j

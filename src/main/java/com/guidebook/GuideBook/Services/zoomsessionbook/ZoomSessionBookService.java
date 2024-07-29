@@ -124,9 +124,8 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         content.append("Age: ").append(form.getClientAge()).append("\n");
         content.append("College: ").append(form.getClientCollege()).append("\n");
         content.append("Proof Document Link: \n").append(form.getClientProofDocLink()).append("\n");
-        content.append("\nImportant Note: Confirm the session only if the College Id, Fee Receipt " +
-                "and Adhar Card match and are valid. Otherwise strict actions are to be taken" +
-                " by the Company.");
+        content.append("\nImportant Note: Confirm the session only if the " +
+                "client documents are valid. \nPlease read terms and conditions of the company before proceeding.");
         content.append("\n\nPlease confirm your availability for the Zoom session by clicking on this link: \n" + Pagelink);
 
         content.append("\n\nBest regards,\n");
