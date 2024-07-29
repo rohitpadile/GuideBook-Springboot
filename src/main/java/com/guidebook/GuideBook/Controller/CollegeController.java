@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = {
-        "https://api.guidebookx.com",
         "http://guidebookx.s3-website.ap-south-1.amazonaws.com",
         "https://guidebookx.s3-website.ap-south-1.amazonaws.com",
         "http://d23toh43udoeld.cloudfront.net",

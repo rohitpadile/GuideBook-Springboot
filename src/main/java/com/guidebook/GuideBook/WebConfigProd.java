@@ -13,7 +13,6 @@ public class WebConfigProd implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/v1/admin/**")
                 .allowedOrigins(
-                        "https://api.guidebookx.com",
                         "http://guidebookx.s3-website.ap-south-1.amazonaws.com",
                         "https://guidebookx.s3-website.ap-south-1.amazonaws.com",
                         "http://d23toh43udoeld.cloudfront.net",
