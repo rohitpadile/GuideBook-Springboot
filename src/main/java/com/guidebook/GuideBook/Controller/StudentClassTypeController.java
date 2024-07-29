@@ -19,7 +19,8 @@ import java.util.List;
         "http://d23toh43udoeld.cloudfront.net",
         "https://d23toh43udoeld.cloudfront.net",
         "http://guidebookx.com",
-        "https://guidebookx.com", "http://localhost:3000", "http://localhost:8080"})
+        "https://guidebookx.com", "http://localhost:3000", "http://localhost:8080",
+        "https://www.guidebookx.com"})
 @RestController
 @RequestMapping("/api/v1/admin/")
 public class StudentClassTypeController {

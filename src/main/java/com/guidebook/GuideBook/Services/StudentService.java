@@ -8,6 +8,7 @@ import com.guidebook.GuideBook.Models.StudentProfile;
 import com.guidebook.GuideBook.Repository.StudentRepository;
 import com.guidebook.GuideBook.Repository.cutomrepository.CustomStudentRepositoryImpl;
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
+import com.guidebook.GuideBook.dtos.UpdateStudentRequest;
 import com.guidebook.GuideBook.dtos.filterstudents.FilteredStudentListRequest;
 import com.guidebook.GuideBook.dtos.filterstudents.FilteredStudentDetails;
 import com.guidebook.GuideBook.dtos.GetStudentBasicDetailsResponse;
@@ -83,7 +84,7 @@ public class StudentService {
 
 
     @Transactional //THIS CAN THROW ERROR - KEEP A WATCH
-    public Student addStudent(AddStudentRequest addStudentRequest) throws
+    public GetStudentBasicDetailsResponse addStudent(AddStudentRequest addStudentRequest) throws
             CollegeNotFoundException,
             BranchNotFoundException,
             StudentClassTypeNotFoundException,
@@ -131,33 +132,45 @@ public class StudentService {
         }
         StudentProfile newStudentProfile = StudentProfileMapper.mapToStudentProfile(addStudentRequest);
         studentProfileService.addStudentProfileWithAddStudent(newStudentProfile); //Saving a profile for this student in studentprofile table
-        return studentRepository.save(newStudent);
+        return getStudentBasicDetailsResponse(studentRepository.save(newStudent));
     }
 
     public GetStudentBasicDetailsResponse getStudentBasicDetails(String studentWorkEmail)
     throws StudentBasicDetailsNotFoundException
     {
         Student student = studentRepository.findByStudentWorkEmail(studentWorkEmail);
-        GetStudentBasicDetailsResponse response = new GetStudentBasicDetailsResponse();
-        if(student.getStudentPublicEmail()!=null){ //just to be sure apart from the exception.
-            response.setPublicEmail(student.getStudentPublicEmail());
-        }
-        response.setBranch(student.getStudentBranch().getBranchName());
-        response.setGrade(student.getGrade());
-        response.setCetPercentile(student.getCetPercentile());
-        response.setClassType(student.getStudentClassType().getStudentClassTypeName());
-        response.setCategory(student.getStudentCategory().getStudentCategoryName());
-        response.setCollege(student.getStudentCollege().getCollegeName());
+        return getStudentBasicDetailsResponse(student);
+    }
 
-        List<Language> languageList = student.getStudentLanguageList();
-        for(Language language : languageList){
-            response.getLanguagesSpoken().add(language.getLanguageName());
-        }
-        return response;
+    @Transactional
+    public GetStudentBasicDetailsResponse updateStudent(UpdateStudentRequest updateStudentRequest) throws CollegeNotFoundException, StudentClassTypeNotFoundException, StudentCategoryNotFoundException, LanguageNotFoundException {
+        Student student = studentRepository.findByStudentWorkEmail(updateStudentRequest.getStudentWorkEmail());
+
+        student.setStudentName(updateStudentRequest.getStudentName());
+        student.setStudentMis(updateStudentRequest.getStudentMis());
+        student.setStudentPublicEmail(updateStudentRequest.getStudentPublicEmail());
+        student.setStudentCollege(collegeService.getCollegeByCollegeNameIgnoreCase(
+                updateStudentRequest.getStudentCollegeName()
+        ));
+        student.setStudentBranch(branchService.getBranchByBranchNameIgnoreCase(
+                updateStudentRequest.getStudentBranchName()
+        ));
+        student.setCetPercentile(updateStudentRequest.getStudentCetPercentile());
+        student.setGrade(updateStudentRequest.getStudentGrade());
+        student.setStudentClassType(studentClassTypeService.getStudentClassTypeByStudentClassTypeName(
+                updateStudentRequest.getStudentClassType()
+        ));
+        student.setStudentCategory(studentCategoryService.getStudentCategoryByStudentCategoryNameIgnoreCase(
+                updateStudentRequest.getStudentCategoryName()
+        ));
+        Boolean languageListAddedSuccess = updateStudentLanguageList(updateStudentRequest ,student);
+        log.info("Language list updated boolean : {}", languageListAddedSuccess);
+
+        return getStudentBasicDetailsResponse(studentRepository.save(student));
     }
     @Transactional
     private boolean addStudentLanguageList(AddStudentRequest addStudentRequest, Student newStudent)
-    throws LanguageNotFoundException{
+            throws LanguageNotFoundException{
         List<Language> languageList = new ArrayList<>();
         for (String studentLanguageName : addStudentRequest.getStudentLanguageNames()) {
             Language language = languageService.GetLanguageByLanguageNameIgnoreCase(studentLanguageName);
@@ -169,5 +182,46 @@ public class StudentService {
         newStudent.setStudentLanguageList(languageList);
         return true;
     }
+
+    @Transactional
+    private boolean updateStudentLanguageList(UpdateStudentRequest updateStudentRequest, Student newStudent)
+            throws LanguageNotFoundException{
+        List<Language> languageList = new ArrayList<>();
+        for (String studentLanguageName : updateStudentRequest.getStudentLanguageNames()) {
+            Language language = languageService.GetLanguageByLanguageNameIgnoreCase(studentLanguageName);
+            if (language == null) {
+                throw new LanguageNotFoundException("Language not found : " + studentLanguageName);
+            }
+            languageList.add(language); //add the language to the studentLanguageList if not null
+        }
+        newStudent.setStudentLanguageList(languageList);
+        return true;
+    }
+    @Transactional
+    private static GetStudentBasicDetailsResponse getStudentBasicDetailsResponse(Student student){
+        GetStudentBasicDetailsResponse response = new GetStudentBasicDetailsResponse();
+
+        response.setStudentName(student.getStudentName());
+        response.setStudentMis(student.getStudentMis());
+        response.setStudentWorkEmail(student.getStudentWorkEmail());
+        response.setStudentPublicEmail(student.getStudentPublicEmail());
+        response.setCollege(student.getStudentCollege().getCollegeName());
+        response.setBranch(student.getStudentBranch().getBranchName());
+        response.setCetPercentile(student.getCetPercentile());
+        response.setGrade(student.getGrade());
+        response.setClassType(student.getStudentClassType().getStudentClassTypeName());
+        response.setCategory(student.getStudentCategory().getStudentCategoryName());
+
+        List<String> languages = new ArrayList<>();
+        for(Language l : student.getStudentLanguageList()){
+            languages.add(l.getLanguageName());
+        }
+        response.setLanguagesSpoken(languages);
+
+        return response;
+    }
+
+
+
 }
 

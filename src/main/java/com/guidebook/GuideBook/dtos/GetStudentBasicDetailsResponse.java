@@ -19,4 +19,8 @@ public class GetStudentBasicDetailsResponse {
     String category;
     String college;
     String examName;
+    String studentName;
+    Long studentMis;
+    String studentWorkEmail;
+    String studentPublicEmail;
 }
