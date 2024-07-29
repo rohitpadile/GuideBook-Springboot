@@ -14,9 +14,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 
-@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:8080",
-        "https://dwyh4gudx0a9x.cloudfront.net",
-        "https://guidebookx.com"})
+@CrossOrigin(origins = {
+        "https://api.guidebookx.com",
+        "http://guidebookx.s3-website.ap-south-1.amazonaws.com",
+        "https://guidebookx.s3-website.ap-south-1.amazonaws.com",
+        "http://d23toh43udoeld.cloudfront.net",
+        "https://d23toh43udoeld.cloudfront.net",
+        "http://guidebookx.com",
+        "https://guidebookx.com", "http://localhost:3000", "http://localhost:8080"})
 @RestController
 @RequestMapping("/api/v1/admin/")
 public class StudentProfileController {
