@@ -11,13 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = {
-        "http://guidebookx.s3-website.ap-south-1.amazonaws.com",
-        "https://guidebookx.s3-website.ap-south-1.amazonaws.com",
-        "http://d23toh43udoeld.cloudfront.net",
-        "https://d23toh43udoeld.cloudfront.net",
-        "http://guidebookx.com",
-        "https://guidebookx.com", "http://localhost:3000", "http://localhost:8080",
-        "https://www.guidebookx.com"})
+        "http://localhost:3000", "http://localhost:8080",
+        "https://www.guidebookx.com","https://guidebookx.com",
+        "https://api.guidebookx.com"})
 @RestController
 @RequestMapping("/api/v1/admin/")
 public class StudentCategoryController {
