@@ -1,21 +1,15 @@
 package com.guidebook.GuideBook.Controller.teamRecruiter;
 
 import com.guidebook.GuideBook.Controller.StudentController;
-import com.guidebook.GuideBook.Models.Student;
 import com.guidebook.GuideBook.Services.StudentService;
 import com.guidebook.GuideBook.dtos.AddStudentRequest;
 import com.guidebook.GuideBook.dtos.GetStudentBasicDetailsResponse;
 import com.guidebook.GuideBook.dtos.UpdateStudentRequest;
-import com.guidebook.GuideBook.dtos.filterstudents.FilteredStudentDetails;
-import com.guidebook.GuideBook.dtos.filterstudents.FilteredStudentListRequest;
 import com.guidebook.GuideBook.exceptions.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin(origins = {
         "http://localhost:3000", "http://localhost:8080",
@@ -24,13 +18,13 @@ import java.util.List;
         "https://diugkigakpnwm.cloudfront.net"})
 @RestController
 @RequestMapping("/api/v1/teamRecruiter/")
-public class StudentControllerTeamRecruiter {
+public class TRStudentController {
 
     private StudentService studentService;
     private StudentController studentController;
     @Autowired
-    StudentControllerTeamRecruiter(StudentService studentService,
-                                   StudentController studentController){
+    TRStudentController(StudentService studentService,
+                        StudentController studentController){
         this.studentService = studentService;
         this.studentController = studentController;
     }
