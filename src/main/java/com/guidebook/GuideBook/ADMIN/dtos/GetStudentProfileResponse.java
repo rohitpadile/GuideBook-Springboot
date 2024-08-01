@@ -1,7 +1,7 @@
 package com.guidebook.GuideBook.ADMIN.dtos;
 
 import com.guidebook.GuideBook.ADMIN.embeddables.studentProfile.*;
-import com.guidebook.GuideBook.embeddables.studentProfile.*;
+
 import lombok.Builder;
 import lombok.Data;
 

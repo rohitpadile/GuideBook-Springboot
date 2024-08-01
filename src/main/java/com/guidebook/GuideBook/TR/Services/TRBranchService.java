@@ -4,9 +4,10 @@ import com.guidebook.GuideBook.ADMIN.Models.Branch;
 import com.guidebook.GuideBook.ADMIN.Repository.BranchRepository;
 import com.guidebook.GuideBook.TR.dtos.TRGetAllBranchNameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class TRBranchService {
     private BranchRepository branchRepository;
     @Autowired

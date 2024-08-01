@@ -4,7 +4,6 @@ package com.guidebook.GuideBook.ADMIN.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.guidebook.GuideBook.ADMIN.embeddables.studentProfile.*;
-import com.guidebook.GuideBook.embeddables.studentProfile.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

@@ -1,7 +1,6 @@
 package com.guidebook.GuideBook.ADMIN.Controller;
 
 import com.guidebook.GuideBook.ADMIN.exceptions.*;
-import com.guidebook.GuideBook.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

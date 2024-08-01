@@ -6,7 +6,6 @@ import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.*;
 import com.guidebook.GuideBook.ADMIN.exceptions.EncryptionFailedException;
 import com.guidebook.GuideBook.ADMIN.exceptions.ZoomSessionNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Services.zoomsessionbook.ZoomSessionBookService;
-import com.guidebook.GuideBook.dtos.zoomsessionbook.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

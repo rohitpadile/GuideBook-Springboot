@@ -3,9 +3,7 @@ package com.guidebook.GuideBook.ADMIN.Repository.cutomrepository;
 import com.guidebook.GuideBook.ADMIN.Models.*;
 import com.guidebook.GuideBook.ADMIN.Services.*;
 import com.guidebook.GuideBook.ADMIN.dtos.filterstudents.FilteredStudentListRequest;
-import com.guidebook.GuideBook.Models.*;
-import com.guidebook.GuideBook.Repository.*;
-import com.guidebook.GuideBook.Services.*;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
