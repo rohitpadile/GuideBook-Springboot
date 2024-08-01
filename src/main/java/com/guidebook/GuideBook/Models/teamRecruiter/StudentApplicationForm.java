@@ -10,5 +10,5 @@
 //@AllArgsConstructor
 //@Data
 //public class StudentApplicationForm {
-//
+//    private
 //}

@@ -20,7 +20,8 @@ public class WebConfigProd implements WebMvcConfigurer {
                 .allowedOrigins(
                         "https://www.guidebookx.com",
                         "https://guidebookx.com",
-                        "https://api.guidebookx.com"
+                        "https://api.guidebookx.com",
+                        "https://diugkigakpnwm.cloudfront.net"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
