@@ -171,7 +171,7 @@ public class StudentProfileService {
 //        return response;
 //    }
 
-    public StudentProfile getStudentProfileForFeedbackFormSuccess(String studentWorkEmail)
+    public StudentProfile getStudentProfileForGeneralPurpose(String studentWorkEmail)
             throws StudentProfileContentNotFoundException {
 
         Optional<StudentProfile> checkProfile = studentProfileRepository.findStudentProfileByStudentWorkEmail(studentWorkEmail);
@@ -184,6 +184,10 @@ public class StudentProfileService {
     public void updateStudentProfile(StudentProfile studentProfile)
     throws StudentProfileContentNotFoundException{
         studentProfileRepository.save(studentProfile);
+    }
+
+    public void deleteStudentProfile(StudentProfile profile){
+        studentProfileRepository.delete(profile);
     }
 
 }

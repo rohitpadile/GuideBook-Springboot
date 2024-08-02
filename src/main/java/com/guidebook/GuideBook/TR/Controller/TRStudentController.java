@@ -3,6 +3,7 @@ package com.guidebook.GuideBook.TR.Controller;
 import com.guidebook.GuideBook.ADMIN.Controller.StudentController;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.dtos.AddStudentRequest;
+import com.guidebook.GuideBook.ADMIN.dtos.DeleteStudentRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.GetStudentBasicDetailsResponse;
 import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentRequest;
 import com.guidebook.GuideBook.ADMIN.exceptions.*;
@@ -58,6 +59,12 @@ public class TRStudentController {
     //ABOVE ARE THE SAME METHODS THAT ADMIN ALSO USE - LIKE ME
 
     //BELOW METHODS TO BE DEFINED ARE :-
+
+    @PostMapping("/deleteStudent")
+    public ResponseEntity<Void> deleteStudent(@RequestBody @Valid DeleteStudentRequest deleteStudentRequest) throws StudentProfileContentNotFoundException {
+        studentService.deleteStudent(deleteStudentRequest);
+        return studentController.deleteStudent(deleteStudentRequest);
+    }
 
 
 }

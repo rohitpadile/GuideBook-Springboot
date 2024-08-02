@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.ADMIN.Services;
 
 
 
+import com.guidebook.GuideBook.ADMIN.dtos.DeleteStudentRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.GetStudentBasicDetailsResponse;
 import com.guidebook.GuideBook.ADMIN.dtos.filterstudents.FilteredStudentListRequest;
 import com.guidebook.GuideBook.ADMIN.exceptions.*;
@@ -223,6 +224,16 @@ public class StudentService {
     }
 
 
-
+    public void deleteStudent(DeleteStudentRequest deleteStudentRequest)
+            throws StudentProfileContentNotFoundException
+    {
+        StudentProfile profile = studentProfileService.getStudentProfileForGeneralPurpose(
+                deleteStudentRequest.getStudentWorkEmail());
+        Student student = studentRepository.findByStudentWorkEmail(
+                deleteStudentRequest.getStudentWorkEmail()
+        );
+        studentProfileService.deleteStudentProfile(profile);
+        studentRepository.delete(student);
+    }
 }
 

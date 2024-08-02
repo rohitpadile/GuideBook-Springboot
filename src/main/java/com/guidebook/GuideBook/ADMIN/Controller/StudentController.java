@@ -1,6 +1,7 @@
 package com.guidebook.GuideBook.ADMIN.Controller;
 
 import com.guidebook.GuideBook.ADMIN.dtos.AddStudentRequest;
+import com.guidebook.GuideBook.ADMIN.dtos.DeleteStudentRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.GetStudentBasicDetailsResponse;
 import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.filterstudents.FilteredStudentListRequest;
@@ -71,6 +72,12 @@ public class StudentController {
             throws StudentClassTypeNotFoundException, CollegeNotFoundException, StudentCategoryNotFoundException, LanguageNotFoundException {
         GetStudentBasicDetailsResponse response = studentService.updateStudent(updateStudentRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/deleteStudent")
+    public ResponseEntity<Void> deleteStudent(@RequestBody @Valid DeleteStudentRequest deleteStudentRequest) throws StudentProfileContentNotFoundException {
+        studentService.deleteStudent(deleteStudentRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
