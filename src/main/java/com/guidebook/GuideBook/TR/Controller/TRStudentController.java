@@ -8,6 +8,7 @@ import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentRequest;
 import com.guidebook.GuideBook.ADMIN.exceptions.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +54,6 @@ public class TRStudentController {
             throws StudentClassTypeNotFoundException, CollegeNotFoundException, StudentCategoryNotFoundException, LanguageNotFoundException {
         return studentController.updateStudent(updateStudentRequest);
     }
-
 
     //ABOVE ARE THE SAME METHODS THAT ADMIN ALSO USE - LIKE ME
 

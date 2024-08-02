@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 public class UpdateStudentRequest {
-
     private String studentName;
     private Long studentMis;
     @NotNull(message = "Student work email cannot be null to update the student details")
