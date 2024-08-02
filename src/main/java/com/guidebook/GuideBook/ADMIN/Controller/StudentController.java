@@ -74,9 +74,10 @@ public class StudentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/deleteStudent")
-    public ResponseEntity<Void> deleteStudent(@RequestBody @Valid DeleteStudentRequest deleteStudentRequest) throws StudentProfileContentNotFoundException {
-        studentService.deleteStudent(deleteStudentRequest);
+    @PostMapping("/deactivateStudent")
+    public ResponseEntity<Void> deactivateStudent(@RequestBody @Valid DeleteStudentRequest deleteStudentRequest)
+            throws StudentProfileContentNotFoundException {
+        studentService.deactivateStudent(deleteStudentRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

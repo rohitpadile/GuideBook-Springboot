@@ -227,7 +227,7 @@ public class StudentService {
     }
 
     @Transactional
-    public void deleteStudent(DeleteStudentRequest deleteStudentRequest)
+    public void deactivateStudent(DeleteStudentRequest deleteStudentRequest)
             throws StudentProfileContentNotFoundException
     {
         Student student = studentRepository.findByStudentWorkEmail(

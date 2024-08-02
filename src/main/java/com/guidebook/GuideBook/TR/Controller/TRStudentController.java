@@ -9,7 +9,6 @@ import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentRequest;
 import com.guidebook.GuideBook.ADMIN.exceptions.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,10 +59,10 @@ public class TRStudentController {
 
     //BELOW METHODS TO BE DEFINED ARE :-
 
-    @PostMapping("/deleteStudent")
-    public ResponseEntity<Void> deleteStudent(@RequestBody @Valid DeleteStudentRequest deleteStudentRequest) throws StudentProfileContentNotFoundException {
-        studentService.deleteStudent(deleteStudentRequest);
-        return studentController.deleteStudent(deleteStudentRequest);
+    @PostMapping("/deactivateStudent")
+    public ResponseEntity<Void> deactivateStudent(@RequestBody @Valid DeleteStudentRequest deleteStudentRequest)
+            throws StudentProfileContentNotFoundException {
+        return studentController.deactivateStudent(deleteStudentRequest);
     }
 
 

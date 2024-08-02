@@ -45,16 +45,10 @@ public class CustomStudentRepositoryImpl implements CustomStudentRepository {
         Root<Student> studentRoot = criteriaQuery.from(Student.class);
         List<Predicate> predicates = new ArrayList<>();
 
-
         List<String> validCollegeNames = collegeService.getAllCollegeNameList();
-
         List<String> validBranchNames = branchService.getAllBranchNameList();
-
         List<String> validStudentClassTypes = studentClassTypeService.getAllStudentClassTypeNameList();
-
-        //below method is already in use with other services, so be cautious to update it.
         List<String> validLanguageNames = languageService.getAllLanguageNamesList().getAllLanguageNamesList();
-
         List<String> validStudentCategories = studentCategoryService.getAllStudentCategoryNameList();
 
         // Filter by College Name (Case-Insensitive)
@@ -118,7 +112,11 @@ public class CustomStudentRepositoryImpl implements CustomStudentRepository {
             ));
         }
 
+        // Filter by isActivated
+        predicates.add(criteriaBuilder.equal(studentRoot.get("isActivated"), 1));
+
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
+
 }
