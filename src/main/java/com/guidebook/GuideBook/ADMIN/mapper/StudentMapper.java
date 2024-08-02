@@ -21,6 +21,7 @@ public class StudentMapper {
                 .studentName(request.getStudentName())
                 .cetPercentile(request.getStudentCetPercentile())
                 .grade(request.getStudentGrade())
+                .isActivated(1)
                 .build();
     }
 }

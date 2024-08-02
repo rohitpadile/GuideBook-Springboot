@@ -91,8 +91,7 @@ public class StudentService {
             BranchNotFoundException,
             StudentClassTypeNotFoundException,
             StudentCategoryNotFoundException,
-            LanguageNotFoundException
-    {
+            LanguageNotFoundException, StudentProfileContentNotFoundException {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
 
         if((collegeService.getCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName())) == null){
@@ -132,8 +131,12 @@ public class StudentService {
         } else {
             newStudent.setStudentClassType(studentClassTypeService.getStudentClassTypeByStudentClassTypeName(addStudentRequest.getStudentClassType()));
         }
-        StudentProfile newStudentProfile = StudentProfileMapper.mapToStudentProfile(addStudentRequest);
-        studentProfileService.addStudentProfileWithAddStudent(newStudentProfile); //Saving a profile for this student in studentprofile table
+        if(!(studentProfileService.checkIfStudentProfileExists(addStudentRequest.getStudentWorkEmail()))){
+            StudentProfile newStudentProfile = StudentProfileMapper.mapToStudentProfile(addStudentRequest);
+            studentProfileService.addStudentProfileWithAddStudent(newStudentProfile); //Saving a profile for this student in studentprofile table
+        } else {
+            log.info("Student profile already exists for email: {}",addStudentRequest.getStudentWorkEmail());
+        }
         return getStudentBasicDetailsResponse(studentRepository.save(newStudent));
     }
 
@@ -227,15 +230,12 @@ public class StudentService {
     public void deleteStudent(DeleteStudentRequest deleteStudentRequest)
             throws StudentProfileContentNotFoundException
     {
-        StudentProfile profile = studentProfileService.getStudentProfileOptional(
-                deleteStudentRequest.getStudentWorkEmail());
         Student student = studentRepository.findByStudentWorkEmail(
-                deleteStudentRequest.getStudentWorkEmail()
-        );
-        if(profile!=null){
-            studentProfileService.deleteStudentProfile(profile);
+                deleteStudentRequest.getStudentWorkEmail());
+        if(student!=null){
+            student.setIsActivated(0);
+            studentRepository.save(student);
         }
-        studentRepository.delete(student);
     }
 
 

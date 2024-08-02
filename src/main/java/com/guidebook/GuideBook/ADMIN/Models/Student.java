@@ -72,5 +72,7 @@ public class Student {
     @OneToMany(mappedBy = "student")
     @JsonIgnore
     private List<ZoomSessionTransaction> zoomSessionTransactions;
+
+    private Integer isActivated;
 }
 

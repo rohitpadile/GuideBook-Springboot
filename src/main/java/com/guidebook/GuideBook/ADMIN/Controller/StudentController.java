@@ -53,8 +53,8 @@ public class StudentController {
             BranchNotFoundException,
             StudentClassTypeNotFoundException,
             StudentCategoryNotFoundException,
-            LanguageNotFoundException
-    {
+            LanguageNotFoundException,
+            StudentProfileContentNotFoundException {
         GetStudentBasicDetailsResponse response = studentService.addStudent(addStudentRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

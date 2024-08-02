@@ -38,8 +38,8 @@ public class TRStudentController {
             BranchNotFoundException,
             StudentClassTypeNotFoundException,
             StudentCategoryNotFoundException,
-            LanguageNotFoundException
-    {
+            LanguageNotFoundException,
+            StudentProfileContentNotFoundException {
         return studentController.addStudent(addStudentRequest);
     }
 

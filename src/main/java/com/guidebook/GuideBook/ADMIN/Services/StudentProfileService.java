@@ -200,5 +200,13 @@ public class StudentProfileService {
         return null;
     }
 
+    public Boolean checkIfStudentProfileExists(String studentWorkEmail){
+        Optional<StudentProfile> checkProfile = studentProfileRepository.findStudentProfileByStudentWorkEmail(studentWorkEmail);
+        if(checkProfile.isPresent()) {
+            return true;
+        }
+        return false;
+    }
+
 
 }
