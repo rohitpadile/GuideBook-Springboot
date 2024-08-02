@@ -2,13 +2,11 @@ package com.guidebook.GuideBook.TR.Controller;
 
 import com.guidebook.GuideBook.ADMIN.Controller.StudentController;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
-import com.guidebook.GuideBook.ADMIN.dtos.AddStudentRequest;
-import com.guidebook.GuideBook.ADMIN.dtos.DeleteStudentRequest;
-import com.guidebook.GuideBook.ADMIN.dtos.GetStudentBasicDetailsResponse;
-import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentRequest;
+import com.guidebook.GuideBook.ADMIN.dtos.*;
 import com.guidebook.GuideBook.ADMIN.exceptions.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,10 +58,17 @@ public class TRStudentController {
     //BELOW METHODS TO BE DEFINED ARE :-
 
     @PostMapping("/deactivateStudent")
-    public ResponseEntity<Void> deactivateStudent(@RequestBody @Valid DeleteStudentRequest deleteStudentRequest)
+    public ResponseEntity<Void> deactivateStudent(@RequestBody @Valid DeactivateStudentRequest deactivateStudentRequest)
             throws StudentProfileContentNotFoundException {
-        return studentController.deactivateStudent(deleteStudentRequest);
+        return studentController.deactivateStudent(deactivateStudentRequest);
     }
+    @PostMapping("/activateStudent")
+    public ResponseEntity<Void> activateStudent(@RequestBody @Valid ActivateStudentRequest activateStudentRequest)
+            throws StudentProfileContentNotFoundException {
+        return studentController.activateStudent(activateStudentRequest);
+    }
+
+
 
 
 }

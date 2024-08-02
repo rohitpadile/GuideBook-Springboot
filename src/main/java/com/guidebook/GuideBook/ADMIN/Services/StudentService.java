@@ -2,8 +2,7 @@ package com.guidebook.GuideBook.ADMIN.Services;
 
 
 
-import com.guidebook.GuideBook.ADMIN.dtos.DeleteStudentRequest;
-import com.guidebook.GuideBook.ADMIN.dtos.GetStudentBasicDetailsResponse;
+import com.guidebook.GuideBook.ADMIN.dtos.*;
 import com.guidebook.GuideBook.ADMIN.dtos.filterstudents.FilteredStudentListRequest;
 import com.guidebook.GuideBook.ADMIN.exceptions.*;
 import com.guidebook.GuideBook.ADMIN.mapper.StudentProfileMapper;
@@ -12,8 +11,6 @@ import com.guidebook.GuideBook.ADMIN.Models.Student;
 import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
 import com.guidebook.GuideBook.ADMIN.Repository.StudentRepository;
 import com.guidebook.GuideBook.ADMIN.Repository.cutomrepository.CustomStudentRepositoryImpl;
-import com.guidebook.GuideBook.ADMIN.dtos.AddStudentRequest;
-import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.filterstudents.FilteredStudentDetails;
 
 import com.guidebook.GuideBook.ADMIN.mapper.StudentMapper;
@@ -227,17 +224,25 @@ public class StudentService {
     }
 
     @Transactional
-    public void deactivateStudent(DeleteStudentRequest deleteStudentRequest)
+    public void deactivateStudent(DeactivateStudentRequest deactivateStudentRequest)
             throws StudentProfileContentNotFoundException
     {
         Student student = studentRepository.findByStudentWorkEmail(
-                deleteStudentRequest.getStudentWorkEmail());
+                deactivateStudentRequest.getStudentWorkEmail());
         if(student!=null){
             student.setIsActivated(0);
             studentRepository.save(student);
         }
     }
 
-
+    @Transactional
+    public void activateStudent(ActivateStudentRequest activateStudentRequest) {
+        Student student = studentRepository.findByStudentWorkEmail(
+                activateStudentRequest.getStudentWorkEmail());
+        if(student!=null){
+            student.setIsActivated(1);
+            studentRepository.save(student);
+        }
+    }
 }
 

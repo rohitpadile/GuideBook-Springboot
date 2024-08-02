@@ -1,9 +1,6 @@
 package com.guidebook.GuideBook.ADMIN.Controller;
 
-import com.guidebook.GuideBook.ADMIN.dtos.AddStudentRequest;
-import com.guidebook.GuideBook.ADMIN.dtos.DeleteStudentRequest;
-import com.guidebook.GuideBook.ADMIN.dtos.GetStudentBasicDetailsResponse;
-import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentRequest;
+import com.guidebook.GuideBook.ADMIN.dtos.*;
 import com.guidebook.GuideBook.ADMIN.dtos.filterstudents.FilteredStudentListRequest;
 import com.guidebook.GuideBook.ADMIN.exceptions.*;
 import com.guidebook.GuideBook.ADMIN.Models.Student;
@@ -75,11 +72,17 @@ public class StudentController {
     }
 
     @PostMapping("/deactivateStudent")
-    public ResponseEntity<Void> deactivateStudent(@RequestBody @Valid DeleteStudentRequest deleteStudentRequest)
+    public ResponseEntity<Void> deactivateStudent(@RequestBody @Valid DeactivateStudentRequest deactivateStudentRequest)
             throws StudentProfileContentNotFoundException {
-        studentService.deactivateStudent(deleteStudentRequest);
+        studentService.deactivateStudent(deactivateStudentRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/activateStudent")
+    public ResponseEntity<Void> activateStudent(@RequestBody @Valid ActivateStudentRequest activateStudentRequest)
+            throws StudentProfileContentNotFoundException {
+        studentService.activateStudent(activateStudentRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
