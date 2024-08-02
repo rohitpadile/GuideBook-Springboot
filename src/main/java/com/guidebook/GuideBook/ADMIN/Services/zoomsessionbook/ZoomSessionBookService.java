@@ -407,10 +407,17 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         }
         ZoomSessionForm form = checkForm.get();
         CancellationStatusZoomSessionResponse response = new CancellationStatusZoomSessionResponse();
-        if(form.getZoomSessionBookStatus().equalsIgnoreCase(ZoomSessionBookStatus.CANCELLED.toString())){
-            log.info("Cancellation status is 1");
+
+        if(
+                form.getZoomSessionBookStatus().equalsIgnoreCase(ZoomSessionBookStatus.CANCELLED.toString())
+        ){
+            log.info("Cancellation or Booked status is 1");
             response.setStatus(1);
-        } else {
+        }else if (
+                !(form.getZoomSessionTransaction().getZoomSessionFeedbackForm() ==null)
+        ){
+            response.setStatus(2);
+        }else{
             response.setStatus(0);
         }
         return response;
