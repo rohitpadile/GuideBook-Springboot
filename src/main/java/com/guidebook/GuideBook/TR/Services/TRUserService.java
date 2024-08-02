@@ -4,9 +4,11 @@ import com.guidebook.GuideBook.TR.Models.TRUser;
 import com.guidebook.GuideBook.TR.Repository.TRUserRepository;
 import com.guidebook.GuideBook.TR.dtos.AddTRUserRequest;
 import com.guidebook.GuideBook.TR.dtos.DeleteTRUserRequest;
+import com.guidebook.GuideBook.TR.dtos.TRUserLoginRequest;
 import com.guidebook.GuideBook.TR.dtos.UpdateTRUserRequest;
 import com.guidebook.GuideBook.TR.exceptions.TRAdminPasswordException;
 import com.guidebook.GuideBook.TR.exceptions.TRUserNotFoundException;
+import com.guidebook.GuideBook.TR.exceptions.TRUserPasswordNotMatchException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,5 +85,21 @@ public class TRUserService {
             response.add(user.getTrUserFirstName() + " " + user.getTrUserLastName());
         }
         return response;
+    }
+
+    public void loginTRUser(TRUserLoginRequest trUserLoginRequest)
+            throws TRUserNotFoundException, TRUserPasswordNotMatchException {
+
+        Optional<TRUser> checkUser = trUserRepository.findByTrUserFirstNameAndTrUserLastName(
+                trUserLoginRequest.getTrUserFirstName(),
+                trUserLoginRequest.getTrUserLastName()
+        );
+        if(!checkUser.isPresent()){
+            throw new TRUserNotFoundException("TRUser not found at loginTRUser() method");
+        }
+        TRUser user = checkUser.get();
+        if(!(user.getTrUserPassword().equals(trUserLoginRequest.getTrUserPassword()))){
+            throw new TRUserPasswordNotMatchException("Wrong Password at loginTRUser() method");
+        }
     }
 }

@@ -3,9 +3,11 @@ package com.guidebook.GuideBook.TR.Controller;
 import com.guidebook.GuideBook.TR.Services.TRUserService;
 import com.guidebook.GuideBook.TR.dtos.AddTRUserRequest;
 import com.guidebook.GuideBook.TR.dtos.DeleteTRUserRequest;
+import com.guidebook.GuideBook.TR.dtos.TRUserLoginRequest;
 import com.guidebook.GuideBook.TR.dtos.UpdateTRUserRequest;
 import com.guidebook.GuideBook.TR.exceptions.TRAdminPasswordException;
 import com.guidebook.GuideBook.TR.exceptions.TRUserNotFoundException;
+import com.guidebook.GuideBook.TR.exceptions.TRUserPasswordNotMatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,5 +52,11 @@ public class TRUserController {
     public ResponseEntity<List<String>> getTRUserList(){
         List<String> res = trUserService.getTRUserList();
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+    @PostMapping("/loginTRUser")
+    public ResponseEntity<Void> loginTRUser(TRUserLoginRequest trUserLoginRequest)
+            throws TRUserNotFoundException, TRUserPasswordNotMatchException {
+        trUserService.loginTRUser(trUserLoginRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
