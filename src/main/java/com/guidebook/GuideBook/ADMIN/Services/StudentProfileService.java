@@ -190,4 +190,15 @@ public class StudentProfileService {
         studentProfileRepository.delete(profile);
     }
 
+    public StudentProfile getStudentProfileOptional(String studentWorkEmail)
+            throws StudentProfileContentNotFoundException {
+
+        Optional<StudentProfile> checkProfile = studentProfileRepository.findStudentProfileByStudentWorkEmail(studentWorkEmail);
+        if(checkProfile.isPresent()) {
+            return checkProfile.get();
+        }
+        return null;
+    }
+
+
 }

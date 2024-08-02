@@ -223,17 +223,21 @@ public class StudentService {
         return response;
     }
 
-
+    @Transactional
     public void deleteStudent(DeleteStudentRequest deleteStudentRequest)
             throws StudentProfileContentNotFoundException
     {
-        StudentProfile profile = studentProfileService.getStudentProfileForGeneralPurpose(
+        StudentProfile profile = studentProfileService.getStudentProfileOptional(
                 deleteStudentRequest.getStudentWorkEmail());
         Student student = studentRepository.findByStudentWorkEmail(
                 deleteStudentRequest.getStudentWorkEmail()
         );
-        studentProfileService.deleteStudentProfile(profile);
+        if(profile!=null){
+            studentProfileService.deleteStudentProfile(profile);
+        }
         studentRepository.delete(student);
     }
+
+
 }
 
