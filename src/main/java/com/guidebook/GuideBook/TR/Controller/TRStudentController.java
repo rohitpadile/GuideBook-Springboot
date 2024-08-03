@@ -36,7 +36,8 @@ public class TRStudentController {
             StudentClassTypeNotFoundException,
             StudentCategoryNotFoundException,
             LanguageNotFoundException,
-            StudentProfileContentNotFoundException {
+            StudentProfileContentNotFoundException,
+            EncryptionFailedException {
         return studentController.addStudent(addStudentRequest);
     }
 

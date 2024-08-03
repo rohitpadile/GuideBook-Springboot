@@ -51,7 +51,8 @@ public class StudentController {
             StudentClassTypeNotFoundException,
             StudentCategoryNotFoundException,
             LanguageNotFoundException,
-            StudentProfileContentNotFoundException {
+            StudentProfileContentNotFoundException,
+            EncryptionFailedException {
         GetStudentBasicDetailsResponse response = studentService.addStudent(addStudentRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

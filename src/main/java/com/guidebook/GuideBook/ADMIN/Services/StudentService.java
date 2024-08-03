@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.ADMIN.Services;
 
 
 
+import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.ADMIN.dtos.*;
 import com.guidebook.GuideBook.ADMIN.dtos.filterstudents.FilteredStudentListRequest;
 import com.guidebook.GuideBook.ADMIN.exceptions.*;
@@ -14,6 +15,7 @@ import com.guidebook.GuideBook.ADMIN.Repository.cutomrepository.CustomStudentRep
 import com.guidebook.GuideBook.ADMIN.dtos.filterstudents.FilteredStudentDetails;
 
 import com.guidebook.GuideBook.ADMIN.mapper.StudentMapper;
+import com.guidebook.GuideBook.TR.util.EncryptionUtilForTR;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ public class StudentService {
     private StudentRepository studentRepository;
     private CustomStudentRepositoryImpl customStudentRepositoryImpl;
     private StudentProfileService studentProfileService;
+    private EmailServiceImpl emailService;
 
     @Autowired
     public StudentService(
@@ -43,7 +46,8 @@ public class StudentService {
             StudentRepository studentRepository,
             CollegeService collegeService,
             CustomStudentRepositoryImpl customStudentRepositoryImpl,
-            StudentProfileService studentProfileService
+            StudentProfileService studentProfileService,
+            EmailServiceImpl emailService
     ) {
         this.studentRepository = studentRepository;
         this.customStudentRepositoryImpl = customStudentRepositoryImpl;
@@ -53,6 +57,7 @@ public class StudentService {
         this.studentClassTypeService = studentClassTypeService;
         this.studentCategoryService = studentCategoryService;
         this.studentProfileService = studentProfileService;
+        this.emailService = emailService;
     }
 
     public List<Student> getAllStudents() {
@@ -88,7 +93,9 @@ public class StudentService {
             BranchNotFoundException,
             StudentClassTypeNotFoundException,
             StudentCategoryNotFoundException,
-            LanguageNotFoundException, StudentProfileContentNotFoundException {
+            LanguageNotFoundException,
+            StudentProfileContentNotFoundException,
+            EncryptionFailedException {
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
 
         if((collegeService.getCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName())) == null){
@@ -134,6 +141,20 @@ public class StudentService {
         } else {
             log.info("Student profile already exists for email: {}",addStudentRequest.getStudentWorkEmail());
         }
+
+        // Encrypt studentWorkEmail in Student Profile Edit Navigation and send to Student Mentor
+        try {
+            String encryptedEmail = EncryptionUtilForTR.encrypt(addStudentRequest.getStudentWorkEmail());
+            String profileEditLink = "http://localhost:8080/studentprofileedit/" + encryptedEmail;
+            String emailBody = "Dear Student,\n\nPlease click the following link to edit your profile: " + profileEditLink +
+                    "\n\nPlease save and keep the link with you. If you lose this link, please contact help.guidebookx@gmail.com";
+
+            emailService.sendSimpleMessage(addStudentRequest.getStudentWorkEmail(), "Edit Your Profile", emailBody);
+        } catch (Exception e) {
+            log.error("Error encrypting email or sending email", e);
+            throw new EncryptionFailedException("Email at addStudent() method failed");
+        }
+
         return getStudentBasicDetailsResponse(studentRepository.save(newStudent));
     }
 
