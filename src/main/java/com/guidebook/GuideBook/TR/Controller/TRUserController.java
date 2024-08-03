@@ -1,13 +1,12 @@
 package com.guidebook.GuideBook.TR.Controller;
 
 import com.guidebook.GuideBook.TR.Services.TRUserService;
-import com.guidebook.GuideBook.TR.dtos.AddTRUserRequest;
-import com.guidebook.GuideBook.TR.dtos.DeleteTRUserRequest;
-import com.guidebook.GuideBook.TR.dtos.TRUserLoginRequest;
-import com.guidebook.GuideBook.TR.dtos.UpdateTRUserRequest;
+import com.guidebook.GuideBook.TR.dtos.*;
 import com.guidebook.GuideBook.TR.exceptions.TRAdminPasswordException;
 import com.guidebook.GuideBook.TR.exceptions.TRUserNotFoundException;
 import com.guidebook.GuideBook.TR.exceptions.TRUserPasswordNotMatchException;
+import com.guidebook.GuideBook.TR.util.EncryptionUtilForTR;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,19 +29,19 @@ public class TRUserController {
     }
 
     @PostMapping("/addTRUser")
-    public ResponseEntity<Void> addTRUser(AddTRUserRequest addTRUserRequest)
+    public ResponseEntity<Void> addTRUser(@RequestBody @Valid AddTRUserRequest addTRUserRequest)
             throws TRAdminPasswordException {
         trUserService.addTRUser(addTRUserRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @PostMapping("/updateTRUserPassword")
-    public ResponseEntity<Void> updateTRUserPassword(UpdateTRUserRequest updateTRUserRequest)
+    public ResponseEntity<Void> updateTRUserPassword(@RequestBody @Valid UpdateTRUserRequest updateTRUserRequest)
             throws TRUserNotFoundException, TRAdminPasswordException {
         trUserService.updateTRUserPassword(updateTRUserRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PostMapping("/deleteTRUser")
-    public ResponseEntity<Void> deleteTRUser(DeleteTRUserRequest deleteTRUserRequest)
+    public ResponseEntity<Void> deleteTRUser(@RequestBody @Valid DeleteTRUserRequest deleteTRUserRequest)
             throws TRUserNotFoundException, TRAdminPasswordException {
         trUserService.deleteTRUser(deleteTRUserRequest);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -54,9 +53,14 @@ public class TRUserController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
     @PostMapping("/loginTRUser")
-    public ResponseEntity<Void> loginTRUser(TRUserLoginRequest trUserLoginRequest)
+    public ResponseEntity<Void> loginTRUser(@RequestBody @Valid TRUserLoginRequest trUserLoginRequest)
             throws TRUserNotFoundException, TRUserPasswordNotMatchException {
         trUserService.loginTRUser(trUserLoginRequest);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("/getSecretUrl")
+    public String generateEncryptedUrlForTRUser(@RequestBody @Valid GetSecretUrlRequest getSecretUrlRequest)
+            throws TRAdminPasswordException {
+        return trUserService.generateEncryptedUrlForTRUser(getSecretUrlRequest);
     }
 }
