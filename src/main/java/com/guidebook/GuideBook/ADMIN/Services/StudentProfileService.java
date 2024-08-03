@@ -125,12 +125,6 @@ public class StudentProfileService {
         if(updateRequest.getStudentProfileActivityAndAchievements()!=null){
             studentProfile.setStudentProfileActivityAndAchievements(updateRequest.getStudentProfileActivityAndAchievements());
         }
-//        if(updateRequest.getStudentProfileCoCurricularActivity()!=null){
-//            studentProfile.setStudentProfileCoCurricularActivity(updateRequest.getStudentProfileCoCurricularActivity());
-//        }
-//        if(updateRequest.getStudentProfileExtraCurricularActivity()!=null){
-//            studentProfile.setStudentProfileExtraCurricularActivity(updateRequest.getStudentProfileExtraCurricularActivity());
-//        }
         if(updateRequest.getStudentProfileTutoringExperience()!=null){
             studentProfile.setStudentProfileTutoringExperience(updateRequest.getStudentProfileTutoringExperience());
         }
@@ -151,7 +145,6 @@ public class StudentProfileService {
                 .studentProfileExternalLinks(studentProfile.getStudentProfileExternalLinks())
                 .studentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted())
                 .build();
-
     }
 
 //    private static GetStudentProfileResponse getGetStudentProfileResponse(StudentProfile profile) {
