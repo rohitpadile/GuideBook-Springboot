@@ -5,7 +5,6 @@ import com.guidebook.GuideBook.TR.dtos.*;
 import com.guidebook.GuideBook.TR.exceptions.TRAdminPasswordException;
 import com.guidebook.GuideBook.TR.exceptions.TRUserNotFoundException;
 import com.guidebook.GuideBook.TR.exceptions.TRUserPasswordNotMatchException;
-import com.guidebook.GuideBook.TR.util.EncryptionUtilForTR;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

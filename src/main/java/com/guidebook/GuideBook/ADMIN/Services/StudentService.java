@@ -15,10 +15,11 @@ import com.guidebook.GuideBook.ADMIN.Repository.cutomrepository.CustomStudentRep
 import com.guidebook.GuideBook.ADMIN.dtos.filterstudents.FilteredStudentDetails;
 
 import com.guidebook.GuideBook.ADMIN.mapper.StudentMapper;
-import com.guidebook.GuideBook.TR.util.EncryptionUtilForTR;
+import com.guidebook.GuideBook.TR.util.EncryptionUtilForStudentProfileEdit;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ public class StudentService {
     private CustomStudentRepositoryImpl customStudentRepositoryImpl;
     private StudentProfileService studentProfileService;
     private EmailServiceImpl emailService;
+    @Value("${websitedomainname}")
+    private String websiteDomainName;
 
     @Autowired
     public StudentService(
@@ -144,11 +147,8 @@ public class StudentService {
 
         // Encrypt studentWorkEmail in Student Profile Edit Navigation and send to Student Mentor
         try {
-            String encryptedEmail = EncryptionUtilForTR.encrypt(addStudentRequest.getStudentWorkEmail());
-            String profileEditLink = "http://localhost:8080/studentprofileedit/" + encryptedEmail;
-            String emailBody = "Dear Student,\n\nPlease click the following link to edit your profile: " + profileEditLink +
-                    "\n\nPlease save and keep the link with you. If you lose this link, please contact help.guidebookx@gmail.com";
-
+            String encryptedEmail = EncryptionUtilForStudentProfileEdit.encrypt(addStudentRequest.getStudentWorkEmail());
+            String emailBody = getEmailForAddStudent(encryptedEmail, newStudent);
             emailService.sendSimpleMessage(addStudentRequest.getStudentWorkEmail(), "Edit Your Profile", emailBody);
         } catch (Exception e) {
             log.error("Error encrypting email or sending email", e);
@@ -156,6 +156,16 @@ public class StudentService {
         }
 
         return getStudentBasicDetailsResponse(studentRepository.save(newStudent));
+    }
+    @Transactional
+    private String getEmailForAddStudent(String encryptedEmail, Student newStudent) {
+        String profileEditLink = websiteDomainName + "/studentprofileedit/" + encryptedEmail;
+        String emailBody = String.format("Dear %s,\n\n" +
+                "Congratulations on coming on this platform.\n" +
+                "We hope to see more of you and wish you well for your future\n\n" + 
+                "Please click the following link to edit your profile: " + profileEditLink +
+                "\n\nPlease save and keep the link with you. If you lose this link, please contact help.guidebookx@gmail.com", newStudent.getStudentName());
+        return emailBody;
     }
 
     public GetStudentBasicDetailsResponse getStudentBasicDetails(String studentWorkEmail)

@@ -6,10 +6,9 @@ import com.guidebook.GuideBook.TR.dtos.*;
 import com.guidebook.GuideBook.TR.exceptions.TRAdminPasswordException;
 import com.guidebook.GuideBook.TR.exceptions.TRUserNotFoundException;
 import com.guidebook.GuideBook.TR.exceptions.TRUserPasswordNotMatchException;
-import com.guidebook.GuideBook.TR.util.EncryptionUtilForTR;
+import com.guidebook.GuideBook.TR.util.EncryptionUtilForStudentProfileEdit;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
@@ -111,7 +110,7 @@ public class TRUserService {
                         getSecretUrlRequest.getTrUserLastName().toLowerCase();
 
                 // Encrypt the combined name
-                String encryptedName = EncryptionUtilForTR.encrypt(combinedName);
+                String encryptedName = EncryptionUtilForStudentProfileEdit.encrypt(combinedName);
 
                 // URL-encode the encrypted name
                 String encodedEncryptedName = URLEncoder.encode(encryptedName, StandardCharsets.UTF_8.toString());

@@ -4,7 +4,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-public class EncryptionUtilForTR {
+public class EncryptionUtilForStudentProfileEdit {
 
     private static final String ALGORITHM = "AES";
     private static final byte[] KEY = "MySuperSecretKey".getBytes(); // Use a more secure key management strategy in production
