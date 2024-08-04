@@ -168,7 +168,7 @@ public class StudentService {
                 "Congratulations on coming on this platform.\n" +
                 "We hope to see more of you and wish you well for your future\n\n" + 
                 "Please click the following link to edit your profile: " + profileEditLink +
-                "\n\nPlease save and keep the link with you. If you lose this link, please contact help.guidebookx@gmail.com", newStudent.getStudentName());
+                "\n\nPlease save and keep the link with you. If you lose this link, please contact mentorhelpguidebookx@gmail.com", newStudent.getStudentName());
         return emailBody;
     }
 
