@@ -37,7 +37,8 @@ public class TRStudentController {
             StudentCategoryNotFoundException,
             LanguageNotFoundException,
             StudentProfileContentNotFoundException,
-            EncryptionFailedException {
+            EncryptionFailedException,
+            AlreadyPresentException {
         return studentController.addStudent(addStudentRequest);
     }
 
@@ -50,7 +51,11 @@ public class TRStudentController {
 
     @PostMapping("/updateStudent")
     public ResponseEntity<GetStudentBasicDetailsResponse> updateStudent(@RequestBody @Valid UpdateStudentRequest updateStudentRequest)
-            throws StudentClassTypeNotFoundException, CollegeNotFoundException, StudentCategoryNotFoundException, LanguageNotFoundException {
+            throws StudentClassTypeNotFoundException,
+            CollegeNotFoundException,
+            StudentCategoryNotFoundException,
+            LanguageNotFoundException,
+            StudentNotFoundException {
         return studentController.updateStudent(updateStudentRequest);
     }
 
@@ -60,12 +65,15 @@ public class TRStudentController {
 
     @PostMapping("/deactivateStudent")
     public ResponseEntity<Void> deactivateStudent(@RequestBody @Valid DeactivateStudentRequest deactivateStudentRequest)
-            throws StudentProfileContentNotFoundException {
+            throws StudentProfileContentNotFoundException,
+            StudentNotFoundException
+    {
         return studentController.deactivateStudent(deactivateStudentRequest);
     }
     @PostMapping("/activateStudent")
     public ResponseEntity<Void> activateStudent(@RequestBody @Valid ActivateStudentRequest activateStudentRequest)
-            throws StudentProfileContentNotFoundException {
+            throws StudentNotFoundException
+    {
         return studentController.activateStudent(activateStudentRequest);
     }
 

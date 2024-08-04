@@ -98,7 +98,11 @@ public class StudentService {
             StudentCategoryNotFoundException,
             LanguageNotFoundException,
             StudentProfileContentNotFoundException,
-            EncryptionFailedException {
+            EncryptionFailedException,
+            AlreadyPresentException {
+        if((studentRepository.findByStudentWorkEmail(addStudentRequest.getStudentWorkEmail())) != null){
+            throw new AlreadyPresentException("Student is already present with work email: " + addStudentRequest.getStudentWorkEmail());
+        }
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
 
         if((collegeService.getCollegeByCollegeNameIgnoreCase(addStudentRequest.getStudentCollegeName())) == null){
@@ -176,9 +180,16 @@ public class StudentService {
     }
 
     @Transactional
-    public GetStudentBasicDetailsResponse updateStudent(UpdateStudentRequest updateStudentRequest) throws CollegeNotFoundException, StudentClassTypeNotFoundException, StudentCategoryNotFoundException, LanguageNotFoundException {
+    public GetStudentBasicDetailsResponse updateStudent(UpdateStudentRequest updateStudentRequest)
+            throws CollegeNotFoundException,
+            StudentClassTypeNotFoundException,
+            StudentCategoryNotFoundException,
+            LanguageNotFoundException,
+            StudentNotFoundException {
         Student student = studentRepository.findByStudentWorkEmail(updateStudentRequest.getStudentWorkEmail());
-
+        if(student == null){
+            throw new StudentNotFoundException("Student not found with work email: " + updateStudentRequest.getStudentWorkEmail());
+        }
         student.setStudentName(updateStudentRequest.getStudentName());
         student.setStudentMis(updateStudentRequest.getStudentMis());
         student.setStudentPublicEmail(updateStudentRequest.getStudentPublicEmail());
@@ -256,23 +267,27 @@ public class StudentService {
 
     @Transactional
     public void deactivateStudent(DeactivateStudentRequest deactivateStudentRequest)
-            throws StudentProfileContentNotFoundException
-    {
+            throws StudentNotFoundException {
         Student student = studentRepository.findByStudentWorkEmail(
                 deactivateStudentRequest.getStudentWorkEmail());
         if(student!=null){
             student.setIsActivated(0);
             studentRepository.save(student);
+        } else {
+            throw new StudentNotFoundException("Student not found at deactivateStudent() method");
         }
     }
 
     @Transactional
-    public void activateStudent(ActivateStudentRequest activateStudentRequest) {
+    public void activateStudent(ActivateStudentRequest activateStudentRequest)
+            throws StudentNotFoundException {
         Student student = studentRepository.findByStudentWorkEmail(
                 activateStudentRequest.getStudentWorkEmail());
         if(student!=null){
             student.setIsActivated(1);
             studentRepository.save(student);
+        }else {
+            throw new StudentNotFoundException("Student not found at activateStudent() method");
         }
     }
 }

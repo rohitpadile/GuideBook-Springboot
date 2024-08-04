@@ -52,7 +52,8 @@ public class StudentController {
             StudentCategoryNotFoundException,
             LanguageNotFoundException,
             StudentProfileContentNotFoundException,
-            EncryptionFailedException {
+            EncryptionFailedException,
+            AlreadyPresentException {
         GetStudentBasicDetailsResponse response = studentService.addStudent(addStudentRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -67,21 +68,26 @@ public class StudentController {
 
     @PostMapping("/updateStudent")
     public ResponseEntity<GetStudentBasicDetailsResponse> updateStudent(@RequestBody @Valid UpdateStudentRequest updateStudentRequest)
-            throws StudentClassTypeNotFoundException, CollegeNotFoundException, StudentCategoryNotFoundException, LanguageNotFoundException {
+            throws StudentClassTypeNotFoundException,
+            CollegeNotFoundException,
+            StudentCategoryNotFoundException,
+            LanguageNotFoundException,
+            StudentNotFoundException {
         GetStudentBasicDetailsResponse response = studentService.updateStudent(updateStudentRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/deactivateStudent")
     public ResponseEntity<Void> deactivateStudent(@RequestBody @Valid DeactivateStudentRequest deactivateStudentRequest)
-            throws StudentProfileContentNotFoundException {
+            throws StudentProfileContentNotFoundException,
+            StudentNotFoundException {
         studentService.deactivateStudent(deactivateStudentRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/activateStudent")
     public ResponseEntity<Void> activateStudent(@RequestBody @Valid ActivateStudentRequest activateStudentRequest)
-            throws StudentProfileContentNotFoundException {
+            throws StudentNotFoundException {
         studentService.activateStudent(activateStudentRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
