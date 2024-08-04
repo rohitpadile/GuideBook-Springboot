@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    Student findByStudentWorkEmail(String studentWorkEmail); //This is case sensitive
+    Student findByStudentWorkEmailIgnoreCase(String studentWorkEmail); //This is case sensitive
 }

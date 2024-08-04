@@ -23,7 +23,7 @@ public class StudentProfileService {
     @Transactional
     public GetStudentProfileResponse addStudentProfile(AddStudentProfileRequest request)
     throws StudentProfileContentNotFoundException {
-        Optional<StudentProfile> checkStudentProfile = studentProfileRepository.findStudentProfileByStudentWorkEmail(request.getStudentWorkEmail());
+        Optional<StudentProfile> checkStudentProfile = studentProfileRepository.findStudentProfileByStudentWorkEmailIgnoreCase(request.getStudentWorkEmail());
         if(!checkStudentProfile.isPresent()){
             throw new StudentProfileContentNotFoundException("Student profile content not found at addStudentProfile() method");
         }
@@ -77,7 +77,7 @@ public class StudentProfileService {
     throws StudentProfileContentNotFoundException {
 
 
-         Optional<StudentProfile> checkProfile = studentProfileRepository.findStudentProfileByStudentWorkEmail(studentWorkEmail);
+         Optional<StudentProfile> checkProfile = studentProfileRepository.findStudentProfileByStudentWorkEmailIgnoreCase(studentWorkEmail);
          if(!checkProfile.isPresent()){
              throw new StudentProfileContentNotFoundException("Student profile content not found at getStudentProfile() method");
          }
@@ -101,7 +101,7 @@ public class StudentProfileService {
     public GetStudentProfileResponse updateStudentProfile(String studentWorkEmail, UpdateStudentProfileRequest updateRequest)
     throws StudentProfileContentNotFoundException {
 
-        Optional<StudentProfile> checkStudentProfile = studentProfileRepository.findStudentProfileByStudentWorkEmail(studentWorkEmail);
+        Optional<StudentProfile> checkStudentProfile = studentProfileRepository.findStudentProfileByStudentWorkEmailIgnoreCase(studentWorkEmail);
         if(!checkStudentProfile.isPresent()){
             throw new StudentProfileContentNotFoundException("Student profile content not found at addStudentProfile() method");
         }
@@ -172,7 +172,7 @@ public class StudentProfileService {
     public StudentProfile getStudentProfileForGeneralPurpose(String studentWorkEmail)
             throws StudentProfileContentNotFoundException {
 
-        Optional<StudentProfile> checkProfile = studentProfileRepository.findStudentProfileByStudentWorkEmail(studentWorkEmail);
+        Optional<StudentProfile> checkProfile = studentProfileRepository.findStudentProfileByStudentWorkEmailIgnoreCase(studentWorkEmail);
         if(!checkProfile.isPresent()) {
             throw new StudentProfileContentNotFoundException("Student profile content not found at getStudentProfileForFeedbackFormSuccess() method");
         }
@@ -191,7 +191,7 @@ public class StudentProfileService {
     public StudentProfile getStudentProfileOptional(String studentWorkEmail)
             throws StudentProfileContentNotFoundException {
 
-        Optional<StudentProfile> checkProfile = studentProfileRepository.findStudentProfileByStudentWorkEmail(studentWorkEmail);
+        Optional<StudentProfile> checkProfile = studentProfileRepository.findStudentProfileByStudentWorkEmailIgnoreCase(studentWorkEmail);
         if(checkProfile.isPresent()) {
             return checkProfile.get();
         }
@@ -199,7 +199,7 @@ public class StudentProfileService {
     }
 
     public Boolean checkIfStudentProfileExists(String studentWorkEmail){
-        Optional<StudentProfile> checkProfile = studentProfileRepository.findStudentProfileByStudentWorkEmail(studentWorkEmail);
+        Optional<StudentProfile> checkProfile = studentProfileRepository.findStudentProfileByStudentWorkEmailIgnoreCase(studentWorkEmail);
         if(checkProfile.isPresent()) {
             return true;
         }

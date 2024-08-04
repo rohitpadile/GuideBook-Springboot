@@ -49,7 +49,7 @@ public class CustomStudentRepositoryImpl implements CustomStudentRepository {
         List<String> validBranchNames = branchService.getAllBranchNameList();
         List<String> validStudentClassTypes = studentClassTypeService.getAllStudentClassTypeNameList();
         List<String> validLanguageNames = languageService.getAllLanguageNamesList().getAllLanguageNamesList();
-        List<String> validStudentCategories = studentCategoryService.getAllStudentCategoryNameList();
+        // Removed the validStudentCategories list since studentCategory filtering is not needed
 
         // Filter by College Name (Case-Insensitive)
         if (filters.getCollegeName() != null && !filters.getCollegeName().isEmpty() && validCollegeNames.contains(filters.getCollegeName())) {
@@ -100,15 +100,6 @@ public class CustomStudentRepositoryImpl implements CustomStudentRepository {
             predicates.add(criteriaBuilder.equal(
                     criteriaBuilder.lower(languageJoin.get("languageName")),
                     filters.getLanguageName().toLowerCase()
-            ));
-        }
-
-        // Filter by Student Category (Case-Insensitive)
-        if (filters.getStudentCategory() != null && !filters.getStudentCategory().isEmpty() && validStudentCategories.contains(filters.getStudentCategory())) {
-            Join<Student, StudentCategory> categoryJoin = studentRoot.join("studentCategory", JoinType.INNER);
-            predicates.add(criteriaBuilder.equal(
-                    criteriaBuilder.lower(categoryJoin.get("studentCategoryName")),
-                    filters.getStudentCategory().toLowerCase()
             ));
         }
 

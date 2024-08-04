@@ -100,7 +100,7 @@ public class StudentService {
             StudentProfileContentNotFoundException,
             EncryptionFailedException,
             AlreadyPresentException {
-        if((studentRepository.findByStudentWorkEmail(addStudentRequest.getStudentWorkEmail())) != null){
+        if((studentRepository.findByStudentWorkEmailIgnoreCase(addStudentRequest.getStudentWorkEmail())) != null){
             throw new AlreadyPresentException("Student is already present with work email: " + addStudentRequest.getStudentWorkEmail());
         }
         Student newStudent = StudentMapper.mapToStudent(addStudentRequest);
@@ -120,16 +120,16 @@ public class StudentService {
         }
 
         //Add for student category also - if not throw StudentCategoryNotFoundException
-        if((studentCategoryService.
-                getStudentCategoryByStudentCategoryNameIgnoreCase(addStudentRequest.getStudentCategoryName())) == null){
-            throw new StudentCategoryNotFoundException("Student category not found " + addStudentRequest.getStudentCategoryName());
-        }else {
-            newStudent.setStudentCategory(
-                    studentCategoryService.getStudentCategoryByStudentCategoryNameIgnoreCase(
-                            addStudentRequest.getStudentCategoryName()
-                    )
-            );
-        }
+//        if((studentCategoryService.
+//                getStudentCategoryByStudentCategoryNameIgnoreCase(addStudentRequest.getStudentCategoryName())) == null){
+//            throw new StudentCategoryNotFoundException("Student category not found " + addStudentRequest.getStudentCategoryName());
+//        }else {
+//            newStudent.setStudentCategory(
+//                    studentCategoryService.getStudentCategoryByStudentCategoryNameIgnoreCase(
+//                            addStudentRequest.getStudentCategoryName()
+//                    )
+//            );
+//        }
 
 /////////////////////////SEPARATE PRIVATE METHOD TO ADD LANGUAGE LIST @Transactional ////////////////////////////////////
         Boolean languageListAddedSuccess = addStudentLanguageList(addStudentRequest ,newStudent);
@@ -175,7 +175,7 @@ public class StudentService {
     public GetStudentBasicDetailsResponse getStudentBasicDetails(String studentWorkEmail)
     throws StudentBasicDetailsNotFoundException
     {
-        Student student = studentRepository.findByStudentWorkEmail(studentWorkEmail);
+        Student student = studentRepository.findByStudentWorkEmailIgnoreCase(studentWorkEmail);
         return getStudentBasicDetailsResponse(student);
     }
 
@@ -186,7 +186,7 @@ public class StudentService {
             StudentCategoryNotFoundException,
             LanguageNotFoundException,
             StudentNotFoundException {
-        Student student = studentRepository.findByStudentWorkEmail(updateStudentRequest.getStudentWorkEmail());
+        Student student = studentRepository.findByStudentWorkEmailIgnoreCase(updateStudentRequest.getStudentWorkEmail());
         if(student == null){
             throw new StudentNotFoundException("Student not found with work email: " + updateStudentRequest.getStudentWorkEmail());
         }
@@ -204,9 +204,9 @@ public class StudentService {
         student.setStudentClassType(studentClassTypeService.getStudentClassTypeByStudentClassTypeName(
                 updateStudentRequest.getStudentClassType()
         ));
-        student.setStudentCategory(studentCategoryService.getStudentCategoryByStudentCategoryNameIgnoreCase(
-                updateStudentRequest.getStudentCategoryName()
-        ));
+//        student.setStudentCategory(studentCategoryService.getStudentCategoryByStudentCategoryNameIgnoreCase(
+//                updateStudentRequest.getStudentCategoryName()
+//        ));
         Boolean languageListAddedSuccess = updateStudentLanguageList(updateStudentRequest ,student);
         log.info("Language list updated boolean : {}", languageListAddedSuccess);
 
@@ -254,7 +254,7 @@ public class StudentService {
         response.setCetPercentile(student.getCetPercentile());
         response.setGrade(student.getGrade());
         response.setClassType(student.getStudentClassType().getStudentClassTypeName());
-        response.setCategory(student.getStudentCategory().getStudentCategoryName());
+//        response.setCategory(student.getStudentCategory().getStudentCategoryName());
 
         List<String> languages = new ArrayList<>();
         for(Language l : student.getStudentLanguageList()){
@@ -268,7 +268,7 @@ public class StudentService {
     @Transactional
     public void deactivateStudent(DeactivateStudentRequest deactivateStudentRequest)
             throws StudentNotFoundException {
-        Student student = studentRepository.findByStudentWorkEmail(
+        Student student = studentRepository.findByStudentWorkEmailIgnoreCase(
                 deactivateStudentRequest.getStudentWorkEmail());
         if(student!=null){
             student.setIsActivated(0);
@@ -281,7 +281,7 @@ public class StudentService {
     @Transactional
     public void activateStudent(ActivateStudentRequest activateStudentRequest)
             throws StudentNotFoundException {
-        Student student = studentRepository.findByStudentWorkEmail(
+        Student student = studentRepository.findByStudentWorkEmailIgnoreCase(
                 activateStudentRequest.getStudentWorkEmail());
         if(student!=null){
             student.setIsActivated(1);

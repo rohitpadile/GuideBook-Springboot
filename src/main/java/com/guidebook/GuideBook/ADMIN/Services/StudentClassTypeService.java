@@ -25,12 +25,12 @@ public class StudentClassTypeService {
 
     public StudentClassType getStudentClassTypeByStudentClassTypeName(String classType)
     throws StudentClassTypeNotFoundException {
-        return studentClassTypeRepository.findStudentClassTypeByStudentClassTypeName(classType);
+        return studentClassTypeRepository.findStudentClassTypeByStudentClassTypeNameIgnoreCase(classType);
     }
     @Transactional
     public StudentClassType addStudentClassType(AddStudentClassTypeRequest addStudentClassTypeRequest)
             throws AlreadyPresentException {
-        if((studentClassTypeRepository.findStudentClassTypeByStudentClassTypeName(
+        if((studentClassTypeRepository.findStudentClassTypeByStudentClassTypeNameIgnoreCase(
                 addStudentClassTypeRequest.getStudentClassTypeName()
         )) != null){
             throw new AlreadyPresentException("Student Class type already present at addStudentClassType() method: "  +

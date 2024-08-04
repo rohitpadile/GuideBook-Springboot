@@ -7,6 +7,6 @@ import java.util.Date;
 import java.util.Optional;
 
 public interface BookingRestrictionRepository extends JpaRepository<BookingRestriction, Long> {
-    Optional<BookingRestriction> findByClientEmail(String clientEmail);
+    Optional<BookingRestriction> findByClientEmailIgnoreCase(String clientEmail);
     void deleteByCreatedOnBefore(Date time);
 }

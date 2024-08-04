@@ -204,7 +204,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             ConfirmZoomSessionFromStudentRequest request)
             throws ZoomSessionNotFoundException, EncryptionFailedException {
         // Find student details using formId or other means
-        Student student = studentRepository.findByStudentWorkEmail(request.getStudentWorkEmail());
+        Student student = studentRepository.findByStudentWorkEmailIgnoreCase(request.getStudentWorkEmail());
         String studentName = student.getStudentName();
 
         Optional<ZoomSessionForm> optionalForm = zoomSessionFormRepository.findByZoomSessionFormId(request.getZoomSessionFormId());
@@ -252,6 +252,8 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                             "\n\nFollowing were the client details\n\nClient Name: %s" +
                             "\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s" +
                             "\nClient College: %s\nProof Document: \n%s" +
+                            "\n\nIf you have any issues please send " +
+                            "an email to us at helpguidebookx@gmail.com" +
                             "\n\nBest regards,\n" +
                             "GuidebookX Team",
                     clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink());
@@ -393,7 +395,8 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         content.append("College: ").append(form.getClientCollege()).append("\n");
         content.append("Proof Document Link: \n").append(form.getClientProofDocLink()).append("\n");
         content.append("\nWe apologize for any inconvenience caused.\n\n");
-        content.append("Best regards,\n");
+        content.append("If you have any issues, please send an email to us at helpguidebookx@gmail.com");
+        content.append("\n\nBest regards,\n");
         content.append("GuideBookX Team");
         return content.toString();
     }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StudentClassTypeRepository extends JpaRepository<StudentClassType, Long> {
-    StudentClassType findStudentClassTypeByStudentClassTypeName(String name);
+    StudentClassType findStudentClassTypeByStudentClassTypeNameIgnoreCase(String name);
 }
