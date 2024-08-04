@@ -4,6 +4,8 @@ import com.guidebook.GuideBook.ADMIN.Models.EntranceExam;
 import com.guidebook.GuideBook.ADMIN.Repository.EntranceExamRepository;
 import com.guidebook.GuideBook.ADMIN.dtos.AddEntranceExamRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.GetAllEntranceExamResponse;
+import com.guidebook.GuideBook.ADMIN.exceptions.AlreadyPresentException;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,12 @@ public class EntranceExamService {
     public EntranceExam getEntranceExamByNameIgnoreCase(String examName){
         return entranceExamRepository.findByEntranceExamNameIgnoreCase(examName);
     }
-
-    public EntranceExam addEntranceExam(AddEntranceExamRequest addEntranceExamRequest) {
+    @Transactional
+    public EntranceExam addEntranceExam(AddEntranceExamRequest addEntranceExamRequest)
+            throws AlreadyPresentException {
+        if((entranceExamRepository.findByEntranceExamNameIgnoreCase(addEntranceExamRequest.getExamName())) != null){
+            throw new AlreadyPresentException("Entrance exam already present at addEntranceExam() method");
+        }
         EntranceExam newExam = new EntranceExam();
         if(addEntranceExamRequest.getExamName()!=null){
             newExam.setEntranceExamName(addEntranceExamRequest.getExamName());

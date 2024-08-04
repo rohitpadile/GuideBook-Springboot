@@ -105,6 +105,24 @@ public class StudentProfileService {
         if(!checkStudentProfile.isPresent()){
             throw new StudentProfileContentNotFoundException("Student profile content not found at addStudentProfile() method");
         }
+        StudentProfile studentProfile = getStudentProfile(updateRequest, checkStudentProfile);
+        //DO NOT ASSIGN SESSIONS ATTENDED - CYBER ATTACKS CAN HAPPEN AND STUDENT SESSION COUNT CAN BE LOST
+
+        studentProfile = studentProfileRepository.save(studentProfile);
+
+        return GetStudentProfileResponse.builder()
+                .studentProfileAboutSection(studentProfile.getStudentProfileAboutSection())
+                .studentProfileCityOfCoaching(studentProfile.getStudentProfileCityOfCoaching())
+                .studentProfileExamScoreDetails(studentProfile.getStudentProfileExamScoreDetails())
+                .studentProfileOtherExamScoreDetails(studentProfile.getStudentProfileOtherExamScoreDetails())
+                .studentProfileActivityAndAchievements(studentProfile.getStudentProfileActivityAndAchievements())
+                .studentProfileTutoringExperience(studentProfile.getStudentProfileTutoringExperience())
+                .studentProfileExternalLinks(studentProfile.getStudentProfileExternalLinks())
+                .studentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted())
+                .build();
+    }
+    @Transactional
+    private static StudentProfile getStudentProfile(UpdateStudentProfileRequest updateRequest, Optional<StudentProfile> checkStudentProfile) {
         StudentProfile studentProfile = checkStudentProfile.get();
         // Update fields based on the DTO
         if(updateRequest.getStudentPublicEmail()!=null){
@@ -131,20 +149,7 @@ public class StudentProfileService {
         if(updateRequest.getStudentProfileExternalLinks()!=null){
             studentProfile.setStudentProfileExternalLinks(updateRequest.getStudentProfileExternalLinks());
         }
-        //DO NOT ASSIGN SESSIONS ATTENDED - CYBER ATTACKS CAN HAPPEN AND STUDENT SESSION COUNT CAN BE LOST
-
-        studentProfile = studentProfileRepository.save(studentProfile);
-
-        return GetStudentProfileResponse.builder()
-                .studentProfileAboutSection(studentProfile.getStudentProfileAboutSection())
-                .studentProfileCityOfCoaching(studentProfile.getStudentProfileCityOfCoaching())
-                .studentProfileExamScoreDetails(studentProfile.getStudentProfileExamScoreDetails())
-                .studentProfileOtherExamScoreDetails(studentProfile.getStudentProfileOtherExamScoreDetails())
-                .studentProfileActivityAndAchievements(studentProfile.getStudentProfileActivityAndAchievements())
-                .studentProfileTutoringExperience(studentProfile.getStudentProfileTutoringExperience())
-                .studentProfileExternalLinks(studentProfile.getStudentProfileExternalLinks())
-                .studentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted())
-                .build();
+        return studentProfile;
     }
 
 //    private static GetStudentProfileResponse getGetStudentProfileResponse(StudentProfile profile) {

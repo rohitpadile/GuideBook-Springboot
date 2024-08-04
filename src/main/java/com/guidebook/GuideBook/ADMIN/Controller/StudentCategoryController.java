@@ -4,6 +4,7 @@ import com.guidebook.GuideBook.ADMIN.Models.StudentCategory;
 import com.guidebook.GuideBook.ADMIN.Services.StudentCategoryService;
 import com.guidebook.GuideBook.ADMIN.dtos.AddStudentCategoryRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.selectStudentFiltering.GetAllStudentCategoryNameListResponse;
+import com.guidebook.GuideBook.ADMIN.exceptions.AlreadyPresentException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,9 @@ public class StudentCategoryController {
     }
 
     @PostMapping("/addStudentCategory")
-    public ResponseEntity<StudentCategory> addStudentCategory(@RequestBody @Valid AddStudentCategoryRequest addStudentCategoryRequest){
+    public ResponseEntity<StudentCategory> addStudentCategory(
+            @RequestBody @Valid AddStudentCategoryRequest addStudentCategoryRequest)
+            throws AlreadyPresentException {
         StudentCategory studentCategoryAdded = studentCategoryService.addStudentCategory(addStudentCategoryRequest);
         return new ResponseEntity<>(studentCategoryAdded , HttpStatus.CREATED);
     }

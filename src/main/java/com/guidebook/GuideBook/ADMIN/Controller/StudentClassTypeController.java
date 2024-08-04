@@ -4,6 +4,7 @@ import com.guidebook.GuideBook.ADMIN.dtos.AddStudentClassTypeRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.selectStudentFiltering.GetAllStudentClassTypeNameListResponse;
 import com.guidebook.GuideBook.ADMIN.Models.StudentClassType;
 import com.guidebook.GuideBook.ADMIN.Services.StudentClassTypeService;
+import com.guidebook.GuideBook.ADMIN.exceptions.AlreadyPresentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,9 @@ public class StudentClassTypeController {
     }
 
     @PostMapping("/addStudentClassType")
-    public ResponseEntity<StudentClassType> addStudentClassType(@RequestBody AddStudentClassTypeRequest addStudentClassTypeRequest){
+    public ResponseEntity<StudentClassType> addStudentClassType(
+            @RequestBody AddStudentClassTypeRequest addStudentClassTypeRequest)
+            throws AlreadyPresentException {
         StudentClassType studentClassType = studentClassTypeService.addStudentClassType(addStudentClassTypeRequest);
         return new ResponseEntity<>(studentClassType, HttpStatus.CREATED);
     }

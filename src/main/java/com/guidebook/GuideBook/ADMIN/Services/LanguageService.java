@@ -3,7 +3,9 @@ package com.guidebook.GuideBook.ADMIN.Services;
 import com.guidebook.GuideBook.ADMIN.Models.Language;
 import com.guidebook.GuideBook.ADMIN.Repository.LanguageRepository;
 import com.guidebook.GuideBook.ADMIN.dtos.selectStudentFiltering.GetAllLanguageNameListResponse;
+import com.guidebook.GuideBook.ADMIN.exceptions.AlreadyPresentException;
 import com.guidebook.GuideBook.ADMIN.exceptions.LanguageNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,12 @@ public class LanguageService {
     public LanguageService(LanguageRepository languageRepository) {
         this.languageRepository = languageRepository;
     }
-
-    public Language addLanguage(String languageName) {
+    @Transactional
+    public Language addLanguage(String languageName)
+            throws AlreadyPresentException {
+        if((languageRepository.findLanguageByLanguageNameIgnoreCase(languageName)) != null){
+            throw new AlreadyPresentException("Language already present at addLanguage() method: " + languageName);
+        }
         Language newLanguage = new Language();
         newLanguage.setLanguageName(languageName);
         return languageRepository.save(newLanguage);

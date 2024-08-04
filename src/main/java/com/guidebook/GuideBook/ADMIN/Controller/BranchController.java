@@ -3,6 +3,7 @@ package com.guidebook.GuideBook.ADMIN.Controller;
 import com.guidebook.GuideBook.ADMIN.dtos.AddBranchRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeResponse;
+import com.guidebook.GuideBook.ADMIN.exceptions.AlreadyPresentException;
 import com.guidebook.GuideBook.ADMIN.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Models.Branch;
 import com.guidebook.GuideBook.ADMIN.Services.BranchService;
@@ -26,8 +27,8 @@ public class BranchController {
         this.branchService = branchService;
     }
     @PostMapping("/addBranch")
-    public ResponseEntity<Branch> addBranch(@RequestBody @Valid AddBranchRequest addBranchRequest){
-
+    public ResponseEntity<Branch> addBranch(@RequestBody @Valid AddBranchRequest addBranchRequest)
+            throws AlreadyPresentException {
         Branch addedBranch =  branchService.addBranch(addBranchRequest);
         return new ResponseEntity<>(addedBranch, HttpStatus.CREATED);
     }

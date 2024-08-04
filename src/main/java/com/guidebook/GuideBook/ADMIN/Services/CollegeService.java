@@ -3,6 +3,7 @@ package com.guidebook.GuideBook.ADMIN.Services;
 import com.guidebook.GuideBook.ADMIN.Models.Branch;
 import com.guidebook.GuideBook.ADMIN.dtos.AddCollegeRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.GetCollegeListForExamResponse;
+import com.guidebook.GuideBook.ADMIN.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.ADMIN.exceptions.CollegeNotFoundException;
 import com.guidebook.GuideBook.ADMIN.exceptions.EntranceExamNotFoundException;
 import com.guidebook.GuideBook.ADMIN.mapper.CollegeMapper;
@@ -68,23 +69,22 @@ public class CollegeService {
         }
         return getCollegeListForExamResponse;
     }
-    @Transactional
-    public void addCollegeWithBranches(AddCollegeRequest addCollegeRequest) throws EntranceExamNotFoundException {
+    @Transactional(rollbackOn = {BranchNotFoundException.class, EntranceExamNotFoundException.class})
+    public void addCollegeWithBranches(AddCollegeRequest addCollegeRequest)
+            throws EntranceExamNotFoundException,
+            BranchNotFoundException {
         College newCollege = CollegeMapper.mapToCollege(addCollegeRequest);
 
         Set<Branch> branchSet = new HashSet<>(); //This set is to be added to branch table
         for(String branchName : addCollegeRequest.getBranchNames()){
             if((branchService.getBranchByBranchNameIgnoreCase(branchName)) == null){
-                Branch branch = new Branch(); //make a new branch , add it to collegeBranchSet
-                branch.setBranchName(branchName);
-                Branch newBranchAdded = branchService.addBranch(branch); //adding the new branch to branch entity
-                branchSet.add(newBranchAdded);//adding it to collegeBranchSet
+                throw new BranchNotFoundException("Branch not found while adding college at addCollegeWithBranches() method");
             } else {//already branch present
                 log.info("Branch {} is already in the branch table", branchName);
                 branchSet.add(branchService.getBranchByBranchNameIgnoreCase(branchName)); //add it to collegeBranchSet
             }
         }
-        newCollege.setCollegeBranchSet(branchSet);
+
 
         Set<EntranceExam> entranceExams = new HashSet<>();
         for(String examName : addCollegeRequest.getCollegeEntranceExamNameSet()){
@@ -98,6 +98,7 @@ public class CollegeService {
                 entranceExams.add(exam);
             }
         }
+        newCollege.setCollegeBranchSet(branchSet);
         newCollege.setCollegeEntranceSet(entranceExams);
         collegeRepository.save(newCollege);
     }

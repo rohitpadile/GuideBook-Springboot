@@ -1,10 +1,12 @@
 package com.guidebook.GuideBook.ADMIN.Services;
 
+import com.guidebook.GuideBook.ADMIN.exceptions.AlreadyPresentException;
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentCategoryNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Models.StudentCategory;
 import com.guidebook.GuideBook.ADMIN.Repository.StudentCategoryRepository;
 import com.guidebook.GuideBook.ADMIN.dtos.AddStudentCategoryRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.selectStudentFiltering.GetAllStudentCategoryNameListResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +36,15 @@ public class StudentCategoryService {
     throws StudentCategoryNotFoundException {
         return studentCategoryRepository.findStudentCategoryByStudentCategoryNameIgnoreCase(name);
     }
-
-    public StudentCategory addStudentCategory(AddStudentCategoryRequest addStudentCategoryRequest) {
+    @Transactional
+    public StudentCategory addStudentCategory(AddStudentCategoryRequest addStudentCategoryRequest)
+            throws AlreadyPresentException {
+        if((studentCategoryRepository.findStudentCategoryByStudentCategoryNameIgnoreCase(
+                addStudentCategoryRequest.getStudentCategory()
+        )) != null){
+            throw new AlreadyPresentException("Student Category already present at addStudentCategory() method: " +
+                    addStudentCategoryRequest.getStudentCategory());
+        }
         StudentCategory newStudentCategory = new StudentCategory();
         newStudentCategory.setStudentCategoryName(addStudentCategoryRequest.getStudentCategory());
         return studentCategoryRepository.save(newStudentCategory);

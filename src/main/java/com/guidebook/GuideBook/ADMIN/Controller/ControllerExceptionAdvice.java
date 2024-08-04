@@ -1,6 +1,9 @@
 package com.guidebook.GuideBook.ADMIN.Controller;
 
 import com.guidebook.GuideBook.ADMIN.exceptions.*;
+import com.guidebook.GuideBook.TR.exceptions.TRAdminPasswordException;
+import com.guidebook.GuideBook.TR.exceptions.TRUserNotFoundException;
+import com.guidebook.GuideBook.TR.exceptions.TRUserPasswordNotMatchException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,9 +87,26 @@ public class ControllerExceptionAdvice {
         return new ResponseEntity<>(languageNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = FilteredStudentListNotFoundException.class)
-    public ResponseEntity<String> takeAction(FilteredStudentListNotFoundException filteredStudentListNotFoundException){
-        log.error("FilteredStudentListNotFoundException occurred : {}" , filteredStudentListNotFoundException);
-        return new ResponseEntity<>(filteredStudentListNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(value = AlreadyPresentException.class)
+    public ResponseEntity<String> takeAction(AlreadyPresentException alreadyPresentException){
+        log.error("AlreadyPresentException occurred : {}" , alreadyPresentException);
+        return new ResponseEntity<>(alreadyPresentException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = TRUserNotFoundException.class)
+    public ResponseEntity<String> takeAction(TRUserNotFoundException trUserNotFoundException){
+        log.error("TRUserNotFoundException occurred : {}" , trUserNotFoundException);
+        return new ResponseEntity<>(trUserNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = TRUserPasswordNotMatchException.class)
+    public ResponseEntity<String> takeAction(TRUserPasswordNotMatchException trUserPasswordNotMatchException) {
+        log.error("TRUserPasswordNotMatchException occurred : {}", trUserPasswordNotMatchException);
+        return new ResponseEntity<>(trUserPasswordNotMatchException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(value = TRAdminPasswordException.class)
+    public ResponseEntity<String> takeAction(TRAdminPasswordException trAdminPasswordException){
+        log.error("TRAdminPasswordException occurred : {}" , trAdminPasswordException);
+        return new ResponseEntity<>(trAdminPasswordException.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

@@ -1,5 +1,7 @@
 package com.guidebook.GuideBook.TR.Controller;
 
+import com.guidebook.GuideBook.ADMIN.exceptions.AlreadyPresentException;
+import com.guidebook.GuideBook.ADMIN.exceptions.EncryptionFailedException;
 import com.guidebook.GuideBook.TR.Services.TRUserService;
 import com.guidebook.GuideBook.TR.dtos.*;
 import com.guidebook.GuideBook.TR.exceptions.TRAdminPasswordException;
@@ -29,7 +31,8 @@ public class TRUserController {
 
     @PostMapping("/addTRUser")
     public ResponseEntity<Void> addTRUser(@RequestBody @Valid AddTRUserRequest addTRUserRequest)
-            throws TRAdminPasswordException {
+            throws TRAdminPasswordException,
+            AlreadyPresentException {
         trUserService.addTRUser(addTRUserRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -59,7 +62,8 @@ public class TRUserController {
     }
     @PostMapping("/getSecretUrl")
     public String generateEncryptedUrlForTRUser(@RequestBody @Valid GetSecretUrlRequest getSecretUrlRequest)
-            throws TRAdminPasswordException {
+            throws TRAdminPasswordException,
+            EncryptionFailedException {
         return trUserService.generateEncryptedUrlForTRUser(getSecretUrlRequest);
     }
 }

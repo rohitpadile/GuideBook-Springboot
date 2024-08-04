@@ -38,15 +38,9 @@ public class ZoomSessionFormService {
         Optional<BookingRestriction> restriction = bookingRestrictionService.findByClientEmail(formDTO.getClientEmail());
 
         if (restriction.isPresent()) {
-            ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
-            response.setZoomSessionFormMessage(
-                    String.format(
-                            "Sorry, as per company's terms and conditions, you cannot book more than 1 session within %d hour(s) of booking a session",
-                            bookingRestrictionService.getTimeBeforeBookSessionNotAllowed()));
-            response.setZoomSessionFormMessageCode(0); // Code for redirecting him to student profile page
+            ZoomSessionFormMessageResponse response = getZoomSessionFormMessageResponse();
             log.error("Response is {}", response);
             return response;
-
         }
 
         ZoomSessionForm form = ZoomSessionForm.builder()
@@ -87,6 +81,17 @@ public class ZoomSessionFormService {
         log.error("Response is {}", response);
         return response;
     }
+
+    private ZoomSessionFormMessageResponse getZoomSessionFormMessageResponse() {
+        ZoomSessionFormMessageResponse response = new ZoomSessionFormMessageResponse();
+        response.setZoomSessionFormMessage(
+                String.format(
+                        "Sorry, as per company's terms and conditions, you cannot book more than 1 session within %d hour(s) of booking a session",
+                        bookingRestrictionService.getTimeBeforeBookSessionNotAllowed()));
+        response.setZoomSessionFormMessageCode(0); // Code for redirecting him to student profile page
+        return response;
+    }
+
     @Transactional
     public ZoomSessionFormMessageResponse verifyOTP(ZoomSessionOTPVerifyRequest zoomSessionOTPVerifyRequest) {
         String clientOTPForVerification = String.valueOf(zoomSessionOTPVerifyRequest.getClientOTP());

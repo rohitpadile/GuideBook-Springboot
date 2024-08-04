@@ -37,7 +37,6 @@ public class StudentProfileController {
         GetStudentProfileResponse res = studentProfileService.getStudentProfile(studentWorkEmail);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
-
     @PutMapping("/updateStudentProfile/{studentWorkEmail}")
     public ResponseEntity<GetStudentProfileResponse> updateStudentProfile(
             @PathVariable String studentWorkEmail,

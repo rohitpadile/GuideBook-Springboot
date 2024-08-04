@@ -5,9 +5,11 @@ import com.guidebook.GuideBook.ADMIN.Repository.cutomrepository.CustomBranchRepo
 import com.guidebook.GuideBook.ADMIN.dtos.AddBranchRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.selectStudentFiltering.GetAllBranchNameListForCollegeResponse;
+import com.guidebook.GuideBook.ADMIN.exceptions.AlreadyPresentException;
 import com.guidebook.GuideBook.ADMIN.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.ADMIN.mapper.BranchMapper;
 import com.guidebook.GuideBook.ADMIN.Models.Branch;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +35,12 @@ public class BranchService {
                 () -> new BranchNotFoundException("Branch not found with id: " + branchId)
         );
     }
-
-    public Branch addBranch(AddBranchRequest addBranchRequest){
+    @Transactional
+    public Branch addBranch(AddBranchRequest addBranchRequest)
+            throws AlreadyPresentException {
+        if((branchRepository.findBranchByBranchNameIgnoreCase(addBranchRequest.getBranchName())) != null){
+            throw new AlreadyPresentException("Branch already present at addBranch() method: " + addBranchRequest.getBranchName());
+        }
         Branch newbranchAdded = BranchMapper.mapToBranch(addBranchRequest);
         return branchRepository.save(newbranchAdded);
 

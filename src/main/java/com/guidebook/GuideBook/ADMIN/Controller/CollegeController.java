@@ -4,6 +4,7 @@ import com.guidebook.GuideBook.ADMIN.dtos.GetCollegeListForExamResponse;
 import com.guidebook.GuideBook.ADMIN.Services.CollegeService;
 import com.guidebook.GuideBook.ADMIN.dtos.AddCollegeRequest;
 //import com.guidebook.GuideBook.dtos.GetAllCollegeListForClubsResponse;
+import com.guidebook.GuideBook.ADMIN.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.ADMIN.exceptions.EntranceExamNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,8 @@ public class CollegeController {
 
     @PostMapping("/addCollegeWithBranches")
     public ResponseEntity<Void> addCollegeWithBranches(@RequestBody @Valid AddCollegeRequest addCollegeRequest)
-            throws EntranceExamNotFoundException
-    {
+            throws EntranceExamNotFoundException,
+            BranchNotFoundException {
         collegeService.addCollegeWithBranches(addCollegeRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

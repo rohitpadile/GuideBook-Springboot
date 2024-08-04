@@ -4,6 +4,7 @@ import com.guidebook.GuideBook.ADMIN.Models.EntranceExam;
 import com.guidebook.GuideBook.ADMIN.Services.EntranceExamService;
 import com.guidebook.GuideBook.ADMIN.dtos.AddEntranceExamRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.GetAllEntranceExamResponse;
+import com.guidebook.GuideBook.ADMIN.exceptions.AlreadyPresentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,8 @@ public class EntranceExamController {
     }
 
     @PostMapping("/addEntranceExam")
-    public ResponseEntity<EntranceExam> addEntranceExam(@RequestBody AddEntranceExamRequest addEntranceExamRequest){
+    public ResponseEntity<EntranceExam> addEntranceExam(@RequestBody AddEntranceExamRequest addEntranceExamRequest)
+            throws AlreadyPresentException {
         EntranceExam exam = entranceExamService.addEntranceExam(addEntranceExamRequest);
         return new ResponseEntity<>(exam, HttpStatus.CREATED);
     }

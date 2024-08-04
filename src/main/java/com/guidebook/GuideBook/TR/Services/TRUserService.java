@@ -1,5 +1,7 @@
 package com.guidebook.GuideBook.TR.Services;
 
+import com.guidebook.GuideBook.ADMIN.exceptions.AlreadyPresentException;
+import com.guidebook.GuideBook.ADMIN.exceptions.EncryptionFailedException;
 import com.guidebook.GuideBook.TR.Models.TRUser;
 import com.guidebook.GuideBook.TR.Repository.TRUserRepository;
 import com.guidebook.GuideBook.TR.dtos.*;
@@ -28,8 +30,14 @@ public class TRUserService {
     }
     @Transactional
     public void addTRUser(AddTRUserRequest addTRUserRequest)
-            throws TRAdminPasswordException {
+            throws TRAdminPasswordException,
+            AlreadyPresentException {
         if(addTRUserRequest.getTrAdminPassword().equals(this.trAdminPassword)){
+            if((trUserRepository.findByTrUserFirstNameAndTrUserLastName(
+                    addTRUserRequest.getTrUserFirstName(), addTRUserRequest.getTrUserLastName()
+            )).isPresent()){
+                throw new AlreadyPresentException("TRUSer already present at addTRUser() method.");
+            }
              trUserRepository.save(
                     TRUser.builder()
                     .trUserFirstName(addTRUserRequest.getTrUserFirstName().toLowerCase().trim())
@@ -102,7 +110,8 @@ public class TRUserService {
         }
     }
     public String generateEncryptedUrlForTRUser(GetSecretUrlRequest getSecretUrlRequest)
-            throws TRAdminPasswordException {
+            throws TRAdminPasswordException,
+            EncryptionFailedException{
         if (getSecretUrlRequest.getTrAdminPassword().equals(this.trAdminPassword)) {
             try {
                 // Combine first and last names and convert to lower case
@@ -127,7 +136,7 @@ public class TRUserService {
                 // Return URLs as needed (modify according to your requirements)
                 return trStudentApplicationUrl + "\n" + trUpdateStudentApplicationUrl;
             } catch (Exception e) {
-                throw new RuntimeException("Error generating URL for TR user", e);
+                throw new EncryptionFailedException("Error generating URL for TR user at generateEncryptedUrlForTRUser() method");
             }
         } else {
             throw new TRAdminPasswordException("Wrong TR Admin Password at generateEncryptedUrlForTRUser() method ");

@@ -4,6 +4,7 @@ import com.guidebook.GuideBook.ADMIN.Models.Language;
 import com.guidebook.GuideBook.ADMIN.Services.LanguageService;
 import com.guidebook.GuideBook.ADMIN.dtos.AddLanguageRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.selectStudentFiltering.GetAllLanguageNameListResponse;
+import com.guidebook.GuideBook.ADMIN.exceptions.AlreadyPresentException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class LanguageController {
     @PostMapping("/addLanguage")
     public ResponseEntity<Language> addLanguage(
             @RequestBody @Valid AddLanguageRequest addLanguageRequest
-            ){
+            ) throws AlreadyPresentException {
         Language res = languageService.addLanguage(addLanguageRequest.getLanguage());
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
