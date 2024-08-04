@@ -1,9 +1,11 @@
-package com.guidebook.GuideBook.TR.Models;
+package com.guidebook.GuideBook.ADMIN.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,15 +16,15 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class TRUser {
+public class HelpDesk {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long trUserId;
-
-    private String trUserFirstName;
-    private String trUserLastName;
-    private String trUserPassword;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String helpDeskId;
+    private String helpDeskEmailSubject;
+    private String helpDeskEmailSentFrom;
+    private String helpDeskEmailSentFTo;
+    @Lob
+    private String helpDeskEmailContent;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -35,5 +37,4 @@ public class TRUser {
     @Version
     @JsonIgnore
     private Integer version;
-
 }
