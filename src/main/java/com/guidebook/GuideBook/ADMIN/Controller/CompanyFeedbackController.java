@@ -26,7 +26,7 @@ public class CompanyFeedbackController {
         this.companyFeedbackService = companyFeedbackService;
     }
 
-    @PostMapping("/companyFeedback")
+    @PostMapping("/addCompanyFeedback")
     public ResponseEntity<Void> addCompanyFeedback(
             @RequestBody @Valid AddCompanyFeedbackRequest addCompanyFeedbackRequest
     ){

@@ -275,7 +275,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                             "NOTE: Kindly do not share these details with anyone. Only the email with which " +
                             "you have registered is permitted to be in the meeting otherwise the meeting " +
                             "will be cancelled.\n\nIf you have any issues regarding the email, please send " +
-                            "an email to us at help.guidebookx@gmail.com" +
+                            "an email to us at helpguidebookx@gmail.com" +
                             "\n\nBest regards,\n" +
                             "GuidebookX Team",
                     clientName,

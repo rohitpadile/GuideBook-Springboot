@@ -11,11 +11,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
-@Entity
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
+@Entity
 public class CompanyFeedback {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

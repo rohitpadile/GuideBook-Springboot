@@ -26,6 +26,7 @@ public class CompanyFeedbackService {
         newFeedback.setCompanyFeedbackTextBoxContent(
                 addCompanyFeedbackRequest.getCompanyFeedbackTextBoxContent()
         );
+        companyFeedbackRepository.save(newFeedback);
     }
 
     public List<CompanyFeedback> getCompanyFeedbackList() {
