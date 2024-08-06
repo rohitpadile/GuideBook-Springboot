@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @CrossOrigin(origins = {
         "http://localhost:3000", "http://localhost:8080",
         "https://www.guidebookx.com","https://guidebookx.com",
@@ -39,6 +42,12 @@ public class BranchController {
             throws BranchNotFoundException
     {
         GetAllBranchNameListForCollegeResponse res = branchService.getAllBranchNameListForCollege(request);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllbranchNameList")
+    public ResponseEntity<List<String>> getAllBranchNameList(){
+        List<String> res = branchService.getAllBranchNameList();
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }
