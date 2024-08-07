@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.ADMIN.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -57,8 +58,6 @@ public class ZoomSessionForm {
     private Integer version;
 
     @OneToOne(mappedBy = "zoomSessionForm")
+    @JsonIgnore
     private ZoomSessionTransaction zoomSessionTransaction;
-
-
-
 }
