@@ -81,8 +81,13 @@
 			<artifactId>jasypt-spring-boot-starter</artifactId>
 			<version>3.0.4</version>
 		</dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.security</groupId>-->
+<!--            <artifactId>spring-security-config</artifactId>-->
+<!--            <version>6.2.4</version>-->
+<!--        </dependency>-->
 
-		<!--		AMAZON AWS S3 DEPENDENCY-->
+        <!--		AMAZON AWS S3 DEPENDENCY-->
 <!--		<dependency>-->
 <!--			<groupId>software.amazon.awssdk</groupId>-->
 <!--			<artifactId>s3</artifactId>-->
