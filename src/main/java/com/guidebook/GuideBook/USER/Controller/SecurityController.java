@@ -68,10 +68,10 @@ public class SecurityController {
         return jwt;
     }
 
-    @GetMapping("/user")
-    public String user() {
-        return "Hello, authenticated user!";
-    }
+//    @GetMapping("/user")
+//    public String user() {
+//        return "Hello, authenticated user!";
+//    }
 
     @GetMapping("/check-login")
     public ResponseEntity<?> checkLogin(HttpServletRequest request) {

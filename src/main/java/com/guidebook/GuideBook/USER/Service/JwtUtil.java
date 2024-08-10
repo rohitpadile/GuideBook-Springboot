@@ -3,6 +3,7 @@ package com.guidebook.GuideBook.USER.Service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
@@ -14,8 +15,8 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
-
-    private String SECRET_KEY = "secret"; // Change this to a more secure key
+    @Value("${jwtsecretkey}")
+    private String SECRET_KEY; // Change this to a more secure key
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
