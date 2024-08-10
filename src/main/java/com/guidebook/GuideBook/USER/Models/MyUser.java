@@ -22,7 +22,7 @@ public class MyUser implements UserDetails {
 
     private String password;
 
-    private String authorities; // e.g., "ROLE_USER,ROLE_ADMIN"
+    private String authorities ="ROLE_USER"; // e.g., "ROLE_USER,ROLE_ADMIN"
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

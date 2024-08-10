@@ -22,11 +22,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
 
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtRequestFilter jwtRequestFilter;
     @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+    public SecurityConfig(CustomUserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter) {
+        this.userDetailsService = userDetailsService;
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -43,7 +46,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF protection
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/login", "/signup").permitAll() // Allow access to login and signup
+                        .requestMatchers("api/v1/user/login", "api/v1/user/signup","/api/v1/user/logout").permitAll() // Allow access to login and signup
                         .anyRequest().authenticated() // All other requests require authentication
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
