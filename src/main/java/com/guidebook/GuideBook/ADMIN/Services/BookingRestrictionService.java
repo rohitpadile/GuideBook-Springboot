@@ -28,9 +28,16 @@ public class BookingRestrictionService {
     @Scheduled(fixedRate = 3600000) //Change this to 3600000 later //using it for production use now
     @Transactional
     public void deleteExpiredEntries() {
+        // Fetch the current time from the database server
+        Date currentTime = bookingRestrictionRepository.getCurrentDatabaseTime();
+
+        // Calculate the expiration time based on the database time
         Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentTime);
         calendar.add(Calendar.HOUR, -timeBeforeBookSessionNotAllowed); // Use the injected value
         Date expiryTime = calendar.getTime();
+
+        // Delete all booking restrictions older than the calculated expiration time
         bookingRestrictionRepository.deleteByCreatedOnBefore(expiryTime);
     }
 
