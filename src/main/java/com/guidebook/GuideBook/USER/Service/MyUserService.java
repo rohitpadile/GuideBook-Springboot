@@ -6,9 +6,6 @@ import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
 import com.guidebook.GuideBook.ADMIN.Services.StudentProfileService;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
-import com.guidebook.GuideBook.ADMIN.exceptions.StudentBasicDetailsNotFoundException;
-import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
-import com.guidebook.GuideBook.TR.util.EncryptionUtilForStudentProfileEdit;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.Otp;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
@@ -23,15 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MyUserService {
     private final MyUserRepository myUserRepository;
     private final EmailServiceImpl emailServiceImpl;
     private final OtpRepository otpRepository;
-    private final StudentMentorService studentMentorService;
+    private final StudentMentorAccountService studentMentorAccountService;
     private final ClientAccountService clientAccountService;
     private final StudentService studentService;
     private final StudentProfileService studentProfileService;
@@ -39,14 +34,14 @@ public class MyUserService {
     public MyUserService(MyUserRepository myUserRepository,
                          EmailServiceImpl emailServiceImpl,
                          OtpRepository otpRepository,
-                         StudentMentorService studentMentorService,
+                         StudentMentorAccountService studentMentorAccountService,
                          ClientAccountService clientAccountService,
                          StudentService studentService,
                          StudentProfileService studentProfileService) {
         this.myUserRepository = myUserRepository;
         this.emailServiceImpl = emailServiceImpl;
         this.otpRepository = otpRepository;
-        this.studentMentorService = studentMentorService;
+        this.studentMentorAccountService = studentMentorAccountService;
         this.clientAccountService = clientAccountService;
         this.studentService = studentService;
         this.studentProfileService = studentProfileService;
@@ -114,7 +109,7 @@ public class MyUserService {
     public CheckUserEmailAccountTypeResponse checkUserEmailAccountType(
             CheckUserEmailAccountTypeRequest request) {
         Integer accountType = null;
-        if((studentMentorService.getAccountByEmail(request.getUserEmail())) != null){
+        if((studentMentorAccountService.getAccountByEmail(request.getUserEmail())) != null){
             accountType = 1; //Student Mentor account
         } else if((clientAccountService.getAccountByEmail(request.getUserEmail())) != null){
             accountType = 2;//Client Account
@@ -153,7 +148,7 @@ public class MyUserService {
 
     public StudentMentorProfileAccountDetailsResponse getStudentMentorProfileAccountDetails(GetUserProfileAccountDetailsRequest request)
             throws Exception {
-        StudentMentorAccount studentMentorAccount = studentMentorService.getAccountByEmail(request.getUserEmail());
+        StudentMentorAccount studentMentorAccount = studentMentorAccountService.getAccountByEmail(request.getUserEmail());
         if(studentMentorAccount != null){
             Student student = studentService.getStudentByWorkEmail(request.getUserEmail());
             StudentProfile profile = studentProfileService.getStudentProfileForGeneralPurpose(request.getUserEmail());
@@ -173,6 +168,14 @@ public class MyUserService {
                     .editStudentProfileLink(studentService.getEditStudentProfileLink(student))
                     .studentMentorAccountZoomSessionCount(studentMentorAccount.getStudentMentorAccountZoomSessionCount())
                     .studentMentorAccountOfflineSessionCount(studentMentorAccount.getStudentMentorAccountOfflineSessionCount())
+
+                    .clientFirstName(studentMentorAccount.getClientFirstName())
+                    .clientMiddleName(studentMentorAccount.getClientMiddleName())
+                    .clientLastName(studentMentorAccount.getClientLastName())
+                    .clientAge(studentMentorAccount.getClientAge())
+                    .clientPhoneNumber(studentMentorAccount.getClientPhoneNumber())
+                    .clientValidProof(studentMentorAccount.getClientValidProof())
+                    .clientZoomEmail(studentMentorAccount.getClientZoomEmail())
                     .build();
 
         } else {

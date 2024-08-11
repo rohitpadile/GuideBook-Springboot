@@ -8,6 +8,7 @@ import com.guidebook.GuideBook.ADMIN.Services.zoomsessionbook.ZoomSessionFormSer
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionform.ZoomSessionFormRequest;
 
 import com.guidebook.GuideBook.USER.Controller.ClientAccountController;
+import com.guidebook.GuideBook.USER.Service.JwtUtil;
 import com.guidebook.GuideBook.USER.dtos.ClientAccountDetailsForZoomSessionFormResponse;
 import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,17 +32,23 @@ public class ZoomSessionFormController {
 
     private final ZoomSessionFormService zoomSessionFormService;
     private final ClientAccountController clientAccountController;
+    private final JwtUtil jwtUtil;
 
     @Autowired
     public ZoomSessionFormController(ZoomSessionFormService zoomSessionFormService,
-                                     ClientAccountController clientAccountController) {
+                                     ClientAccountController clientAccountController,
+                                     JwtUtil jwtUtil) {
         this.zoomSessionFormService = zoomSessionFormService;
         this.clientAccountController = clientAccountController;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/zoomSessionFormSubmit")
-    public ResponseEntity<ZoomSessionFormMessageResponse> submitForm(@RequestBody @Valid ZoomSessionFormRequest formDTO) {
-        ZoomSessionFormMessageResponse response = zoomSessionFormService.submitForm(formDTO);
+    public ResponseEntity<ZoomSessionFormMessageResponse> submitForm(
+            @RequestBody @Valid ZoomSessionFormRequest formDTO,
+            HttpServletRequest request) {
+        String userEmail = jwtUtil.extractEmailFromToken(request);
+        ZoomSessionFormMessageResponse response = zoomSessionFormService.submitForm(formDTO, userEmail);
         log.error("Response is {}", response);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

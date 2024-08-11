@@ -32,7 +32,7 @@ public class ZoomSessionFormService {
         this.bookingRestrictionService = bookingRestrictionService;
     }
     @Transactional
-    public ZoomSessionFormMessageResponse submitForm(ZoomSessionFormRequest formDTO) {
+    public ZoomSessionFormMessageResponse submitForm(ZoomSessionFormRequest formDTO, String userEmail) {
 
         //DONT LET THE SAME CLIENT EMAIL BOOK ANOTHER SESSION WITHIN X HOURS (SPECIFIED IN APPLICATION PROPERTIES)
         Optional<BookingRestriction> restriction = bookingRestrictionService.findByClientEmail(formDTO.getClientEmail());
@@ -54,6 +54,7 @@ public class ZoomSessionFormService {
                 .clientProofDocLink(formDTO.getClientProofDocLink())
                 .clientOtpAttempts(0) // Initialize OTP attempts
                 .isVerified(0)
+                .userEmail(userEmail)
                 .build();
 
         // Generate OTP and set expiration

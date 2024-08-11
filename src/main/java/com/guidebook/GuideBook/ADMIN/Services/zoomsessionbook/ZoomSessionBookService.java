@@ -7,6 +7,7 @@ import com.guidebook.GuideBook.ADMIN.Services.BookingRestrictionService;
 import com.guidebook.GuideBook.ADMIN.Services.ZoomSessionTransactionService;
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.*;
 import com.guidebook.GuideBook.ADMIN.enums.ZoomSessionBookStatus;
+import com.guidebook.GuideBook.ADMIN.exceptions.BookingBlockedException;
 import com.guidebook.GuideBook.ADMIN.exceptions.EncryptionFailedException;
 import com.guidebook.GuideBook.ADMIN.exceptions.ZoomSessionNotFoundException;
 import com.guidebook.GuideBook.ADMIN.util.EncryptionUtil;
@@ -55,10 +56,11 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 
     @Transactional
     public void handleZoomSessionFormSuccess(ZoomSessionConfirmationRequest request)
-    throws ZoomSessionNotFoundException,
-            EncryptionFailedException
-    {
+            throws ZoomSessionNotFoundException,
+            EncryptionFailedException,
+            BookingBlockedException {
         // Retrieve the form details from the database
+
 
         Optional<ZoomSessionForm> checkForm = zoomSessionFormRepository.findByZoomSessionFormId(request.getZoomSessionFormId());
         if(!checkForm.isPresent()){
@@ -66,6 +68,10 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         }
         ZoomSessionForm form = checkForm.get();
 
+        //DONT LET A MENTOR BOOK A SESSION WITH HIMSELF
+        if(request.getStudentWorkEmail().equalsIgnoreCase(form.getUserEmail())){
+            throw new BookingBlockedException("Mentor cannot book a session with himself");
+        }
         //Dont let him click on Book session multiple times - spamming email for student
         Optional<BookingRestriction> restriction = bookingRestrictionService.findByClientEmail(form.getClientEmail());
         if (restriction.isPresent()) {

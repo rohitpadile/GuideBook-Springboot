@@ -1,6 +1,7 @@
 package com.guidebook.GuideBook.USER.Service;
 
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
+import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Repository.ClientAccountRepository;
 import com.guidebook.GuideBook.USER.dtos.ClientAccountDetailsForZoomSessionFormResponse;
 import com.guidebook.GuideBook.USER.dtos.EditClientAccountRequest;
@@ -12,9 +13,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClientAccountService {
     private final ClientAccountRepository clientAccountRepository;
+    private final StudentMentorAccountService studentMentorAccountService;
     @Autowired
-    public ClientAccountService(ClientAccountRepository clientAccountRepository) {
+    public ClientAccountService(ClientAccountRepository clientAccountRepository,
+                                StudentMentorAccountService studentMentorAccountService) {
         this.clientAccountRepository = clientAccountRepository;
+        this.studentMentorAccountService = studentMentorAccountService;
     }
 
     public ClientAccount getAccountByEmail(String email){
@@ -44,7 +48,21 @@ public class ClientAccountService {
     public ClientAccountDetailsForZoomSessionFormResponse getClientAccountDetailsForZoomSessionForm(String clientEmail)
             throws ClientAccountNotFoundException {
         ClientAccount clientAccount = clientAccountRepository.findByClientAccountEmail(clientEmail);
-        if(clientAccount!=null){
+        StudentMentorAccount studentMentorAccount = studentMentorAccountService.getAccountByEmail(clientEmail);
+        if(studentMentorAccount!=null){
+            return ClientAccountDetailsForZoomSessionFormResponse.builder()
+                    .clientFirstName(studentMentorAccount.getClientFirstName())
+                    .clientMiddleName(studentMentorAccount.getClientMiddleName())
+                    .clientLastName(studentMentorAccount.getClientLastName())
+                    .clientCollege(studentMentorAccount.getClientCollege())
+                    .clientAge(studentMentorAccount.getClientAge())
+                    .clientPhoneNumber(studentMentorAccount.getClientPhoneNumber())
+                    .clientValidProof(studentMentorAccount.getClientValidProof())
+                    .clientAge(studentMentorAccount.getClientAge())
+                    .clientZoomEmail(studentMentorAccount.getClientZoomEmail())
+                    .build();
+        }
+        else if(clientAccount!=null){
             return ClientAccountDetailsForZoomSessionFormResponse.builder()
                     .clientFirstName(clientAccount.getClientFirstName())
                     .clientMiddleName(clientAccount.getClientMiddleName())
@@ -57,7 +75,7 @@ public class ClientAccountService {
                     .clientZoomEmail(clientAccount.getClientZoomEmail())
                     .build();
         } else {
-            throw new ClientAccountNotFoundException("client account not found at editClientAccountDetails() method");
+            throw new ClientAccountNotFoundException("client account not found at getClientAccountDetailsForZoomSessionForm() method");
         }
     }
 }

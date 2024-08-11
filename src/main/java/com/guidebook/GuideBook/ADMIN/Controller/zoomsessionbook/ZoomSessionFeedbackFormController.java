@@ -5,6 +5,8 @@ import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.SubmitZoomSessionFeedb
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.ADMIN.exceptions.TransactionNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Services.ZoomSessionFeedbackFormService;
+import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
+import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +32,8 @@ public class ZoomSessionFeedbackFormController {
     public ResponseEntity<Void> submitZoomSessionFeedbackForm(
             @RequestBody @Valid SubmitZoomSessionFeedbackFormRequest request)
             throws StudentProfileContentNotFoundException,
-            TransactionNotFoundException
-    {
+            TransactionNotFoundException,
+            ClientAccountNotFoundException {
         zoomSessionFeedbackFormService.submitZoomSessionFeedbackForm(request);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

@@ -60,4 +60,6 @@ public class ZoomSessionForm {
     @OneToOne(mappedBy = "zoomSessionForm")
     @JsonIgnore
     private ZoomSessionTransaction zoomSessionTransaction;
+
+    private String userEmail;
 }

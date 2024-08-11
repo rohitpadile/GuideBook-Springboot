@@ -1,9 +1,8 @@
 package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.USER.Service.JwtUtil;
-import com.guidebook.GuideBook.USER.Service.StudentMentorService;
+import com.guidebook.GuideBook.USER.Service.StudentMentorAccountService;
 import com.guidebook.GuideBook.USER.dtos.EditClientAccountRequest;
-import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
 import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/user/")
 public class StudentMentorAccountController {
-    private final StudentMentorService studentMentorService;
+    private final StudentMentorAccountService studentMentorAccountService;
     private final JwtUtil jwtUtil;
     @Autowired
-    public StudentMentorAccountController(StudentMentorService studentMentorService,
+    public StudentMentorAccountController(StudentMentorAccountService studentMentorAccountService,
                                           JwtUtil jwtUtil) {
-        this.studentMentorService = studentMentorService;
+        this.studentMentorAccountService = studentMentorAccountService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -33,7 +32,8 @@ public class StudentMentorAccountController {
             @RequestBody EditClientAccountRequest editStudentMentorAccountRequest, HttpServletRequest request
     ) throws StudentMentorAccountNotFoundException {
         String studentMentorEmail = jwtUtil.extractEmailFromToken(request);
-        studentMentorService.editStudentMentorAccountDetails(editStudentMentorAccountRequest, studentMentorEmail);
+        studentMentorAccountService.editStudentMentorAccountDetails(editStudentMentorAccountRequest, studentMentorEmail);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+
 }

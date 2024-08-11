@@ -1,23 +1,21 @@
 package com.guidebook.GuideBook.USER.Service;
 
 import com.guidebook.GuideBook.ADMIN.Repository.StudentRepository;
-import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Repository.StudentMentorRepository;
 import com.guidebook.GuideBook.USER.dtos.EditClientAccountRequest;
-import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
 import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StudentMentorService {
+public class StudentMentorAccountService {
     private final StudentMentorRepository studentMentorRepository;
     private final StudentRepository studentRepository;
     @Autowired
-    public StudentMentorService(StudentMentorRepository studentMentorRepository,
-                                StudentRepository studentRepository) {
+    public StudentMentorAccountService(StudentMentorRepository studentMentorRepository,
+                                       StudentRepository studentRepository) {
         this.studentMentorRepository = studentMentorRepository;
         this.studentRepository = studentRepository;
     }
@@ -49,5 +47,8 @@ public class StudentMentorService {
         } else {
             throw new StudentMentorAccountNotFoundException("student mentor account not found at editStudentMentorAccountDetails() method");
         }
+    }
+    public void addStudentMentorAccount(StudentMentorAccount studentMentorAccount){
+        studentMentorRepository.save(studentMentorAccount);
     }
 }

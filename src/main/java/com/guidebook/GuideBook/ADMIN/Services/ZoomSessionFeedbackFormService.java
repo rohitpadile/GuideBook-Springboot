@@ -1,5 +1,7 @@
 package com.guidebook.GuideBook.ADMIN.Services;
 
+import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionForm;
+import com.guidebook.GuideBook.ADMIN.Services.zoomsessionbook.ZoomSessionFormService;
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.GetSubmittionStatusForFeedbackFormResponse;
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.SubmitZoomSessionFeedbackFormRequest;
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
@@ -8,8 +10,12 @@ import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
 import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionFeedbackForm;
 import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.ADMIN.Repository.ZoomSessionFeedbackFormRepository;
+import com.guidebook.GuideBook.USER.Models.ClientAccount;
+import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Service.ClientAccountService;
-import com.guidebook.GuideBook.USER.Service.StudentMentorService;
+import com.guidebook.GuideBook.USER.Service.StudentMentorAccountService;
+import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
+import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ZoomSessionFeedbackFormService {
     private final ClientAccountService clientAccountService;
-    private final StudentMentorService studentMentorService;
+    private final StudentMentorAccountService studentMentorAccountService;
 
     private final ZoomSessionFeedbackFormRepository zoomSessionFeedbackFormRepository;
     private final ZoomSessionTransactionService zoomSessionTransactionService;
@@ -28,19 +34,21 @@ public class ZoomSessionFeedbackFormService {
                                           ZoomSessionTransactionService zoomSessionTransactionService,
                                           StudentProfileService studentProfileService,
                                           ClientAccountService clientAccountService,
-                                          StudentMentorService studentMentorService
+                                          StudentMentorAccountService studentMentorAccountService
                                           ) {
         this.zoomSessionFeedbackFormRepository = zoomSessionFeedbackFormRepository;
         this.zoomSessionTransactionService = zoomSessionTransactionService;
         this.studentProfileService = studentProfileService;
         this.clientAccountService = clientAccountService;
-        this.studentMentorService = studentMentorService;
+        this.studentMentorAccountService = studentMentorAccountService;
     }
 
 //THIS CAN ALSO BE A @Transactional
     @Transactional
     public void submitZoomSessionFeedbackForm(SubmitZoomSessionFeedbackFormRequest request)
-            throws StudentProfileContentNotFoundException, TransactionNotFoundException {
+            throws StudentProfileContentNotFoundException,
+            TransactionNotFoundException,
+            ClientAccountNotFoundException {
         //Make a new feedback form and stores it uuid in the transaction unit
 
         ZoomSessionFeedbackForm feedbackForm = new ZoomSessionFeedbackForm();
@@ -61,10 +69,23 @@ public class ZoomSessionFeedbackFormService {
 //        Increase the session count of student by 1
         StudentProfile studentProfile = studentProfileService.getStudentProfileForGeneralPurpose(transaction.getStudent().getStudentWorkEmail());
         studentProfile.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted() + 1);
-        //Increase the count of the Client by 1 (if another mentor has booked this session, increase this session count)
-
+        //Increase the count of the Client by 1 (if another mentor has booked this session, increase his/her session count)
+        StudentMentorAccount studentMentorAccount = studentMentorAccountService.getAccountByEmail(
+                transaction.getZoomSessionForm().getUserEmail());
+        ClientAccount clientAccount = clientAccountService.getAccountByEmail(
+                transaction.getZoomSessionForm().getUserEmail());
+        if(studentMentorAccount!=null){
+            studentMentorAccount.setStudentMentorAccountZoomSessionCount(
+                    studentMentorAccount.getStudentMentorAccountZoomSessionCount() + 1
+            );
+        } else if(clientAccount!=null){
+            clientAccount.setClientAccountZoomSessionCount(
+                    clientAccount.getClientAccountZoomSessionCount() + 1
+            );
+        }else{
+            throw new ClientAccountNotFoundException("student mentor as a client or client account not found at submitZoomSessionFeedbackForm() method");
+        }
         studentProfileService.updateStudentProfile(studentProfile);
-
         zoomSessionTransactionService.saveZoomSessionTransaction(transaction);
 
         //saved transaction with the feedback form id - that officially completes one session.
@@ -85,7 +106,5 @@ public class ZoomSessionFeedbackFormService {
                     .isSubmitted(0)
                     .build();
         }
-
-
     }
 }

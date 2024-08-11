@@ -3,6 +3,7 @@ package com.guidebook.GuideBook.ADMIN.Controller.zoomsessionbook;
 //import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionBookService;
 
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.*;
+import com.guidebook.GuideBook.ADMIN.exceptions.BookingBlockedException;
 import com.guidebook.GuideBook.ADMIN.exceptions.EncryptionFailedException;
 import com.guidebook.GuideBook.ADMIN.exceptions.ZoomSessionNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Services.zoomsessionbook.ZoomSessionBookService;
@@ -33,9 +34,9 @@ public class ZoomSessionBookController {
     @PostMapping("/zoomSessionFormSuccess")
     public ResponseEntity<Void> handleZoomSessionFormSuccess(
             @RequestBody @Valid ZoomSessionConfirmationRequest zoomSessionConfirmationRequest)
-    throws ZoomSessionNotFoundException,
-            EncryptionFailedException
-    {
+            throws ZoomSessionNotFoundException,
+            EncryptionFailedException,
+            BookingBlockedException {
         zoomSessionBookService.handleZoomSessionFormSuccess(zoomSessionConfirmationRequest);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

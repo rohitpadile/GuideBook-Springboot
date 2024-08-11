@@ -16,6 +16,10 @@ import com.guidebook.GuideBook.ADMIN.dtos.filterstudents.FilteredStudentDetails;
 
 import com.guidebook.GuideBook.ADMIN.mapper.StudentMapper;
 import com.guidebook.GuideBook.TR.util.EncryptionUtilForStudentProfileEdit;
+import com.guidebook.GuideBook.USER.Models.ClientAccount;
+import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
+import com.guidebook.GuideBook.USER.Service.ClientAccountService;
+import com.guidebook.GuideBook.USER.Service.StudentMentorAccountService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +41,14 @@ public class StudentService {
     private CustomStudentRepositoryImpl customStudentRepositoryImpl;
     private StudentProfileService studentProfileService;
     private EmailServiceImpl emailService;
+    private final StudentMentorAccountService studentMentorAccountService;
+    private final ClientAccountService clientAccountService;
     @Value("${websitedomainname}")
     private String websiteDomainName;
 
     @Autowired
     public StudentService(
+            StudentMentorAccountService studentMentorAccountService,
             StudentClassTypeService studentClassTypeService,
             LanguageService languageService,
             BranchService branchService,
@@ -50,7 +57,8 @@ public class StudentService {
             CollegeService collegeService,
             CustomStudentRepositoryImpl customStudentRepositoryImpl,
             StudentProfileService studentProfileService,
-            EmailServiceImpl emailService
+            EmailServiceImpl emailService,
+            ClientAccountService clientAccountService
     ) {
         this.studentRepository = studentRepository;
         this.customStudentRepositoryImpl = customStudentRepositoryImpl;
@@ -61,6 +69,8 @@ public class StudentService {
         this.studentCategoryService = studentCategoryService;
         this.studentProfileService = studentProfileService;
         this.emailService = emailService;
+        this.studentMentorAccountService = studentMentorAccountService;
+        this.clientAccountService = clientAccountService;
     }
 
     public List<Student> getAllStudents() {
@@ -160,11 +170,54 @@ public class StudentService {
         }
 
         //Make a StudentMentor Account also here
-        //First check if it already exists as a ClientAccount, if it is, then transfer the data from client account
-        //to Student Mentor account
+        ClientAccount clientAccount = clientAccountService.getAccountByEmail(addStudentRequest.getStudentWorkEmail());
+        if((clientAccount) != null){
+            //A client account exists
+            //transfer the data from client account to Student Mentor account
+            StudentMentorAccount studentMentorAccount =
+                    getStudentMentorAccountUsingClientAccount(addStudentRequest, clientAccount);
+            studentMentorAccountService.addStudentMentorAccount(studentMentorAccount);
+        } else {
+            //Client account do not exists, we want to make a student mentor account with disabled subscription
+            StudentMentorAccount studentMentorAccount = getNewStudentMentorAccount(addStudentRequest);
+            studentMentorAccountService.addStudentMentorAccount(studentMentorAccount);
+        }
 
         return getStudentBasicDetailsResponse(studentRepository.save(newStudent));
     }
+    @Transactional
+    private static StudentMentorAccount getNewStudentMentorAccount(AddStudentRequest addStudentRequest) {
+        StudentMentorAccount studentMentorAccount = new StudentMentorAccount();
+        studentMentorAccount.setStudentMentorAccountWorkEmail(addStudentRequest.getStudentWorkEmail());
+        //monthly subscription transfer from client account
+        studentMentorAccount.setStudentMentorAccountSubscription_Monthly(0);//disabled subscription
+        studentMentorAccount.setClientCollege(addStudentRequest.getStudentCollegeName());
+        return studentMentorAccount;
+    }
+
+    @Transactional
+    private static StudentMentorAccount getStudentMentorAccountUsingClientAccount(AddStudentRequest addStudentRequest, ClientAccount clientAccount) {
+        StudentMentorAccount studentMentorAccount = new StudentMentorAccount();
+        studentMentorAccount.setStudentMentorAccountWorkEmail(addStudentRequest.getStudentWorkEmail());
+        //transfer monthly subscription from client account
+        studentMentorAccount.setStudentMentorAccountSubscription_Monthly(
+                clientAccount.getClientAccountSubscription_Monthly()
+        );
+        studentMentorAccount.setClientCollege(addStudentRequest.getStudentCollegeName());
+        //This is verfied college name from company
+
+        studentMentorAccount.setClientFirstName(clientAccount.getClientFirstName());
+        studentMentorAccount.setClientMiddleName(clientAccount.getClientMiddleName());
+        studentMentorAccount.setClientLastName(clientAccount.getClientLastName());
+        studentMentorAccount.setClientPhoneNumber(clientAccount.getClientPhoneNumber());
+        studentMentorAccount.setClientAge(clientAccount.getClientAge());
+        studentMentorAccount.setClientValidProof(clientAccount.getClientValidProof());
+        studentMentorAccount.setClientZoomEmail(clientAccount.getClientZoomEmail());
+        studentMentorAccount.setStudentMentorAccountZoomSessionCount(clientAccount.getClientAccountZoomSessionCount());
+        studentMentorAccount.setStudentMentorAccountOfflineSessionCount(clientAccount.getClientAccountOfflineSessionCount());
+        return studentMentorAccount;
+    }
+
     @Transactional
     private String getEmailForAddStudent(String encryptedEmail, Student newStudent) {
         String profileEditLink = websiteDomainName + "/studentprofileedit/" + encryptedEmail;
