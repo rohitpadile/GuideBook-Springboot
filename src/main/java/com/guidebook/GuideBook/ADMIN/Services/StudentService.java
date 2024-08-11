@@ -159,6 +159,10 @@ public class StudentService {
             throw new EncryptionFailedException("Email at addStudent() method failed");
         }
 
+        //Make a StudentMentor Account also here
+        //First check if it already exists as a ClientAccount, if it is, then transfer the data from client account
+        //to Student Mentor account
+
         return getStudentBasicDetailsResponse(studentRepository.save(newStudent));
     }
     @Transactional
@@ -168,13 +172,18 @@ public class StudentService {
                 "Congratulations on coming on this platform.\n" +
                 "We hope to see more of you and wish you well for your future\n\n" + 
                 "Please click the following link to edit your profile: " + profileEditLink +
-                "\n\nPlease save and keep the link with you. If you lose this link, please contact mentorhelpguidebookx@gmail.com", newStudent.getStudentName());
+                "\n\nYou can signup on the website, login and edit profile too(use work email to signup)" +
+                "\n\nFor any help, please contact mentorhelpguidebookx@gmail.com", newStudent.getStudentName());
         return emailBody;
     }
 
     public String getEditStudentProfileLink(Student student) throws Exception {
         String encryptedEmail = EncryptionUtilForStudentProfileEdit.encrypt(student.getStudentWorkEmail());
         return websiteDomainName + "/studentprofileedit/" + encryptedEmail;
+    }
+    public String getStudentProfileLink(Student student) throws Exception {
+        String encryptedEmail = EncryptionUtilForStudentProfileEdit.encrypt(student.getStudentWorkEmail());
+        return websiteDomainName + "/studentProfile/" + encryptedEmail;
     }
 
     public GetStudentBasicDetailsResponse getStudentBasicDetails(String studentWorkEmail)

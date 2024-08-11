@@ -62,6 +62,7 @@ public class ZoomSessionFeedbackFormService {
         StudentProfile studentProfile = studentProfileService.getStudentProfileForGeneralPurpose(transaction.getStudent().getStudentWorkEmail());
         studentProfile.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted() + 1);
         //Increase the count of the Client by 1 (if another mentor has booked this session, increase this session count)
+
         studentProfileService.updateStudentProfile(studentProfile);
 
         zoomSessionTransactionService.saveZoomSessionTransaction(transaction);

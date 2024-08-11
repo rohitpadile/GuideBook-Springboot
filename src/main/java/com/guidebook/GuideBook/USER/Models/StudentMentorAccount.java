@@ -23,4 +23,14 @@ public class StudentMentorAccount {
 
     private Long studentMentorAccountZoomSessionCount;
     private Long studentMentorAccountOfflineSessionCount;
+
+    //Student mentor as a client also
+    private String clientFirstName;
+    private String clientMiddleName;
+    private String clientLastName;
+    private String clientPhoneNumber;
+    private Integer clientAge;
+    private String clientCollege; //this is already verified by company when registering mentor
+    private String clientValidProof; //This will be link from company that verifies he/she is a student mentor
+    private String clientZoomEmail;
 }

@@ -26,4 +26,13 @@ public class StudentMentorProfileAccountDetailsResponse {
 //    String examName;
     String studentName;
 //    Long studentMis;
+
+    //Student mentor as a client also
+    private String clientFirstName;
+    private String clientMiddleName;
+    private String clientLastName;
+    private String clientPhoneNumber;
+    private Integer clientAge;
+    private String clientValidProof; //This will be link from company that verifies he/she is a student mentor
+    private String clientZoomEmail;
 }

@@ -1,6 +1,8 @@
 package com.guidebook.GuideBook.USER.Controller;
 
+import com.guidebook.GuideBook.ADMIN.Models.Student;
 import com.guidebook.GuideBook.ADMIN.Repository.StudentRepository;
+import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.MyUser;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
@@ -40,6 +42,7 @@ public class SecurityController {
     private final StudentRepository studentRepository;
     private final ClientAccountRepository clientAccountRepository;
     private final StudentMentorRepository studentMentorRepository;
+    private final StudentService studentService;
     @Autowired
     public SecurityController(AuthenticationManager authenticationManager,
                               CustomUserDetailsService userDetailsService,
@@ -49,7 +52,8 @@ public class SecurityController {
                               TokenBlacklistService tokenBlacklistService,
                               StudentRepository studentRepository,
                               ClientAccountRepository clientAccountRepository,
-                              StudentMentorRepository studentMentorRepository) {
+                              StudentMentorRepository studentMentorRepository,
+                              StudentService studentService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
@@ -59,6 +63,7 @@ public class SecurityController {
         this.studentRepository = studentRepository;
         this.clientAccountRepository = clientAccountRepository;
         this.studentMentorRepository = studentMentorRepository;
+        this.studentService = studentService;
     }
 
     @PostMapping("/signup")
@@ -70,6 +75,7 @@ public class SecurityController {
             StudentMentorAccount studentMentorAccount = new StudentMentorAccount();
             studentMentorAccount.setStudentMentorAccountWorkEmail(user.getUsername());
             studentMentorAccount.setStudentMentorAccountSubscription_Monthly(0);//monthly sub disabled initially
+            studentMentorAccount.setClientCollege(studentService.getStudentByWorkEmail(user.getUsername()).getStudentCollege().getCollegeName());
             studentMentorRepository.save(studentMentorAccount);
         } else {
             //New Client Account
