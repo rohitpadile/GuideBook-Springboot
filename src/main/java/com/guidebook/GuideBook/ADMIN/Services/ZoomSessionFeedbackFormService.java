@@ -51,13 +51,7 @@ public class ZoomSessionFeedbackFormService {
             ClientAccountNotFoundException {
         //Make a new feedback form and stores it uuid in the transaction unit
 
-        ZoomSessionFeedbackForm feedbackForm = new ZoomSessionFeedbackForm();
-        feedbackForm.setOverallFeedback(request.getOverallFeedback().toUpperCase());
-        feedbackForm.setPurposeFulfilled(request.getPurposeFulfilled());
-        feedbackForm.setMoreFeedbackAboutStudent(request.getMoreFeedbackAboutStudent());
-        feedbackForm.setFeedbackForCompany(request.getFeedbackForCompany());
-        feedbackForm.setIsSubmitted(1);
-
+        ZoomSessionFeedbackForm feedbackForm = getZoomSessionFeedbackForm(request); //private method for this
         ZoomSessionFeedbackForm savedForm = zoomSessionFeedbackFormRepository.save(feedbackForm);
 
         ZoomSessionTransaction transaction = zoomSessionTransactionService
@@ -82,6 +76,9 @@ public class ZoomSessionFeedbackFormService {
             clientAccount.setClientAccountZoomSessionCount(
                     clientAccount.getClientAccountZoomSessionCount() + 1
             );
+            //NOTE: IF SAME EMAIL PRESENT IN BOTH, FIRST MENTOR ACCOUNT IS CHECKED AND PROCEEDED
+            //IF MENTOR IS NOT PRESENT, THEN CLIENT ACCOUNT IS CHECKED AND PROCEEDED
+            //IT WONT HAPPEN THAT BOTH ACCOUNTS SESSIONS ARE INCREMENTED
         }else{
             throw new ClientAccountNotFoundException("student mentor as a client or client account not found at submitZoomSessionFeedbackForm() method");
         }
@@ -90,6 +87,16 @@ public class ZoomSessionFeedbackFormService {
 
         //saved transaction with the feedback form id - that officially completes one session.
 
+    }
+
+    private static ZoomSessionFeedbackForm getZoomSessionFeedbackForm(SubmitZoomSessionFeedbackFormRequest request) {
+        ZoomSessionFeedbackForm feedbackForm = new ZoomSessionFeedbackForm();
+        feedbackForm.setOverallFeedback(request.getOverallFeedback().toUpperCase());
+        feedbackForm.setPurposeFulfilled(request.getPurposeFulfilled());
+        feedbackForm.setMoreFeedbackAboutStudent(request.getMoreFeedbackAboutStudent());
+        feedbackForm.setFeedbackForCompany(request.getFeedbackForCompany());
+        feedbackForm.setIsSubmitted(1);
+        return feedbackForm;
     }
 
     public GetSubmittionStatusForFeedbackFormResponse getSubmittionStatusForFeedbackForm(String transactionId)

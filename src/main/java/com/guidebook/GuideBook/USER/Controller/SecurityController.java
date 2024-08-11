@@ -76,12 +76,16 @@ public class SecurityController {
             studentMentorAccount.setStudentMentorAccountWorkEmail(user.getUsername());
             studentMentorAccount.setStudentMentorAccountSubscription_Monthly(0);//monthly sub disabled initially
             studentMentorAccount.setClientCollege(studentService.getStudentByWorkEmail(user.getUsername()).getStudentCollege().getCollegeName());
+            studentMentorAccount.setStudentMentorAccountZoomSessionCount(0L);
+            studentMentorAccount.setStudentMentorAccountOfflineSessionCount(0L);
             studentMentorRepository.save(studentMentorAccount);
         } else {
             //New Client Account
             ClientAccount clientAccount = new ClientAccount();
             clientAccount.setClientAccountSubscription_Monthly(0);//monthly sub disabled initially
             clientAccount.setClientAccountEmail(user.getUsername());
+            clientAccount.setClientAccountZoomSessionCount(0L);
+            clientAccount.setClientAccountOfflineSessionCount(0L);
             clientAccountRepository.save(clientAccount);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
