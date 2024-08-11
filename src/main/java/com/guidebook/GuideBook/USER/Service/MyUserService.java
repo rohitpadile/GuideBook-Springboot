@@ -135,6 +135,15 @@ public class MyUserService {
                     .clientAccountZoomSessionCount(clientAccount.getClientAccountZoomSessionCount())
                     .clientAccountOfflineSessionCount(clientAccount.getClientAccountOfflineSessionCount())
                     .clientAccountSubscription_Monthly(clientAccount.getClientAccountSubscription_Monthly())
+
+                    .clientFirstName(clientAccount.getClientFirstName())
+                    .clientMiddleName(clientAccount.getClientMiddleName())
+                    .clientLastName(clientAccount.getClientLastName())
+                    .clientCollege(clientAccount.getClientCollege())
+                    .clientAge(clientAccount.getClientAge())
+                    .clientPhoneNumber(clientAccount.getClientPhoneNumber())
+                    .clientValidProof(clientAccount.getClientValidProof())
+                    .clientZoomEmail(clientAccount.getClientZoomEmail())
                     .build();
 
         } else {

@@ -22,5 +22,12 @@ public class ClientAccount {
     private Long clientAccountOfflineSessionCount;
 
     private Integer clientAccountSubscription_Monthly; //1 or 0 will determine if the monthly subscription is active or not
-
+    private String clientFirstName;
+    private String clientMiddleName;
+    private String clientLastName;
+    private String clientPhoneNumber;
+    private Integer clientAge;
+    private String clientCollege;
+    private String clientValidProof;
+    private String clientZoomEmail;
 }
