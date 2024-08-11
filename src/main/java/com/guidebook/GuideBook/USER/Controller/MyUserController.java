@@ -1,6 +1,7 @@
 package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.USER.Service.MyUserService;
+import com.guidebook.GuideBook.USER.dtos.CheckUserEmailAccountTypeRequest;
 import com.guidebook.GuideBook.USER.dtos.VerifySignupOtpRequest;
 import com.guidebook.GuideBook.USER.dtos.sendOtpToSignupEmailRequest;
 import com.guidebook.GuideBook.USER.exceptions.SignupOtpAlreadyPresentException;
@@ -40,5 +41,13 @@ public class MyUserController {
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/checkUserEmailAccountType")
+    public ResponseEntity<Void>  checkUserEmailAccountType(
+            @RequestBody @Valid CheckUserEmailAccountTypeRequest request
+            ){
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
