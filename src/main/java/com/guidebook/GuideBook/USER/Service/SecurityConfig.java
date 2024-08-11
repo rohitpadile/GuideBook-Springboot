@@ -50,7 +50,10 @@ public class SecurityConfig {
                                 "api/v1/user/signup",
                                 "/api/v1/user/logout",
                                 "/api/v1/user/sendOtpToSignupEmail",
-                                "/api/v1/user/verifySignupOtp").permitAll() // Allow access to login and signup
+                                "/api/v1/user/verifySignupOtp",
+                                "/api/v1/user/getClientProfileAccountDetails",
+                                "/api/v1/user/checkUserEmailAccountType",
+                                "/api/v1/user/getStudentMentorProfileAccountDetails").permitAll() // Allow access to login and signup
                         .anyRequest().authenticated() // All other requests require authentication
                 )
                 .sessionManagement(sessionManagement -> sessionManagement

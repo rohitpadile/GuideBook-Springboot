@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StudentMentorRepository  extends JpaRepository<StudentMentorAccount, String> {
-
+    StudentMentorAccount findByStudentMentorAccountWorkEmail(String email);
 }

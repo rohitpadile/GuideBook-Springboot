@@ -1,30 +1,48 @@
 package com.guidebook.GuideBook.USER.Service;
 
+import com.guidebook.GuideBook.ADMIN.Models.Language;
+import com.guidebook.GuideBook.ADMIN.Models.Student;
+import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
+import com.guidebook.GuideBook.ADMIN.exceptions.StudentBasicDetailsNotFoundException;
+import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.Otp;
+import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Repository.MyUserRepository;
 import com.guidebook.GuideBook.USER.Repository.OtpRepository;
-import com.guidebook.GuideBook.USER.dtos.VerifySignupOtpRequest;
-import com.guidebook.GuideBook.USER.dtos.sendOtpToSignupEmailRequest;
+import com.guidebook.GuideBook.USER.dtos.*;
+import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
 import com.guidebook.GuideBook.USER.exceptions.SignupOtpAlreadyPresentException;
+import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MyUserService {
     private final MyUserRepository myUserRepository;
     private final EmailServiceImpl emailServiceImpl;
     private final OtpRepository otpRepository;
+    private final StudentMentorService studentMentorService;
+    private final ClientAccountService clientAccountService;
+    private final StudentService studentService;
     @Autowired
     public MyUserService(MyUserRepository myUserRepository,
                          EmailServiceImpl emailServiceImpl,
-                         OtpRepository otpRepository) {
+                         OtpRepository otpRepository,
+                         StudentMentorService studentMentorService,
+                         ClientAccountService clientAccountService,
+                         StudentService studentService) {
         this.myUserRepository = myUserRepository;
         this.emailServiceImpl = emailServiceImpl;
         this.otpRepository = otpRepository;
+        this.studentMentorService = studentMentorService;
+        this.clientAccountService = clientAccountService;
+        this.studentService = studentService;
     }
     @Transactional
     public void sendOtpToSignupEmail(sendOtpToSignupEmailRequest sendOtpToSignupEmailRequest)
@@ -84,5 +102,59 @@ public class MyUserService {
         SecureRandom random = new SecureRandom();
         int otp = random.nextInt(900000) + 100000; // Ensure a 6-digit number
         return String.valueOf(otp);
+    }
+
+    public CheckUserEmailAccountTypeResponse checkUserEmailAccountType(
+            CheckUserEmailAccountTypeRequest request) {
+        Integer accountType = null;
+        if((studentMentorService.getAccountByEmail(request.getUserEmail())) != null){
+            accountType = 1; //Student Mentor account
+        } else if((clientAccountService.getAccountByEmail(request.getUserEmail())) != null){
+            accountType = 2;//Client Account
+        } else {
+            accountType = 0;
+        }
+
+        return CheckUserEmailAccountTypeResponse.builder().accountType(accountType).build();
+
+    }
+
+    public ClientProfileAccountDetailsResponse getClientProfileAccountDetails(GetUserProfileAccountDetailsRequest request)
+            throws ClientAccountNotFoundException {
+        ClientAccount clientAccount = clientAccountService.getAccountByEmail(request.getUserEmail());
+        if(clientAccount != null){
+            return ClientProfileAccountDetailsResponse.builder()
+                    .clientAccountEmail(request.getUserEmail())
+                    .clientAccountZoomSessionCount(clientAccount.getClientAccountZoomSessionCount())
+                    .clientAccountOfflineSessionCount(clientAccount.getClientAccountOfflineSessionCount())
+                    .clientAccountSubscription_Monthly(clientAccount.getClientAccountSubscription_Monthly())
+                    .build();
+
+        } else {
+            throw new ClientAccountNotFoundException("client account not found at getClientProfileAccountDetails() method");
+        }
+    }
+
+    public StudentMentorProfileAccountDetailsResponse getStudentMentorProfileAccountDetails(GetUserProfileAccountDetailsRequest request)
+            throws StudentMentorAccountNotFoundException, StudentBasicDetailsNotFoundException {
+        StudentMentorAccount studentMentorAccount = studentMentorService.getAccountByEmail(request.getUserEmail());
+        if(studentMentorAccount != null){
+            Student student = studentService.getStudentByWorkEmail(request.getUserEmail());
+            return StudentMentorProfileAccountDetailsResponse.builder()
+                    .studentMentorAccountWorkEmail(studentMentorAccount.getStudentMentorAccountWorkEmail())
+                    .studentMentorAccountSubscription_Monthly(studentMentorAccount.getStudentMentorAccountSubscription_Monthly())
+                    .branch(student.getStudentBranch().getBranchName())
+                    .examScore(student.getCetPercentile())
+                    .grade(student.getGrade())
+                    .yearOfStudy(student.getStudentClassType().getStudentClassTypeName())
+                    .publicEmail(student.getStudentPublicEmail())
+                    .college(student.getStudentCollege().getCollegeName())
+                    .studentName(student.getStudentName())
+                    .languagesSpoken(student.getStudentLanguageList().stream().map(Language::getLanguageName).toList())
+                    .build();
+
+        } else {
+            throw new StudentMentorAccountNotFoundException("Student Mentor account not found at getStudentMentorProfileAccountDetails() method");
+        }
     }
 }

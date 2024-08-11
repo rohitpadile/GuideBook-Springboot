@@ -290,5 +290,9 @@ public class StudentService {
             throw new StudentNotFoundException("Student not found at activateStudent() method");
         }
     }
+
+    public Student getStudentByWorkEmail(String workEmail){
+        return studentRepository.findByStudentWorkEmail(workEmail);
+    }
 }
 
