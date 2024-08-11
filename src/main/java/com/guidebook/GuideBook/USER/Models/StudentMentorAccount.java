@@ -20,4 +20,7 @@ public class StudentMentorAccount {
     //no of offline session too in the student profile model.
 
     private Integer studentMentorAccountSubscription_Monthly; //1 = enable, 0 = disable
+
+    private Long studentMentorAccountZoomSessionCount;
+    private Long studentMentorAccountOfflineSessionCount;
 }

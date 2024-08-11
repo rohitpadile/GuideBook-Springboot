@@ -14,7 +14,8 @@ public class StudentMentorProfileAccountDetailsResponse {
     private Integer studentMentorAccountSubscription_Monthly;
     private String editStudentProfileLink;
     private Long studentProfileSessionsConducted;
-
+    private Long studentMentorAccountZoomSessionCount;
+    private Long studentMentorAccountOfflineSessionCount;
     String branch;
     Double examScore;
     Double grade;

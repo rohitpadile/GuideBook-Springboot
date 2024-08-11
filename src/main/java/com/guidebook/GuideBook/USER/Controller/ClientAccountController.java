@@ -2,7 +2,9 @@ package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.USER.Service.ClientAccountService;
 import com.guidebook.GuideBook.USER.Service.JwtUtil;
+import com.guidebook.GuideBook.USER.dtos.ClientAccountDetailsForZoomSessionFormResponse;
 import com.guidebook.GuideBook.USER.dtos.EditClientAccountRequest;
+import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,9 +31,17 @@ public class ClientAccountController {
     @PostMapping("/editClientAccountDetails")
     public ResponseEntity<Void> editClientAccountDetails(
             @RequestBody EditClientAccountRequest editClientAccountRequest, HttpServletRequest request
-            ){
+            ) throws ClientAccountNotFoundException {
         String clientEmail = jwtUtil.extractEmailFromToken(request);
         clientAccountService.editClientAccountDetails(editClientAccountRequest, clientEmail);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/getClientAccountDetailsForZoomSessionForm")
+    public ResponseEntity<ClientAccountDetailsForZoomSessionFormResponse> getClientAccountDetailsForZoomSessionForm(HttpServletRequest request)
+            throws ClientAccountNotFoundException {
+        String clientEmail = jwtUtil.extractEmailFromToken(request);
+        ClientAccountDetailsForZoomSessionFormResponse res = clientAccountService.getClientAccountDetailsForZoomSessionForm(clientEmail);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

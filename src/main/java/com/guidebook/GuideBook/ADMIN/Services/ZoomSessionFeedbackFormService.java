@@ -8,24 +8,33 @@ import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
 import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionFeedbackForm;
 import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.ADMIN.Repository.ZoomSessionFeedbackFormRepository;
+import com.guidebook.GuideBook.USER.Service.ClientAccountService;
+import com.guidebook.GuideBook.USER.Service.StudentMentorService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ZoomSessionFeedbackFormService {
+    private final ClientAccountService clientAccountService;
+    private final StudentMentorService studentMentorService;
 
-    private ZoomSessionFeedbackFormRepository zoomSessionFeedbackFormRepository;
-    private ZoomSessionTransactionService zoomSessionTransactionService;
-    private StudentProfileService studentProfileService;
+    private final ZoomSessionFeedbackFormRepository zoomSessionFeedbackFormRepository;
+    private final ZoomSessionTransactionService zoomSessionTransactionService;
+    private final StudentProfileService studentProfileService;
 
     @Autowired
     public ZoomSessionFeedbackFormService(ZoomSessionFeedbackFormRepository zoomSessionFeedbackFormRepository,
                                           ZoomSessionTransactionService zoomSessionTransactionService,
-                                          StudentProfileService studentProfileService) {
+                                          StudentProfileService studentProfileService,
+                                          ClientAccountService clientAccountService,
+                                          StudentMentorService studentMentorService
+                                          ) {
         this.zoomSessionFeedbackFormRepository = zoomSessionFeedbackFormRepository;
         this.zoomSessionTransactionService = zoomSessionTransactionService;
         this.studentProfileService = studentProfileService;
+        this.clientAccountService = clientAccountService;
+        this.studentMentorService = studentMentorService;
     }
 
 //THIS CAN ALSO BE A @Transactional
@@ -52,6 +61,7 @@ public class ZoomSessionFeedbackFormService {
 //        Increase the session count of student by 1
         StudentProfile studentProfile = studentProfileService.getStudentProfileForGeneralPurpose(transaction.getStudent().getStudentWorkEmail());
         studentProfile.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted() + 1);
+        //Increase the count of the Client by 1 (if another mentor has booked this session, increase this session count)
         studentProfileService.updateStudentProfile(studentProfile);
 
         zoomSessionTransactionService.saveZoomSessionTransaction(transaction);

@@ -171,6 +171,8 @@ public class MyUserService {
                     .languagesSpoken(student.getStudentLanguageList().stream().map(Language::getLanguageName).toList())
                     .studentProfileSessionsConducted(profile.getStudentProfileSessionsConducted())
                     .editStudentProfileLink(studentService.getEditStudentProfileLink(student))
+                    .studentMentorAccountZoomSessionCount(studentMentorAccount.getStudentMentorAccountZoomSessionCount())
+                    .studentMentorAccountOfflineSessionCount(studentMentorAccount.getStudentMentorAccountOfflineSessionCount())
                     .build();
 
         } else {

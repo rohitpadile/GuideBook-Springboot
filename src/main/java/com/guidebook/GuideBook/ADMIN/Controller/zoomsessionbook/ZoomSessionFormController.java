@@ -7,6 +7,10 @@ import com.guidebook.GuideBook.ADMIN.exceptions.ZoomSessionNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Services.zoomsessionbook.ZoomSessionFormService;
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionform.ZoomSessionFormRequest;
 
+import com.guidebook.GuideBook.USER.Controller.ClientAccountController;
+import com.guidebook.GuideBook.USER.dtos.ClientAccountDetailsForZoomSessionFormResponse;
+import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +30,13 @@ public class ZoomSessionFormController {
 
 
     private final ZoomSessionFormService zoomSessionFormService;
+    private final ClientAccountController clientAccountController;
 
     @Autowired
-    public ZoomSessionFormController(ZoomSessionFormService zoomSessionFormService) {
+    public ZoomSessionFormController(ZoomSessionFormService zoomSessionFormService,
+                                     ClientAccountController clientAccountController) {
         this.zoomSessionFormService = zoomSessionFormService;
+        this.clientAccountController = clientAccountController;
     }
 
     @PostMapping("/zoomSessionFormSubmit")
@@ -55,6 +62,12 @@ public class ZoomSessionFormController {
     {
         ZoomSessionFormMessageResponse response = zoomSessionFormService.resendOTP(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/getClientAccountDetailsForZoomSessionForm")
+    public ResponseEntity<ClientAccountDetailsForZoomSessionFormResponse> getClientAccountDetailsForZoomSessionForm(HttpServletRequest request)
+            throws ClientAccountNotFoundException {
+        return clientAccountController.getClientAccountDetailsForZoomSessionForm(request);
     }
 
     //CODE A METHOD THAT ACTIVATES WHEN FINAL BOOK SESSION CONFIRMED AND EMAIL IS TO BE SEND TO
