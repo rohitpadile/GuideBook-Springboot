@@ -4,6 +4,8 @@ import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionForm;
 import com.guidebook.GuideBook.ADMIN.Services.zoomsessionbook.ZoomSessionFormService;
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.GetSubmittionStatusForFeedbackFormResponse;
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.SubmitZoomSessionFeedbackFormRequest;
+import com.guidebook.GuideBook.ADMIN.enums.ZoomSessionBookStatus;
+import com.guidebook.GuideBook.ADMIN.exceptions.SessionAlreadyCancelledException;
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.ADMIN.exceptions.TransactionNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
@@ -48,16 +50,23 @@ public class ZoomSessionFeedbackFormService {
     public void submitZoomSessionFeedbackForm(SubmitZoomSessionFeedbackFormRequest request)
             throws StudentProfileContentNotFoundException,
             TransactionNotFoundException,
-            ClientAccountNotFoundException {
+            ClientAccountNotFoundException,
+            SessionAlreadyCancelledException {
         //Make a new feedback form and stores it uuid in the transaction unit
-
-        ZoomSessionFeedbackForm feedbackForm = getZoomSessionFeedbackForm(request); //private method for this
-        ZoomSessionFeedbackForm savedForm = zoomSessionFeedbackFormRepository.save(feedbackForm);
 
         ZoomSessionTransaction transaction = zoomSessionTransactionService
                 .getZoomSessionTransactionById(
                         request.getZoomSessionTransactionId());
+        //Check if session is cancelled already, restrict submitting feedback if so.
+        if((transaction.getZoomSessionForm().getZoomSessionBookStatus()).equalsIgnoreCase(
+                ZoomSessionBookStatus.CANCELLED.toString()
+        )){
+           throw new SessionAlreadyCancelledException("Session is already cancelled with zoom session form id " +
+                   transaction.getZoomSessionForm().getZoomSessionFormId() + " , cannot give feedback");
+        }
 
+        ZoomSessionFeedbackForm feedbackForm = getZoomSessionFeedbackForm(request); //private method for this
+        ZoomSessionFeedbackForm savedForm = zoomSessionFeedbackFormRepository.save(feedbackForm);
         transaction.setZoomSessionFeedbackForm(savedForm);
 
 //        Increase the session count of student by 1

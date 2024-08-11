@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.ADMIN.Controller.zoomsessionbook;
 
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.GetSubmittionStatusForFeedbackFormResponse;
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.SubmitZoomSessionFeedbackFormRequest;
+import com.guidebook.GuideBook.ADMIN.exceptions.SessionAlreadyCancelledException;
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.ADMIN.exceptions.TransactionNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Services.ZoomSessionFeedbackFormService;
@@ -33,7 +34,8 @@ public class ZoomSessionFeedbackFormController {
             @RequestBody @Valid SubmitZoomSessionFeedbackFormRequest request)
             throws StudentProfileContentNotFoundException,
             TransactionNotFoundException,
-            ClientAccountNotFoundException {
+            ClientAccountNotFoundException,
+            SessionAlreadyCancelledException {
         zoomSessionFeedbackFormService.submitZoomSessionFeedbackForm(request);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

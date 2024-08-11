@@ -276,7 +276,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                             "4. Meeting Link: \n%s\n\n" +
                             "At the end of the session, please give the feedback.\n" +
                             "Important Note: Fill the form, then only the session will be counted in " +
-                            "student's account and he can provide more such sessions in the future." +
+                            "your account and you can win PRIZES in future, and also in mentor's account so he can provide more such sessions in the future." +
                             "\nThank you for your co-operation. Have a great session\n\n" +
                             "Feedback link: %s\n\n" +
 
