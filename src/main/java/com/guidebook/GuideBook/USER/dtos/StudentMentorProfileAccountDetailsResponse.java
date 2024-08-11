@@ -13,6 +13,7 @@ public class StudentMentorProfileAccountDetailsResponse {
     private String studentMentorAccountWorkEmail;
     private Integer studentMentorAccountSubscription_Monthly;
     private String editStudentProfileLink;
+    private Long studentProfileSessionsConducted;
 
     String branch;
     Double examScore;

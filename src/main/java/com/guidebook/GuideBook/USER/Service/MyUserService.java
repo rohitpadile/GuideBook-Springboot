@@ -2,9 +2,13 @@ package com.guidebook.GuideBook.USER.Service;
 
 import com.guidebook.GuideBook.ADMIN.Models.Language;
 import com.guidebook.GuideBook.ADMIN.Models.Student;
+import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
+import com.guidebook.GuideBook.ADMIN.Services.StudentProfileService;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentBasicDetailsNotFoundException;
+import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
+import com.guidebook.GuideBook.TR.util.EncryptionUtilForStudentProfileEdit;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.Otp;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
@@ -30,19 +34,22 @@ public class MyUserService {
     private final StudentMentorService studentMentorService;
     private final ClientAccountService clientAccountService;
     private final StudentService studentService;
+    private final StudentProfileService studentProfileService;
     @Autowired
     public MyUserService(MyUserRepository myUserRepository,
                          EmailServiceImpl emailServiceImpl,
                          OtpRepository otpRepository,
                          StudentMentorService studentMentorService,
                          ClientAccountService clientAccountService,
-                         StudentService studentService) {
+                         StudentService studentService,
+                         StudentProfileService studentProfileService) {
         this.myUserRepository = myUserRepository;
         this.emailServiceImpl = emailServiceImpl;
         this.otpRepository = otpRepository;
         this.studentMentorService = studentMentorService;
         this.clientAccountService = clientAccountService;
         this.studentService = studentService;
+        this.studentProfileService = studentProfileService;
     }
     @Transactional
     public void sendOtpToSignupEmail(sendOtpToSignupEmailRequest sendOtpToSignupEmailRequest)
@@ -136,10 +143,12 @@ public class MyUserService {
     }
 
     public StudentMentorProfileAccountDetailsResponse getStudentMentorProfileAccountDetails(GetUserProfileAccountDetailsRequest request)
-            throws StudentMentorAccountNotFoundException, StudentBasicDetailsNotFoundException {
+            throws Exception {
         StudentMentorAccount studentMentorAccount = studentMentorService.getAccountByEmail(request.getUserEmail());
         if(studentMentorAccount != null){
             Student student = studentService.getStudentByWorkEmail(request.getUserEmail());
+            StudentProfile profile = studentProfileService.getStudentProfileForGeneralPurpose(request.getUserEmail());
+
             return StudentMentorProfileAccountDetailsResponse.builder()
                     .studentMentorAccountWorkEmail(studentMentorAccount.getStudentMentorAccountWorkEmail())
                     .studentMentorAccountSubscription_Monthly(studentMentorAccount.getStudentMentorAccountSubscription_Monthly())
@@ -151,6 +160,8 @@ public class MyUserService {
                     .college(student.getStudentCollege().getCollegeName())
                     .studentName(student.getStudentName())
                     .languagesSpoken(student.getStudentLanguageList().stream().map(Language::getLanguageName).toList())
+                    .studentProfileSessionsConducted(profile.getStudentProfileSessionsConducted())
+                    .editStudentProfileLink(studentService.getEditStudentProfileLink(student))
                     .build();
 
         } else {

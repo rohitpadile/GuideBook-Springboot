@@ -172,6 +172,11 @@ public class StudentService {
         return emailBody;
     }
 
+    public String getEditStudentProfileLink(Student student) throws Exception {
+        String encryptedEmail = EncryptionUtilForStudentProfileEdit.encrypt(student.getStudentWorkEmail());
+        return websiteDomainName + "/studentprofileedit/" + encryptedEmail;
+    }
+
     public GetStudentBasicDetailsResponse getStudentBasicDetails(String studentWorkEmail)
     throws StudentBasicDetailsNotFoundException
     {

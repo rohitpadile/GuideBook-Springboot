@@ -1,6 +1,7 @@
 package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentBasicDetailsNotFoundException;
+import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.USER.Service.JwtUtil;
 import com.guidebook.GuideBook.USER.Service.MyUserService;
 import com.guidebook.GuideBook.USER.dtos.*;
@@ -95,7 +96,7 @@ public class MyUserController {
 
     @PostMapping("/getStudentMentorProfileAccountDetails")
     public ResponseEntity<StudentMentorProfileAccountDetailsResponse> getStudentMentorProfileAccountDetails(HttpServletRequest request)
-            throws StudentMentorAccountNotFoundException, StudentBasicDetailsNotFoundException {
+            throws Exception {
         String userEmail = jwtUtil.extractEmailFromToken(request);
         GetUserProfileAccountDetailsRequest req = new GetUserProfileAccountDetailsRequest();
         req.setUserEmail(userEmail);
