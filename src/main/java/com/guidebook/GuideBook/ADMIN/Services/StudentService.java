@@ -232,7 +232,7 @@ public class StudentService {
 
     public String getEditStudentProfileLink(Student student) throws Exception {
         String encryptedEmail = EncryptionUtilForStudentProfileEdit.encrypt(student.getStudentWorkEmail());
-        return websiteDomainName + "/studentprofileedit/" + encryptedEmail;
+        return "studentprofileedit/" + encryptedEmail;
     }
     public String getStudentProfileLink(Student student) throws Exception {
         String encryptedEmail = EncryptionUtilForStudentProfileEdit.encrypt(student.getStudentWorkEmail());

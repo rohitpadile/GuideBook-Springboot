@@ -16,12 +16,14 @@ import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
 import com.guidebook.GuideBook.USER.exceptions.SignupOtpAlreadyPresentException;
 import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 
 @Service
+@Slf4j
 public class MyUserService {
     private final MyUserRepository myUserRepository;
     private final EmailServiceImpl emailServiceImpl;
@@ -152,7 +154,7 @@ public class MyUserService {
         if(studentMentorAccount != null){
             Student student = studentService.getStudentByWorkEmail(request.getUserEmail());
             StudentProfile profile = studentProfileService.getStudentProfileForGeneralPurpose(request.getUserEmail());
-
+            log.info("Link for student public profile edit: {}",studentService.getEditStudentProfileLink(student));
             return StudentMentorProfileAccountDetailsResponse.builder()
                     .studentMentorAccountWorkEmail(studentMentorAccount.getStudentMentorAccountWorkEmail())
                     .studentMentorAccountSubscription_Monthly(studentMentorAccount.getStudentMentorAccountSubscription_Monthly())
@@ -177,6 +179,7 @@ public class MyUserService {
                     .clientValidProof(studentMentorAccount.getClientValidProof())
                     .clientZoomEmail(studentMentorAccount.getClientZoomEmail())
                     .build();
+
 
         } else {
             throw new StudentMentorAccountNotFoundException("Student Mentor account not found at getStudentMentorProfileAccountDetails() method");
