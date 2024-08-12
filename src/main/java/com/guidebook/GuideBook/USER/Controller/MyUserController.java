@@ -10,10 +10,17 @@ import com.guidebook.GuideBook.USER.exceptions.SignupOtpAlreadyPresentException;
 import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Var;
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.razorpay.*;
+import java.util.Map;
 
 @CrossOrigin(origins = {
         "http://localhost:3000", "http://localhost:8080",
@@ -22,9 +29,14 @@ import org.springframework.web.bind.annotation.*;
         "https://diugkigakpnwm.cloudfront.net"})
 @RestController
 @RequestMapping("/api/v1/user/")
+@Slf4j
 public class MyUserController {
     private final MyUserService myUserService;
     private final JwtUtil jwtUtil;
+    @Value("${razorpay_key_id}")
+    private String razorpayKeyId;
+    @Value("${razorpay_key_secret}")
+    private String razorpayKeySecret;
     @Autowired
     public MyUserController(MyUserService myUserService,
                             JwtUtil jwtUtil) {
@@ -103,5 +115,39 @@ public class MyUserController {
         StudentMentorProfileAccountDetailsResponse res = myUserService.getStudentMentorProfileAccountDetails(req);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
+
+    //Creating order for payment
+//    @PostMapping("/createOrder")
+//    public ResponseEntity<String> createOrder(
+//            @RequestBody @Valid Map<String, Object> data
+//    ) throws RazorpayException {
+//        Integer amt = Integer.parseInt(data.get("amount").toString());
+//
+//        //Using razor pay api to generate the order
+//        RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+//        JSONObject orderRequest = getOrderRequest();
+//        Order order = razorpay.orders.create(orderRequest);
+//        log.info("Order created is : {}", order);
+//
+//        //Save the order to the database
+//        //order id is important he repeats
+//
+//        return new ResponseEntity<>(order.toString(), HttpStatus.OK);
+//    }
+//
+//    @NotNull
+//    private static JSONObject getOrderRequest() {
+//        JSONObject orderRequest = new JSONObject();
+//        orderRequest.put("amount",100); //Rs. 1
+//        orderRequest.put("currency","INR");
+//        orderRequest.put("receipt", "receipt#1"); //Use userEmail in the receipt and use the time stamp with it. Create a private function for that
+//        JSONObject notes = new JSONObject();
+//        notes.put("notes_key_1","Tea, Earl Grey, Hot"); //Put the info from the user account in this notes. Also add Gpay Phone Number to the account so that refund will be easy.
+//        orderRequest.put("notes",notes);
+//        return orderRequest;
+//    }
+
+
+//    CREATE METHOD FOR STATUS PAID, ORDER ID STORING, PAYMENT ID STORING, AND ACTIVATING MONTHLY SUBSCRIPTION OF USER
 
 }
