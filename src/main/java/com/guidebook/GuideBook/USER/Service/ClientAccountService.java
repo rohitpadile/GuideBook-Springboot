@@ -78,4 +78,8 @@ public class ClientAccountService {
             throw new ClientAccountNotFoundException("client account not found at getClientAccountDetailsForZoomSessionForm() method");
         }
     }
+
+    public void deleteClientAccount(ClientAccount account){
+        clientAccountRepository.delete(account);
+    }
 }

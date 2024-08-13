@@ -176,6 +176,9 @@ public class StudentService {
             //transfer the data from client account to Student Mentor account
             StudentMentorAccount studentMentorAccount =
                     getStudentMentorAccountUsingClientAccount(addStudentRequest, clientAccount);
+//            THIS IS VERY IMPORANT - KEEP UPDATING THIS FROM TIME TO TIME
+//            and delete client account
+            clientAccountService.deleteClientAccount(clientAccount);
             studentMentorAccountService.addStudentMentorAccount(studentMentorAccount);
         } else {
             //Client account do not exists, we want to make a student mentor account with disabled subscription
@@ -192,6 +195,9 @@ public class StudentService {
         //monthly subscription transfer from client account
         studentMentorAccount.setStudentMentorAccountSubscription_Monthly(0);//disabled subscription
         studentMentorAccount.setClientCollege(addStudentRequest.getStudentCollegeName());
+        studentMentorAccount.setStudentMentorAccountZoomSessionCount(0L);
+        studentMentorAccount.setStudentMentorAccountOfflineSessionCount(0L);
+
         return studentMentorAccount;
     }
 

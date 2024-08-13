@@ -25,6 +25,7 @@ public class StudentMentorAccount {
     private Long studentMentorAccountOfflineSessionCount;
 
     //Student mentor as a client also
+    //BELOW FIELDS ARE SAME FOR BOTH THE ACCOUNTS (SAME NAMING ALSO) - CLIENT AND MENTOR ACCOUNT
     private String clientFirstName;
     private String clientMiddleName;
     private String clientLastName;

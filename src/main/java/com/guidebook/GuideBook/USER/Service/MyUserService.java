@@ -6,6 +6,7 @@ import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
 import com.guidebook.GuideBook.ADMIN.Services.StudentProfileService;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
+import com.guidebook.GuideBook.USER.dtos.GetSubscriptionAmountRequest;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.Otp;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
@@ -15,9 +16,11 @@ import com.guidebook.GuideBook.USER.dtos.*;
 import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
 import com.guidebook.GuideBook.USER.exceptions.SignupOtpAlreadyPresentException;
 import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
+import com.guidebook.GuideBook.USER.exceptions.SubscriptionNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -25,6 +28,10 @@ import java.security.SecureRandom;
 @Service
 @Slf4j
 public class MyUserService {
+    @Value("${submonthly}")
+    private Long subMonthly;
+
+    private Long subYearly;
     private final MyUserRepository myUserRepository;
     private final EmailServiceImpl emailServiceImpl;
     private final OtpRepository otpRepository;
@@ -108,9 +115,10 @@ public class MyUserService {
         return String.valueOf(otp);
     }
 
-    public CheckUserEmailAccountTypeResponse checkUserEmailAccountType(
+    public CheckUserEmailAccountTypeResponse checkUserEmailAccountTypeGeneralPurpose(
             CheckUserEmailAccountTypeRequest request) {
         Integer accountType = null;
+        //Always I must use if and else if to retrieve the account. Also it will be only one of them. DB is clean in that sense.
         if((studentMentorAccountService.getAccountByEmail(request.getUserEmail())) != null){
             accountType = 1; //Student Mentor account
         } else if((clientAccountService.getAccountByEmail(request.getUserEmail())) != null){
@@ -184,5 +192,41 @@ public class MyUserService {
         } else {
             throw new StudentMentorAccountNotFoundException("Student Mentor account not found at getStudentMentorProfileAccountDetails() method");
         }
+    }
+
+    public SubscriptionAmountResponse getSubscriptionAmount(GetSubscriptionAmountRequest request)
+            throws SubscriptionNotFoundException {
+        if(request.getSubscriptionPlan()!=null && request.getSubscriptionPlan().equalsIgnoreCase( "monthly")){
+            return SubscriptionAmountResponse.builder()
+                    .subAmount(subMonthly.toString())
+                    .build();
+            //Make else if and add yearly subscription when available
+        } else{
+            throw new SubscriptionNotFoundException("Subscription type not found at getSubscriptionAmount() method, or plan provided is null");
+        }
+    }
+    public Long getSubscriptionAmountForGeneral(String subscriptionPlan)
+            throws SubscriptionNotFoundException {
+        if(subscriptionPlan.equalsIgnoreCase( "monthly")){
+            return subMonthly;
+            //Make else if and add yearly subscription when available
+        } else{
+            throw new SubscriptionNotFoundException("Subscription type not found at getSubscriptionAmountForGeneral() method");
+        }
+    }
+
+    public Integer checkUserEmailAccountTypeGeneralPurpose(String userEmail) {
+        //Always I must use if and else if to retrieve the account. Also it will be only one of them. DB is clean in that sense.
+        if((studentMentorAccountService.getAccountByEmail(userEmail)) != null){
+            //Student Mentor account exists
+            return 1;
+        } else if((clientAccountService.getAccountByEmail(userEmail)) != null){
+            //Client Account exists
+            return 2;
+        }
+        //If client Account and mentor account both are null - then there is a big problem, 0 is returned
+        //But this will be a rare case.
+        return 0;
+
     }
 }

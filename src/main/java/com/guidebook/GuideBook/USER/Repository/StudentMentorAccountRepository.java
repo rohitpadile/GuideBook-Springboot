@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StudentMentorRepository  extends JpaRepository<StudentMentorAccount, String> {
+public interface StudentMentorAccountRepository extends JpaRepository<StudentMentorAccount, String> {
     StudentMentorAccount findByStudentMentorAccountWorkEmail(String email);
 }

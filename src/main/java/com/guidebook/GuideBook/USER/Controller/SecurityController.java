@@ -1,6 +1,5 @@
 package com.guidebook.GuideBook.USER.Controller;
 
-import com.guidebook.GuideBook.ADMIN.Models.Student;
 import com.guidebook.GuideBook.ADMIN.Repository.StudentRepository;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
@@ -8,10 +7,11 @@ import com.guidebook.GuideBook.USER.Models.MyUser;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Repository.ClientAccountRepository;
 import com.guidebook.GuideBook.USER.Repository.MyUserRepository;
-import com.guidebook.GuideBook.USER.Repository.StudentMentorRepository;
+import com.guidebook.GuideBook.USER.Repository.StudentMentorAccountRepository;
 import com.guidebook.GuideBook.USER.Service.CustomUserDetailsService;
 import com.guidebook.GuideBook.USER.Service.JwtUtil;
 import com.guidebook.GuideBook.USER.Service.TokenBlacklistService;
+import com.razorpay.Account;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class SecurityController {
     private final TokenBlacklistService tokenBlacklistService;
     private final StudentRepository studentRepository;
     private final ClientAccountRepository clientAccountRepository;
-    private final StudentMentorRepository studentMentorRepository;
+    private final StudentMentorAccountRepository studentMentorAccountRepository;
     private final StudentService studentService;
     @Autowired
     public SecurityController(AuthenticationManager authenticationManager,
@@ -52,7 +52,7 @@ public class SecurityController {
                               TokenBlacklistService tokenBlacklistService,
                               StudentRepository studentRepository,
                               ClientAccountRepository clientAccountRepository,
-                              StudentMentorRepository studentMentorRepository,
+                              StudentMentorAccountRepository studentMentorAccountRepository,
                               StudentService studentService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
@@ -62,7 +62,7 @@ public class SecurityController {
         this.tokenBlacklistService = tokenBlacklistService;
         this.studentRepository = studentRepository;
         this.clientAccountRepository = clientAccountRepository;
-        this.studentMentorRepository = studentMentorRepository;
+        this.studentMentorAccountRepository = studentMentorAccountRepository;
         this.studentService = studentService;
     }
 
@@ -71,25 +71,41 @@ public class SecurityController {
     public String signup(@RequestBody MyUser user) {
 
         if((studentRepository.findByStudentWorkEmail(user.getUsername())) != null){
-            //Student Mentor account
-            StudentMentorAccount studentMentorAccount = new StudentMentorAccount();
-            studentMentorAccount.setStudentMentorAccountWorkEmail(user.getUsername());
-            studentMentorAccount.setStudentMentorAccountSubscription_Monthly(0);//monthly sub disabled initially
-            studentMentorAccount.setClientCollege(studentService.getStudentByWorkEmail(user.getUsername()).getStudentCollege().getCollegeName());
-            studentMentorAccount.setStudentMentorAccountZoomSessionCount(0L);
-            studentMentorAccount.setStudentMentorAccountOfflineSessionCount(0L);
-            studentMentorRepository.save(studentMentorAccount);
+            //Student Mentor exists
+            if((studentMentorAccountRepository.findByStudentMentorAccountWorkEmail(user.getUsername())) == null){
+                //Student Mentor account not exists.
+                //Create one.
+                StudentMentorAccount studentMentorAccount = new StudentMentorAccount();
+                studentMentorAccount.setStudentMentorAccountWorkEmail(user.getUsername());
+                studentMentorAccount.setStudentMentorAccountSubscription_Monthly(0);//monthly sub disabled initially
+                studentMentorAccount.setClientCollege(studentService.getStudentByWorkEmail(user.getUsername()).getStudentCollege().getCollegeName());
+                studentMentorAccount.setStudentMentorAccountZoomSessionCount(0L);
+                studentMentorAccount.setStudentMentorAccountOfflineSessionCount(0L);
+                studentMentorAccountRepository.save(studentMentorAccount);
+            } else {
+                //Student Mentor account also exists
+                //Student is trying to sign up twice - it can't because MyUser Entity will store only unique emails.
+            }
+
         } else {
-            //New Client Account
-            ClientAccount clientAccount = new ClientAccount();
-            clientAccount.setClientAccountSubscription_Monthly(0);//monthly sub disabled initially
-            clientAccount.setClientAccountEmail(user.getUsername());
-            clientAccount.setClientAccountZoomSessionCount(0L);
-            clientAccount.setClientAccountOfflineSessionCount(0L);
-            clientAccountRepository.save(clientAccount);
+            //Client
+            if((clientAccountRepository.findByClientAccountEmail(user.getUsername())) == null){
+                //Client account not exists.
+                //Create one
+                ClientAccount clientAccount = new ClientAccount();
+                clientAccount.setClientAccountSubscription_Monthly(0);//monthly sub disabled initially
+                clientAccount.setClientAccountEmail(user.getUsername());
+                clientAccount.setClientAccountZoomSessionCount(0L);
+                clientAccount.setClientAccountOfflineSessionCount(0L);
+                clientAccountRepository.save(clientAccount);
+            } else{
+                //Client Account already exists.
+                //Client is trying to sign up twice - it can't because MyUser Entity will store only unique emails.
+            }
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        myUserRepository.save(user);
+        myUserRepository.save(user); //It will only store unique emails.
+        //Those who are double signing up - to create both accounts maybe - won't be able to create.
         return "User registered successfully";
     }
 

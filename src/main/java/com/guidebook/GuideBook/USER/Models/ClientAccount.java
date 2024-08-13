@@ -22,6 +22,8 @@ public class ClientAccount {
     private Long clientAccountOfflineSessionCount;
 
     private Integer clientAccountSubscription_Monthly; //1 or 0 will determine if the monthly subscription is active or not
+
+    //BELOW FIELDS ARE SAME FOR BOTH THE ACCOUNTS (SAME NAMING ALSO) - CLIENT AND MENTOR ACCOUNT
     private String clientFirstName;
     private String clientMiddleName;
     private String clientLastName;
