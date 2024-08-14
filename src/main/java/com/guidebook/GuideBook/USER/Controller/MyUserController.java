@@ -2,7 +2,6 @@ package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
-import com.guidebook.GuideBook.USER.Models.SubscriptionOrder;
 import com.guidebook.GuideBook.USER.Service.*;
 import com.guidebook.GuideBook.USER.dtos.GetSubscriptionAmountRequest;
 import com.guidebook.GuideBook.USER.dtos.*;
@@ -139,7 +138,7 @@ public class MyUserController {
             SubscriptionOrderSaveFailedException {
 
         String userEmail = jwtUtil.extractEmailFromToken(request);
-        Long amt = myUserService.getSubscriptionAmountForGeneral(subscriptionRequest.getSubscriptionPlan());
+        Long amt = myUserService.getSubscriptionAmountForPlan(subscriptionRequest.getSubscriptionPlan());
 
         RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
         JSONObject orderRequest = getOrderRequest(amt, userEmail, subscriptionRequest.getSubscriptionPlan());
@@ -179,7 +178,7 @@ public class MyUserController {
         notes.put("customer_email", userEmail); // Storing user email in notes
         notes.put("gpay_phone", ""); // Placeholder for GPay/Phone number. Add the actual number if available.
         notes.put("subscription_type", subPlan); // You can add more user-specific info, like the subscription type
-        notes.put("subscription_amount", myUserService.getSubscriptionAmountForGeneral(subPlan));
+        notes.put("subscription_amount", myUserService.getSubscriptionAmountForPlan(subPlan));
 
         orderRequest.put("notes", notes);
         return orderRequest;
@@ -192,8 +191,19 @@ public class MyUserController {
         return userEmail;
 
     }
+//    CREATE METHOD FOR STATUS PAID, PAYMENT ID STORING, AND ACTIVATING GIVEN SUBSCRIPTION PLAN OF USER
+    @PostMapping("/activateSubscription")
+    @Transactional
+    public ResponseEntity<Void> activateSubscription(
+            @RequestBody @Valid SubscriptionOrderPaymentSuccessRequest successRequest,
+            HttpServletRequest request
+    ) throws SubscriptionOrderNotFoundException,
+            SubscriptionActivationFailedException {
+        String userEmail = jwtUtil.extractEmailFromToken(request);
+        subscriptionOrderService.activateSubscriptionForUseremail(successRequest, userEmail);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 
-//    CREATE METHOD FOR STATUS PAID, ORDER ID STORING, PAYMENT ID STORING, AND ACTIVATING MONTHLY SUBSCRIPTION OF USER
 //See video - 2
     @PostMapping("/getSubscriptionAmount")
     @Transactional
@@ -205,3 +215,25 @@ public class MyUserController {
     }
 
 }
+//GENERAL FORMAT OF ORDER RECEIVED IN MY PROJECT FROM RZP
+//{
+//        "amount":2000,
+//        "amount_paid":0,
+//        "notes":
+//        {
+//        "subscription_amount":20,
+//        "customer_email":"rohitp22.elec@coeptech.ac.in",
+//        "gpay_phone":"",
+//        "customer_username":"Rohit Padile",
+//        "subscription_type":"monthly"
+//        },
+//        "created_at":1723634031,
+//        "amount_due":2000,
+//        "currency":"INR",
+//        "receipt":"rohitp22.elec@coeptech.ac.in",
+//        "id":"order_Okl6vpXCUal0EG",
+//        "entity":"order",
+//        "offer_id":null,
+//        "attempts":0,
+//        "status":"created"
+//        }

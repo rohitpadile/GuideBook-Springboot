@@ -28,4 +28,6 @@ public class SubscriptionOrder {
     private String subscriptionRzpOrderId;
     private String subscriptionStatus;
 
+    private String subscriptionPaymentId;
+
 }

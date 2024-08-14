@@ -205,7 +205,7 @@ public class MyUserService {
             throw new SubscriptionNotFoundException("Subscription type not found at getSubscriptionAmount() method, or plan provided is null");
         }
     }
-    public Long getSubscriptionAmountForGeneral(String subscriptionPlan)
+    public Long getSubscriptionAmountForPlan(String subscriptionPlan)
             throws SubscriptionNotFoundException {
         if(subscriptionPlan.equalsIgnoreCase( "monthly")){
             return subMonthly;
