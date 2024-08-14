@@ -1,4 +1,4 @@
-package com.guidebook.GuideBook.USER.Service;
+package com.guidebook.GuideBook.USER.scheduleServices;
 
 import com.guidebook.GuideBook.USER.Repository.OtpRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -131,15 +131,17 @@ public class SubscriptionOrderService {
     }
 
 
-    public Boolean isSubscriptionActive(String userEmail)
+    public Boolean isMonthlySubscriptionActive(String userEmail)
             throws MyUserAccountNotExistsException {
         if((myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)) == 1){
             StudentMentorAccount studentMentorAccount = studentMentorAccountService.getAccountByEmail(userEmail);
             return studentMentorAccount.getStudentMentorAccountSubscription_Monthly() == 1;
+            //CHECK FOR OTHER SUBSCRIPTIONS ALSO
 
         } else if((myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)) == 2){
             ClientAccount clientAccount = clientAccountService.getAccountByEmail(userEmail);
             return clientAccount.getClientAccountSubscription_Monthly() == 1;
+            //CHECK FOR OTHER SUBSCRIPTIONS ALSO
         } else {
             throw new MyUserAccountNotExistsException("User account not exists at isSubscriptionActive() method");
         }

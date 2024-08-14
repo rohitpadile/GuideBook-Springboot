@@ -73,7 +73,7 @@ public class SubscriptionOrderController {
 
         String userEmail = jwtUtil.extractEmailFromToken(request);
         Long amt = myUserService.getSubscriptionAmountForPlan(subscriptionRequest.getSubscriptionPlan());
-        if(!subscriptionOrderService.isSubscriptionActive(userEmail)){
+        if(!subscriptionOrderService.isMonthlySubscriptionActive(userEmail)){
             RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
             JSONObject orderRequest = getOrderRequest(amt, userEmail, subscriptionRequest.getSubscriptionPlan());
             Order order = razorpay.orders.create(orderRequest);

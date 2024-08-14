@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.USER.Service;
 
+import com.guidebook.GuideBook.ADMIN.Models.Student;
 import com.guidebook.GuideBook.ADMIN.Repository.StudentRepository;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Repository.StudentMentorAccountRepository;
@@ -62,5 +63,9 @@ public class StudentMentorAccountService {
     @Transactional
     public List<StudentMentorAccount> findExpiredSubscriptions(Date now) {
         return studentMentorAccountRepository.findBySubscriptionEndDateBefore(now);
+    }
+
+    public List<StudentMentorAccount> getAllStudentMentorAccounts(){
+        return studentMentorAccountRepository.findAll();
     }
 }

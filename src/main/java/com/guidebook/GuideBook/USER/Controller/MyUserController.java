@@ -1,23 +1,17 @@
 package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
-import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Service.*;
-import com.guidebook.GuideBook.USER.dtos.GetSubscriptionAmountRequest;
 import com.guidebook.GuideBook.USER.dtos.*;
 import com.guidebook.GuideBook.USER.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.razorpay.*;
 
 @CrossOrigin(origins = {
         "http://localhost:3000", "http://localhost:8080",
@@ -34,6 +28,8 @@ public class MyUserController {
     private final ClientAccountService clientAccountService;
     private final StudentService studentService;
     private final SubscriptionOrderService subscriptionOrderService;
+    private final TokenBlacklistService tokenBlacklistService;
+    private final CustomUserDetailsService userDetailsService;
     @Value("${razorpay_key_id}")
     private String razorpayKeyId;
     @Value("${razorpay_key_secret}")
@@ -44,7 +40,9 @@ public class MyUserController {
                             ClientAccountService clientAccountService,
                             StudentMentorAccountService studentMentorAccountService,
                             StudentService studentService,
-                            SubscriptionOrderService subscriptionOrderService
+                            SubscriptionOrderService subscriptionOrderService,
+                            TokenBlacklistService tokenBlacklistService,
+                            CustomUserDetailsService userDetailsService
                             ) {
         this.myUserService = myUserService;
         this.jwtUtil = jwtUtil;
@@ -52,6 +50,8 @@ public class MyUserController {
         this.clientAccountService = clientAccountService;
         this.studentService = studentService;
         this.subscriptionOrderService = subscriptionOrderService;
+        this.tokenBlacklistService = tokenBlacklistService;
+        this.userDetailsService = userDetailsService;
     }
 
     @PostMapping("/sendOtpToSignupEmail")
@@ -124,6 +124,32 @@ public class MyUserController {
         req.setUserEmail(userEmail);
         StudentMentorProfileAccountDetailsResponse res = myUserService.getStudentMentorProfileAccountDetails(req);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/checkLoginAndSubscription")
+    public ResponseEntity<?> checkLogin(HttpServletRequest request)
+            throws MyUserAccountNotExistsException {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+
+            // Check if the token is blacklisted
+            if (tokenBlacklistService.isTokenBlacklisted(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            // Check token validity
+            String username = jwtUtil.extractUsername(token);
+            if (username != null && jwtUtil.validateToken(token, userDetailsService.loadUserByUsername(username))) {
+                //Also check subscription is active or not
+                if(subscriptionOrderService.isMonthlySubscriptionActive(username)){
+                    return ResponseEntity.ok().build();
+                } else {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
 

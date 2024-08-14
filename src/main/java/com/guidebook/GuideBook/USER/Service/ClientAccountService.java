@@ -92,4 +92,7 @@ public class ClientAccountService {
     public List<ClientAccount> findExpiredSubscriptions(Date now) {
         return clientAccountRepository.findBySubscriptionEndDateBefore(now);
     }
+    public List<ClientAccount> getAllClientAccounts(){
+        return clientAccountRepository.findAll();
+    }
 }

@@ -1,5 +1,7 @@
 package com.guidebook.GuideBook.USER.Controller;
 
+import com.guidebook.GuideBook.USER.Models.ClientAccount;
+import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Service.ClientAccountService;
 import com.guidebook.GuideBook.USER.Service.JwtUtil;
 import com.guidebook.GuideBook.USER.dtos.ClientAccountDetailsForZoomSessionFormResponse;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin(origins = {
         "http://localhost:3000", "http://localhost:8080",
@@ -43,5 +47,9 @@ public class ClientAccountController {
         String clientEmail = jwtUtil.extractEmailFromToken(request);
         ClientAccountDetailsForZoomSessionFormResponse res = clientAccountService.getClientAccountDetailsForZoomSessionForm(clientEmail);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+    @GetMapping("/allClientAccounts") //for personal use
+    public ResponseEntity<List<ClientAccount>> getAllClientAccounts(){
+        return new ResponseEntity<>(clientAccountService.getAllClientAccounts(), HttpStatus.OK);
     }
 }
