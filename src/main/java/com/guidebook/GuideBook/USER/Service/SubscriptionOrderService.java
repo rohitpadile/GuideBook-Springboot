@@ -84,21 +84,29 @@ public class SubscriptionOrderService {
             order.setSubscriptionStatus("paid");
             order.setSubscriptionPaymentId(request.getSubscriptionPaymentId());
             //activate subscription of user
-            this.activateSubscriptionForUseremail(userEmail);
+            this.activateSubscriptionForUseremail(userEmail, request.getSubPlan());
         } else{
             throw new SubscriptionOrderNotFoundException("Subscription order not found for order id: " +
                     request.getSubscriptionRzpOrderId() + " at activateSubscription() method");
         }
     }
     @Transactional
-    private void activateSubscriptionForUseremail(String userEmail)
+    private void activateSubscriptionForUseremail(String userEmail, String subPlan)
             throws SubscriptionActivationFailedException {
+
         if((myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)) == 1){
             StudentMentorAccount acc = studentMentorAccountService.getAccountByEmail(userEmail);
-            acc.setStudentMentorAccountSubscription_Monthly(1); // 1 = enable
+            if(subPlan.equalsIgnoreCase("monthly")){
+                acc.setStudentMentorAccountSubscription_Monthly(1); // 1 = enable
+            }
+            //else if for other subscription types in future
+
         } else if((myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)) == 2){
             ClientAccount acc = clientAccountService.getAccountByEmail(userEmail);
-            acc.setClientAccountSubscription_Monthly(1); //1 = enable
+            if(subPlan.equalsIgnoreCase("monthly")){
+                acc.setClientAccountSubscription_Monthly(1); //1 = enable
+            }
+
         } else {
             throw new SubscriptionActivationFailedException("For user email: " + userEmail);
         }
