@@ -7,6 +7,7 @@ import com.guidebook.GuideBook.USER.Repository.SubscriptionOrderRepository;
 import com.guidebook.GuideBook.USER.dtos.SubscriptionOrderPaymentSuccessRequest;
 import com.guidebook.GuideBook.USER.exceptions.*;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Service
+@Slf4j
 public class SubscriptionOrderService {
     private final SubscriptionOrderRepository subscriptionOrderRepository;
     private final MyUserService myUserService;
@@ -135,6 +137,9 @@ public class SubscriptionOrderService {
             throws MyUserAccountNotExistsException {
         if((myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)) == 1){
             StudentMentorAccount studentMentorAccount = studentMentorAccountService.getAccountByEmail(userEmail);
+            log.info("Student mentor account with userEmail {} has subscription {}" , userEmail,
+                    (studentMentorAccount.getStudentMentorAccountSubscription_Monthly().toString()
+                            .equalsIgnoreCase("1")) ? "active" : "inactive"  );
             return studentMentorAccount.getStudentMentorAccountSubscription_Monthly() == 1;
             //CHECK FOR OTHER SUBSCRIPTIONS ALSO
 

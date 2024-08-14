@@ -143,9 +143,9 @@ public class MyUserController {
             if (username != null && jwtUtil.validateToken(token, userDetailsService.loadUserByUsername(username))) {
                 //Also check subscription is active or not
                 if(subscriptionOrderService.isMonthlySubscriptionActive(username)){
-                    return ResponseEntity.ok().build();
+                    return new ResponseEntity<>(HttpStatus.OK);
                 } else {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
             }
         }

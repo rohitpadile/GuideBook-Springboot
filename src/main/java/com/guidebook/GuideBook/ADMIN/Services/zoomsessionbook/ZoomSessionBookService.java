@@ -259,7 +259,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                             "\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s" +
                             "\nClient College: %s\nProof Document: \n%s" +
                             "\n\nIf you have any issues please send " +
-                            "an email to us at helpguidebookx@gmail.com" +
+                            "an email to us at mentorhelpguidebookx@gmail.com" +
                             "\n\nBest regards,\n" +
                             "GuidebookX Team",
                     clientName, clientName, clientEmail, form.getClientPhoneNumber(), form.getClientAge(), form.getClientCollege(), form.getClientProofDocLink());
