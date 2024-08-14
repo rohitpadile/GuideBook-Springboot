@@ -2,16 +2,11 @@ package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
-import com.guidebook.GuideBook.USER.Service.ClientAccountService;
-import com.guidebook.GuideBook.USER.Service.StudentMentorAccountService;
+import com.guidebook.GuideBook.USER.Models.SubscriptionOrder;
+import com.guidebook.GuideBook.USER.Service.*;
 import com.guidebook.GuideBook.USER.dtos.GetSubscriptionAmountRequest;
-import com.guidebook.GuideBook.USER.Service.JwtUtil;
-import com.guidebook.GuideBook.USER.Service.MyUserService;
 import com.guidebook.GuideBook.USER.dtos.*;
-import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
-import com.guidebook.GuideBook.USER.exceptions.MyUserAccountNotExistsException;
-import com.guidebook.GuideBook.USER.exceptions.SignupOtpAlreadyPresentException;
-import com.guidebook.GuideBook.USER.exceptions.SubscriptionNotFoundException;
+import com.guidebook.GuideBook.USER.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -39,6 +34,7 @@ public class MyUserController {
     private final StudentMentorAccountService studentMentorAccountService;
     private final ClientAccountService clientAccountService;
     private final StudentService studentService;
+    private final SubscriptionOrderService subscriptionOrderService;
     @Value("${razorpay_key_id}")
     private String razorpayKeyId;
     @Value("${razorpay_key_secret}")
@@ -48,13 +44,15 @@ public class MyUserController {
                             JwtUtil jwtUtil,
                             ClientAccountService clientAccountService,
                             StudentMentorAccountService studentMentorAccountService,
-                            StudentService studentService
+                            StudentService studentService,
+                            SubscriptionOrderService subscriptionOrderService
                             ) {
         this.myUserService = myUserService;
         this.jwtUtil = jwtUtil;
         this.studentMentorAccountService = studentMentorAccountService;
         this.clientAccountService = clientAccountService;
         this.studentService = studentService;
+        this.subscriptionOrderService = subscriptionOrderService;
     }
 
     @PostMapping("/sendOtpToSignupEmail")
@@ -137,7 +135,8 @@ public class MyUserController {
             HttpServletRequest request
     ) throws RazorpayException,
             SubscriptionNotFoundException,
-            MyUserAccountNotExistsException {
+            MyUserAccountNotExistsException,
+            SubscriptionOrderSaveFailedException {
 
         String userEmail = jwtUtil.extractEmailFromToken(request);
         Long amt = myUserService.getSubscriptionAmountForGeneral(subscriptionRequest.getSubscriptionPlan());
@@ -148,8 +147,8 @@ public class MyUserController {
         log.info("Order created is : {}", order);
 
         //Save the order to the database
-        //order id is important teacher repeats
-
+        //rzp order id is important
+        subscriptionOrderService.addSubscriptionOrder(order, userEmail);
         return new ResponseEntity<>(order.toString(), HttpStatus.OK);
     }
 
