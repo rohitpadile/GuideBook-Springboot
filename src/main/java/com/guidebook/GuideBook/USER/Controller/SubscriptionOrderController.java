@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.razorpay.*;
+
 @CrossOrigin(origins = {
         "http://localhost:3000", "http://localhost:8080",
         "https://www.guidebookx.com","https://guidebookx.com",
@@ -62,26 +62,31 @@ public class SubscriptionOrderController {
 
     @PostMapping("/createSubscriptionOrder")
     @Transactional
-    public ResponseEntity<String> createOrder(
+    public ResponseEntity<String> createSubscriptionOrder(
             @RequestBody @Valid CreateOrderSubscriptionRequest subscriptionRequest,
             HttpServletRequest request
     ) throws RazorpayException,
             SubscriptionNotFoundException,
             MyUserAccountNotExistsException,
-            SubscriptionOrderSaveFailedException {
+            SubscriptionOrderSaveFailedException,
+            SubscriptionAlreadyActiveException {
 
         String userEmail = jwtUtil.extractEmailFromToken(request);
         Long amt = myUserService.getSubscriptionAmountForPlan(subscriptionRequest.getSubscriptionPlan());
+        if(!subscriptionOrderService.isSubscriptionActive(userEmail)){
+            RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+            JSONObject orderRequest = getOrderRequest(amt, userEmail, subscriptionRequest.getSubscriptionPlan());
+            Order order = razorpay.orders.create(orderRequest);
+            log.info("Order created is : {}", order);
 
-        RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
-        JSONObject orderRequest = getOrderRequest(amt, userEmail, subscriptionRequest.getSubscriptionPlan());
-        Order order = razorpay.orders.create(orderRequest);
-        log.info("Order created is : {}", order);
+            //Save the order to the database
+            //rzp order id is important
+            subscriptionOrderService.addSubscriptionOrder(order, userEmail);
+            return new ResponseEntity<>(order.toString(), HttpStatus.OK);
+        } else {
+            throw new SubscriptionAlreadyActiveException("Subscription already active at createSubscriptionOrder() method");
+        }
 
-        //Save the order to the database
-        //rzp order id is important
-        subscriptionOrderService.addSubscriptionOrder(order, userEmail);
-        return new ResponseEntity<>(order.toString(), HttpStatus.OK);
     }
 
     @NotNull

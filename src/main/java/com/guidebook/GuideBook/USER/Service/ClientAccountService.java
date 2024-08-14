@@ -17,14 +17,11 @@ import java.util.List;
 public class ClientAccountService {
     private final ClientAccountRepository clientAccountRepository;
     private final StudentMentorAccountService studentMentorAccountService;
-    private final ClientAccountCustomRepositoryImpl clientAccountCustomRepositoryImpl;
     @Autowired
     public ClientAccountService(ClientAccountRepository clientAccountRepository,
-                                StudentMentorAccountService studentMentorAccountService,
-                                ClientAccountCustomRepositoryImpl clientAccountCustomRepositoryImpl) {
+                                StudentMentorAccountService studentMentorAccountService) {
         this.clientAccountRepository = clientAccountRepository;
         this.studentMentorAccountService = studentMentorAccountService;
-        this.clientAccountCustomRepositoryImpl = clientAccountCustomRepositoryImpl;
     }
 
     public ClientAccount getAccountByEmail(String email){

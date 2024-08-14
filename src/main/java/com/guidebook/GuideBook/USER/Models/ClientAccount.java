@@ -48,7 +48,5 @@ public class ClientAccount {
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
     Date updatedOn;
-    @Version
-    @JsonIgnore
-    private Integer version;
+
 }

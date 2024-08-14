@@ -5,9 +5,7 @@ import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Models.SubscriptionOrder;
 import com.guidebook.GuideBook.USER.Repository.SubscriptionOrderRepository;
 import com.guidebook.GuideBook.USER.dtos.SubscriptionOrderPaymentSuccessRequest;
-import com.guidebook.GuideBook.USER.exceptions.SubscriptionActivationFailedException;
-import com.guidebook.GuideBook.USER.exceptions.SubscriptionOrderNotFoundException;
-import com.guidebook.GuideBook.USER.exceptions.SubscriptionOrderSaveFailedException;
+import com.guidebook.GuideBook.USER.exceptions.*;
 import jakarta.transaction.Transactional;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,16 +113,16 @@ public class SubscriptionOrderService {
             StudentMentorAccount acc = studentMentorAccountService.getAccountByEmail(userEmail);
             if (subPlan.equalsIgnoreCase("monthly")) {
                 acc.setStudentMentorAccountSubscription_Monthly(1); // 1 = enable, 0 = disable
-                acc.setSubscriptionStartDate(now);
-                acc.setSubscriptionEndDate(endDate);
+                acc.setSubscriptionStartDate(now);//Set start date
+                acc.setSubscriptionEndDate(endDate);//Set end date
             }
             this.studentMentorAccountService.updateStudentMentorAccount(acc); // Save changes
         } else if (accountType == 2) { // client account
             ClientAccount acc = clientAccountService.getAccountByEmail(userEmail);
             if (subPlan.equalsIgnoreCase("monthly")) {
                 acc.setClientAccountSubscription_Monthly(1); // 1 = enable, 0 = disable
-                acc.setSubscriptionStartDate(now);
-                acc.setSubscriptionEndDate(endDate);
+                acc.setSubscriptionStartDate(now); //Set start date
+                acc.setSubscriptionEndDate(endDate);//Set end date
             }
             this.clientAccountService.updateClientAccount(acc); // Save changes
         } else {
@@ -133,4 +131,17 @@ public class SubscriptionOrderService {
     }
 
 
+    public Boolean isSubscriptionActive(String userEmail)
+            throws MyUserAccountNotExistsException {
+        if((myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)) == 1){
+            StudentMentorAccount studentMentorAccount = studentMentorAccountService.getAccountByEmail(userEmail);
+            return studentMentorAccount.getStudentMentorAccountSubscription_Monthly() == 1;
+
+        } else if((myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)) == 2){
+            ClientAccount clientAccount = clientAccountService.getAccountByEmail(userEmail);
+            return clientAccount.getClientAccountSubscription_Monthly() == 1;
+        } else {
+            throw new MyUserAccountNotExistsException("User account not exists at isSubscriptionActive() method");
+        }
+    }
 }
