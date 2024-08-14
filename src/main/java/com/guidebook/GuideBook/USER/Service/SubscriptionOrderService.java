@@ -13,6 +13,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.razorpay.*;
+
+import java.util.Calendar;
+import java.util.Date;
+
 @Service
 public class SubscriptionOrderService {
     private final SubscriptionOrderRepository subscriptionOrderRepository;
@@ -66,6 +70,9 @@ public class SubscriptionOrderService {
             newOrder.setSubscriptionCurrency(currency);
             newOrder.setSubscriptionReceipt(receipt);
             newOrder.setSubscriptionStatus(status);
+            newOrder.setSubscriptionUserEmailAccountType(
+                    myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)
+            );
 
             // Save the order in the repository
             subscriptionOrderRepository.save(newOrder);
@@ -91,25 +98,39 @@ public class SubscriptionOrderService {
         }
     }
     @Transactional
-    private void activateSubscriptionForUseremail(String userEmail, String subPlan)
-            throws SubscriptionActivationFailedException {
+    public void activateSubscriptionForUseremail(String userEmail, String subPlan) throws SubscriptionActivationFailedException {
 
-        if((myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)) == 1){
+        // Get current time from the database
+        Date now = subscriptionOrderRepository.getCurrentDatabaseTime();
+
+        // Calculate the end date as 30 days from now
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.DAY_OF_MONTH, 30);
+        Date endDate = calendar.getTime();
+
+        int accountType = myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail);
+
+        if (accountType == 1) { // mentor account
             StudentMentorAccount acc = studentMentorAccountService.getAccountByEmail(userEmail);
-            if(subPlan.equalsIgnoreCase("monthly")){
-                acc.setStudentMentorAccountSubscription_Monthly(1); // 1 = enable
+            if (subPlan.equalsIgnoreCase("monthly")) {
+                acc.setStudentMentorAccountSubscription_Monthly(1); // 1 = enable, 0 = disable
+                acc.setSubscriptionStartDate(now);
+                acc.setSubscriptionEndDate(endDate);
             }
-            //else if for other subscription types in future
-
-        } else if((myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)) == 2){
+            this.studentMentorAccountService.updateStudentMentorAccount(acc); // Save changes
+        } else if (accountType == 2) { // client account
             ClientAccount acc = clientAccountService.getAccountByEmail(userEmail);
-            if(subPlan.equalsIgnoreCase("monthly")){
-                acc.setClientAccountSubscription_Monthly(1); //1 = enable
+            if (subPlan.equalsIgnoreCase("monthly")) {
+                acc.setClientAccountSubscription_Monthly(1); // 1 = enable, 0 = disable
+                acc.setSubscriptionStartDate(now);
+                acc.setSubscriptionEndDate(endDate);
             }
-
+            this.clientAccountService.updateClientAccount(acc); // Save changes
         } else {
-            throw new SubscriptionActivationFailedException("For user email: " + userEmail);
+            throw new SubscriptionActivationFailedException("Subscription activation failed for user email: " + userEmail);
         }
     }
+
 
 }

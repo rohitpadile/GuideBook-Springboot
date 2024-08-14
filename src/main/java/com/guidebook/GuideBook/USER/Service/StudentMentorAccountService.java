@@ -9,6 +9,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
+
 @Service
 public class StudentMentorAccountService {
     private final StudentMentorAccountRepository studentMentorAccountRepository;
@@ -50,5 +53,14 @@ public class StudentMentorAccountService {
     }
     public void addStudentMentorAccount(StudentMentorAccount studentMentorAccount){
         studentMentorAccountRepository.save(studentMentorAccount);
+    }
+
+    public void updateStudentMentorAccount(StudentMentorAccount studentMentorAccount){
+        studentMentorAccountRepository.save(studentMentorAccount);
+    }
+
+    @Transactional
+    public List<StudentMentorAccount> findExpiredSubscriptions(Date now) {
+        return studentMentorAccountRepository.findBySubscriptionEndDateBefore(now);
     }
 }

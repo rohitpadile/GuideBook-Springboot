@@ -10,15 +10,21 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
+
 @Service
 public class ClientAccountService {
     private final ClientAccountRepository clientAccountRepository;
     private final StudentMentorAccountService studentMentorAccountService;
+    private final ClientAccountCustomRepositoryImpl clientAccountCustomRepositoryImpl;
     @Autowired
     public ClientAccountService(ClientAccountRepository clientAccountRepository,
-                                StudentMentorAccountService studentMentorAccountService) {
+                                StudentMentorAccountService studentMentorAccountService,
+                                ClientAccountCustomRepositoryImpl clientAccountCustomRepositoryImpl) {
         this.clientAccountRepository = clientAccountRepository;
         this.studentMentorAccountService = studentMentorAccountService;
+        this.clientAccountCustomRepositoryImpl = clientAccountCustomRepositoryImpl;
     }
 
     public ClientAccount getAccountByEmail(String email){
@@ -81,5 +87,12 @@ public class ClientAccountService {
 
     public void deleteClientAccount(ClientAccount account){
         clientAccountRepository.delete(account);
+    }
+    public void updateClientAccount(ClientAccount account ){
+        clientAccountRepository.save(account);
+    }
+    @Transactional
+    public List<ClientAccount> findExpiredSubscriptions(Date now) {
+        return clientAccountRepository.findBySubscriptionEndDateBefore(now);
     }
 }
