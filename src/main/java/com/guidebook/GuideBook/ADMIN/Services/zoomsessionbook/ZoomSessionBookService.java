@@ -193,6 +193,9 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 //                        .clientFeedbackFormLink() //COMPLETE THIS
                     .bookStatus(form.getZoomSessionBookStatus().toString())
                     .createdOn(form.getCreatedOn())
+                    .zoomSessionDurationInMin(form.getZoomSessionDurationInMin())
+                    .zoomSessionClientGoals(form.getZoomSessionClientGoals())
+                    .zoomSessionClientExpectations(form.getZoomSessionClientExpectations())
                     .build();
         } else { //RARE CASE
             //SEND A DTO TO THE FRONTEND SAYING THAT THE FORM IS NOT VERIFIED

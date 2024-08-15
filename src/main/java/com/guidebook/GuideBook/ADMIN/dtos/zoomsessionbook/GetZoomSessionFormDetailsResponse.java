@@ -25,5 +25,9 @@ public class GetZoomSessionFormDetailsResponse {
     private String clientFeedbackFormLink;
     private Date createdOn;
     private String bookStatus;
+
+    private Long zoomSessionDurationInMin;
+    private String zoomSessionClientGoals;
+    private String zoomSessionClientExpectations;
 //    private String //SEND FEEDBACK FORM LINK
 }
