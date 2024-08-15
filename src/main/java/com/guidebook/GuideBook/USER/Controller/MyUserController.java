@@ -151,5 +151,18 @@ public class MyUserController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
+    @GetMapping("/checkDummyAccount")
+    public ResponseEntity<?> checkDummyAccount(HttpServletRequest request)
+            throws MyUserAccountNotExistsException
+    {
+        String userEmail = jwtUtil.extractEmailFromToken(request);
+        if(userEmail.equals("poemsby24@gmail.com")){
+            log.info("Dummy account");
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
 
