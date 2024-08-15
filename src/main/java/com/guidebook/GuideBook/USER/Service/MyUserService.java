@@ -18,6 +18,7 @@ import com.guidebook.GuideBook.USER.exceptions.SignupOtpAlreadyPresentException;
 import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import com.guidebook.GuideBook.USER.exceptions.SubscriptionNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,9 +28,13 @@ import java.security.SecureRandom;
 
 @Service
 @Slf4j
+@Data
 public class MyUserService {
     @Value("${submonthly}")
     private Long subMonthly;
+
+    @Value("${individualzoomsessionamount}")
+    private Long individualZoomSessionAmount;
 
     private Long subYearly;
     private final MyUserRepository myUserRepository;

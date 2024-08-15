@@ -62,4 +62,8 @@ public class ZoomSessionForm {
     private ZoomSessionTransaction zoomSessionTransaction;
 
     private String userEmail;
+    private Long zoomSessionDurationInMin;
+    @Lob
+    private String zoomSessionClientGoals;
+    private String zoomSessionClientExpectations;
 }

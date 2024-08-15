@@ -38,4 +38,8 @@ public class ZoomSessionFormRequest {
 
     @NotNull
     private String clientProofDocLink;
+    @NotNull
+    private Long zoomSessionDurationInMin;// 15 or 30
+    private String zoomSessionClientGoals;
+    private String zoomSessionClientExpectations;
 }

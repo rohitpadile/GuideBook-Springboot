@@ -19,6 +19,8 @@ public class ZoomSessionTransaction {
 
     private Double transactionAmount;
 
+    private String transactionStatus;
+
 
     @ManyToOne
     @JoinColumn(name = "fk_studentWorkEmail", referencedColumnName = "studentWorkEmail")

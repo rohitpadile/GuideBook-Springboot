@@ -225,11 +225,14 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
 
         //MAKE A TRANSACTION HERE - FILL THE studentWorkEmail,
         // fk_formId, feePaid( set a application.property for fee, right now = 0),
+//        ZoomSessionTransaction transaction =
+//                zoomSessionTransactionService.createFreeTransaction(student,form);
         ZoomSessionTransaction transaction =
-                zoomSessionTransactionService.createFreeTransaction(student,form);
+                zoomSessionTransactionService.createPaidTransaction(student,form);
 
-        //COMMENTED CODE FOR ENCRYPTION
-        //CREATE A URL with domain name + /feedback-zoom-session/ + encrypted url(with transaction.getZoomSessionTransactionId() in it)
+        String paymentPageLink = "confirmZoomSession";
+
+
         String feedbackPageLink = "ERROR IN CREATING FEEDBACK FORM LINK: PLEASE CONTACT COMPANY VIA MAIL";
         try {
             String transactionId = transaction.getZoomSessionTransactionId();
@@ -268,15 +271,18 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             zoomSessionFormRepository.save(form);
         } else { //Session Booked from student
             clientSubject = "Zoom Session Confirmation";
+            ////////////////////SEND THE PAYMENT LINK HERE IN THIS MAIL TO CLIENT
             clientText = String.format("Dear %s,\n\n%s has accepted your Zoom session request and has" +
                             " scheduled the meeting.\n\nFollowing are the details of the meeting:\n\n" +
                             "1. Time: %s\n" +
                             "2. Meeting ID: %s\n" +
                             "3. Passcode: %s\n" +
                             "4. Meeting Link: \n%s\n\n" +
-                            "At the end of the session, please give the feedback.\n" +
+                    //PLACE THE LINK IN THE BELOW LINE FOR PAYMENT PAGE
+                            "To confirm the session from your side, please proceed to payment page by clicking on this link: " +
+                            "At the end of the session, please give the feedback it takes a minute\n" +
                             "Important Note: Fill the form, then only the session will be counted in " +
-                            "your account and you can win PRIZES in future, and also in mentor's account so he can provide more such sessions in the future." +
+                            "your account and you can win PRIZES in future." +
                             "\nThank you for your co-operation. Have a great session\n\n" +
                             "Feedback link: %s\n\n" +
 
@@ -295,11 +301,13 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                     feedbackPageLink);
 
             studentSubject = "Zoom Session Confirmation";
-            studentText = String.format("Your Zoom meeting with %s is scheduled as per the following details:" +
+            studentText = String.format("Your Zoom meeting with %s is scheduled as per your given details:" +
                             "\n\nClient Name: %s\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s" +
                             "\nClient College: %s\nProof Document: \n%s\n\n1. Time: %s\n2. Meeting ID: %s\n" +
                             "3. Passcode: %s\n4. Meeting Link: \n%s\n\n" +
-                            "You are helping someone in need. Keep up the great work and have a great session!" +
+                            "We will email you once the transaction is completed & the session is confirmed from the client." +
+//                            "You are helping someone in need. Keep up the great work and have a great session!" +
+                    //PUT THE ABOVE LINE IN THE CONFIRMATION EMAIL
                             "\n\nBest regards,\n" +
                             "GuidebookX Team",
                     clientName,
@@ -356,7 +364,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                 studentEmailContent);
 
         // Prepare and send the email content to the client
-        String clientEmailContent = prepareCancelEmailContentForClient(form);
+        String clientEmailContent = prepareCancelEmailContentForClient(form, request.getStudentWorkEmail());
         emailServiceImpl.sendSimpleMessage(form.getClientEmail(),
                 "Zoom Session Cancellation Confirmation",
                 clientEmailContent);
@@ -385,10 +393,11 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         return content.toString();
     }
 
-    private String prepareCancelEmailContentForClient(ZoomSessionForm form) {
+    private String prepareCancelEmailContentForClient(ZoomSessionForm form, String studentWorkEmail) {
         StringBuilder content = new StringBuilder();
         content.append("Dear ").append(form.getClientFirstName()).append(" ").append(form.getClientLastName()).append(",\n\n");
-        content.append("Your Zoom session request has been successfully cancelled.\n\n");
+        content.append("Your Zoom session with "+
+                studentRepository.findByStudentWorkEmail(studentWorkEmail).getStudentName() + " has been successfully cancelled.\n\n");
         content.append("Session Details:\n");
         content.append("Full Name: ").append(form.getClientFirstName()).append(" ");
         if(form.getClientMiddleName() != null && !form.getClientMiddleName().isEmpty()){
@@ -425,8 +434,10 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         }else if (
                 !(form.getZoomSessionTransaction().getZoomSessionFeedbackForm() ==null)
         ){
+            log.info("Transaction has completed: status is 2");
             response.setStatus(2);
         }else{
+            log.info("Pending transaction: status is 0");
             response.setStatus(0);
         }
         return response;

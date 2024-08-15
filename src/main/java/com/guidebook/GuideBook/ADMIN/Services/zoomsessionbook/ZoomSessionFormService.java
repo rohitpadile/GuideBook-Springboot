@@ -55,6 +55,9 @@ public class ZoomSessionFormService {
                 .clientOtpAttempts(0) // Initialize OTP attempts
                 .isVerified(0)
                 .userEmail(userEmail)
+                .zoomSessionDurationInMin(formDTO.getZoomSessionDurationInMin())//duration
+                .zoomSessionClientGoals(formDTO.getZoomSessionClientGoals())//goals
+                .zoomSessionClientExpectations(formDTO.getZoomSessionClientExpectations())//expectations
                 .build();
 
         // Generate OTP and set expiration
