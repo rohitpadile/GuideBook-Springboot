@@ -73,9 +73,9 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             throw new BookingBlockedException("Mentor cannot book a session with himself");
         }
         //Dont let him click on Book session multiple times - spamming email for student
-        Optional<BookingRestriction> restriction = bookingRestrictionService.findByClientEmail(form.getClientEmail());
+        Optional<BookingRestriction> restriction = bookingRestrictionService.findByClientEmail(form.getUserEmail());
         if (restriction.isPresent()) {
-            log.info("Client Email just went into restriction: {}", form.getClientEmail());
+            log.info("User Email just went into restriction: {}", form.getClientEmail());
             return;
         }
         // Prepare and send the email content to the student
@@ -96,7 +96,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         //SAVE THE FORM'S CLIENT EMAIL IN OUR BookingRestriction TABLE WHICH WILL DELETE IT AFTER X HOURS
         // Save the form's client email in the new table
         BookingRestriction newRestriction = new BookingRestriction();
-        newRestriction.setClientEmail(form.getClientEmail());
+        newRestriction.setClientEmail(form.getUserEmail());
         newRestriction.setCreatedOn(new Date()); // This will be set automatically by @CreationTimestamp
         bookingRestrictionService.save(newRestriction);
 
