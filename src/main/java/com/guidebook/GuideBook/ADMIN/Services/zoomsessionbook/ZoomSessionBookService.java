@@ -233,10 +233,11 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         ZoomSessionTransaction transaction =
                 zoomSessionTransactionService.createPaidTransaction(student,form);
 
-        String paymentPageLink = "confirmZoomSession";
+        String paymentPageLink = websiteDomainName + "/confirmZoomSession/" + transaction.getZoomSessionTransactionId();
+        //we are secured with JWT, so no worries, no encryption needed.
 
 
-        String feedbackPageLink = "ERROR IN CREATING FEEDBACK FORM LINK: PLEASE CONTACT COMPANY VIA MAIL";
+        String feedbackPageLink;
         try {
             String transactionId = transaction.getZoomSessionTransactionId();
             String encodedId = EncryptionUtilForFeedbackForm.encode(transactionId, studentName); // Custom encode
@@ -282,8 +283,8 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                             "3. Passcode: %s\n" +
                             "4. Meeting Link: \n%s\n\n" +
                     //PLACE THE LINK IN THE BELOW LINE FOR PAYMENT PAGE
-                            "To confirm the session from your side, please proceed to payment page by clicking on this link: " +
-                            "At the end of the session, please give the feedback it takes a minute\n" +
+                            "To confirm the session from your side, please proceed to payment page by clicking on this link: %s\n\n" +
+                            "At the end of the session, please give the feedback, it takes a minute\n" +
                             "Important Note: Fill the form, then only the session will be counted in " +
                             "your account and you can win PRIZES in future." +
                             "\nThank you for your co-operation. Have a great session\n\n" +
@@ -301,6 +302,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                     request.getZoomSessionMeetingId(),
                     request.getZoomSessionPasscode(),
                     request.getZoomSessionMeetingLink(),
+                    paymentPageLink,
                     feedbackPageLink);
 
             studentSubject = "Zoom Session Confirmation";
@@ -429,6 +431,8 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         ZoomSessionForm form = checkForm.get();
         CancellationStatusZoomSessionResponse response = new CancellationStatusZoomSessionResponse();
 
+
+        //CHANGE HOW TRANSACTION IS TREATED HERE
         if(
                 form.getZoomSessionBookStatus().equalsIgnoreCase(ZoomSessionBookStatus.CANCELLED.toString())
         ){

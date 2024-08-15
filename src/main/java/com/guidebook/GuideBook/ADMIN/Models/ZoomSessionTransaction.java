@@ -20,7 +20,7 @@ public class ZoomSessionTransaction {
     private Double transactionAmount;
 
     private String transactionStatus;
-
+    private String userEmail;
 
     @ManyToOne
     @JoinColumn(name = "fk_studentWorkEmail", referencedColumnName = "studentWorkEmail")

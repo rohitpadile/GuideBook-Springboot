@@ -38,6 +38,7 @@ public class ZoomSessionTransactionService {
         zoomSessionTransaction.setStudent(student);
 //        zoomSessionTransaction.setTransactionAmount(myUserService.getIndividualZoomSessionAmount());
         zoomSessionTransaction.setTransactionStatus("created"); //created or paid
+        zoomSessionTransaction.setUserEmail(form.getUserEmail());
         return zoomSessionTransactionRepository.save(zoomSessionTransaction);
     }
 

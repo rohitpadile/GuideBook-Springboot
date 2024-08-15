@@ -69,7 +69,7 @@ public class ZoomSessionBookController {
     @PostMapping("/confirmZoomSessionFromStudent")
     public ResponseEntity<Void> confirmZoomSessionFromStudent(
             @RequestBody ConfirmZoomSessionFromStudentRequest request
-            ) throws ZoomSessionNotFoundException, EncryptionFailedException {
+            ) throws Exception {
         zoomSessionBookService.confirmZoomSessionFromStudent(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
