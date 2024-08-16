@@ -10,6 +10,7 @@ import com.guidebook.GuideBook.USER.Models.PaymentOrder;
 import com.guidebook.GuideBook.USER.Service.*;
 import com.guidebook.GuideBook.USER.dtos.CreateOrderPaymentZoomSessionRequest;
 import com.guidebook.GuideBook.USER.dtos.CreateOrderSubscriptionRequest;
+import com.guidebook.GuideBook.USER.dtos.VerifyUserWithTransactionResponse;
 import com.guidebook.GuideBook.USER.exceptions.*;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
@@ -85,27 +86,17 @@ public class PaymentOrderController {
             SubscriptionNotFoundException,
             TransactionNotFoundException,
             PaymentOrderSaveFailedException {
-
+        log.info("Recieved order DTO : {}", orderPaymentZoomSessionRequest);
         String userEmail = jwtUtil.extractEmailFromToken(request);
+        log.info("User email : {}",userEmail);
 
-        RazorpayClient razorpay = new RazorpayClient(razorpayKeySecret);
+        RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
         JSONObject orderRequest = getOrderRequestZoomSession(userEmail, orderPaymentZoomSessionRequest);
         Order order = razorpay.orders.create(orderRequest);
         log.info("Order created is : {}", order);
 
-//        paymentOrderService.addPaymentOrder(order,userEmail);
-//        private String paymentAmount; //impt
-//        private String paymentUserEmail;
-//        private Integer paymentUserEmailAccountType;//1 for mentor, 2 for client
-//        private String paymentUserGpayNumber;
-//        private String paymentUserName;
-//        private String paymentCreatedAt;
-//        private String paymentCurrency;
-//        private String paymentReceipt; //impt
-//        private String paymentRzpOrderId; //impt
-//        private String paymentStatus;
-//
-//        private String paymentId; //impt
+        paymentOrderService.addPaymentOrder(order,userEmail);
+
         return new ResponseEntity<>(order.toString(), HttpStatus.OK);
     }
 
@@ -126,12 +117,13 @@ public class PaymentOrderController {
                     .equalsIgnoreCase("30")){
                 amt = Long.parseLong(this.individualZoomSessionAmount30Min);
             } else { //someone has changed the duration by inspecting webpage
-                amt = Long.parseLong(this.getIndividualZoomSessionAmount30Min());
+                amt = Long.parseLong(this.individualZoomSessionAmount30Min);
                 //If someone changed the default amount number, we wil charge him the max amount so that he does not do it again
             }
         } else {
             throw new TransactionNotFoundException("Zoom Session transaction not found at getOrderRequestZoomSession() method");
         }
+        log.info("I am going to put key-value pairs in the json object now");
         orderRequest.put("amount", amt * 100); // Converted to paise
         orderRequest.put("currency", "INR");
         orderRequest.put("receipt", generateReceiptId(userEmail));
@@ -156,6 +148,7 @@ public class PaymentOrderController {
         notes.put("Zoom Session Amount paid", amt);
 
         orderRequest.put("notes", notes);
+        log.info("key-value pairs in the json object done: {}", orderRequest);
         return orderRequest;
     }
     private String generateReceiptId(String userEmail) {
@@ -167,5 +160,21 @@ public class PaymentOrderController {
 
     }
 
-
+    @GetMapping("/verifyUserWithTransaction/{transactionId}")
+    @Transactional
+    public ResponseEntity<VerifyUserWithTransactionResponse> verifyUserWithTransactionId(@PathVariable String transactionId,
+                                                            HttpServletRequest request){
+        log.info("Transaction id: {}" ,transactionId);
+        String loggedInUserEmail = jwtUtil.extractEmailFromToken(request);
+        String transactionUserEmail = zoomSessionTransactionService.getZoomSessionTransactionById(transactionId)
+                .getZoomSessionForm().getUserEmail();
+        log.info("Transaction User email: {}, login user email: {}" ,transactionUserEmail , loggedInUserEmail);
+        if(transactionUserEmail.equals(loggedInUserEmail)){
+            VerifyUserWithTransactionResponse res =  paymentOrderService.getZoomSessionPaymentPageDetails(transactionId, loggedInUserEmail);
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    //Make a method to check if session is cancelled by himself only. If yes dont make him pay unnecessary and make our work hard
 }

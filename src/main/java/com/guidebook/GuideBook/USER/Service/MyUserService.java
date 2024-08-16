@@ -33,9 +33,6 @@ public class MyUserService {
     @Value("${submonthly}")
     private Long subMonthly;
 
-    @Value("${individualzoomsessionamount}")
-    private Long individualZoomSessionAmount;
-
     private Long subYearly;
     private final MyUserRepository myUserRepository;
     private final EmailServiceImpl emailServiceImpl;

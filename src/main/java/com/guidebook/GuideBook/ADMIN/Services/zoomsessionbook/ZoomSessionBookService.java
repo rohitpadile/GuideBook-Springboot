@@ -327,7 +327,7 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                     request.getZoomSessionPasscode(),
                     request.getZoomSessionMeetingLink());
 
-            form.setZoomSessionBookStatus(ZoomSessionBookStatus.BOOKED.toString());
+            form.setZoomSessionBookStatus(ZoomSessionBookStatus.PENDING.toString()); //keep it pending till payment is completed
             zoomSessionFormRepository.save(form);
         }
 
