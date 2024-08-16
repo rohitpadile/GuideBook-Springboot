@@ -14,6 +14,7 @@ import com.razorpay.RazorpayException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/user/")
 @Slf4j
+@Data
 public class SubscriptionOrderController {
 
     private final MyUserService myUserService;

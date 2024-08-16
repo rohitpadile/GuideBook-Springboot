@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 public class ZoomSessionTransactionService {
-    private final MyUserService myUserService;
+    private MyUserService myUserService;
     private ZoomSessionTransactionRepository zoomSessionTransactionRepository;
     @Autowired
     public ZoomSessionTransactionService(ZoomSessionTransactionRepository zoomSessionTransactionRepository,
@@ -42,8 +42,7 @@ public class ZoomSessionTransactionService {
         return zoomSessionTransactionRepository.save(zoomSessionTransaction);
     }
 
-    public ZoomSessionTransaction getZoomSessionTransactionById(String zoomSessionTransactionId)
-    throws TransactionNotFoundException {
+    public ZoomSessionTransaction getZoomSessionTransactionById(String zoomSessionTransactionId) {
         return zoomSessionTransactionRepository.findByZoomSessionTransactionId(zoomSessionTransactionId);
     }
     public ZoomSessionTransaction saveZoomSessionTransaction(ZoomSessionTransaction transaction){

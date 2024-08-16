@@ -7,6 +7,7 @@ import com.guidebook.GuideBook.ADMIN.exceptions.BookingBlockedException;
 import com.guidebook.GuideBook.ADMIN.exceptions.EncryptionFailedException;
 import com.guidebook.GuideBook.ADMIN.exceptions.ZoomSessionNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Services.zoomsessionbook.ZoomSessionBookService;
+import com.guidebook.GuideBook.USER.Service.MyUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,10 +23,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/admin/")
 public class ZoomSessionBookController {
     private final ZoomSessionBookService zoomSessionBookService;
+    private final MyUserService myUserService;
 
     @Autowired
-    public ZoomSessionBookController(ZoomSessionBookService zoomSessionBookService) {
+    public ZoomSessionBookController(ZoomSessionBookService zoomSessionBookService,
+                                     MyUserService myUserService) {
         this.zoomSessionBookService = zoomSessionBookService;
+        this.myUserService = myUserService;
     }
 
     //CODE A METHOD THAT ACTIVATES WHEN FINAL BOOK SESSION CONFIRMED AND EMAIL IS TO BE SEND TO
