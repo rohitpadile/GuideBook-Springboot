@@ -111,15 +111,16 @@ public class ZoomSessionFeedbackFormService {
     public GetSubmittionStatusForFeedbackFormResponse getSubmittionStatusForFeedbackForm(String transactionId)
             throws TransactionNotFoundException
     {
-
         ZoomSessionTransaction transaction = zoomSessionTransactionService.getZoomSessionTransactionById(transactionId);
-        if(transaction.getZoomSessionFeedbackForm() != null){
+        //Directly check the transaction status is paid or not and set isSubmitted
+        boolean paymentDone = transaction.getTransactionStatus().equalsIgnoreCase("paid");
+        if((paymentDone)){
             return GetSubmittionStatusForFeedbackFormResponse.builder()
-                    .isSubmitted(1)
+                    .isSubmitted(0) //let it submit form
                     .build();
         } else{
             return GetSubmittionStatusForFeedbackFormResponse.builder()
-                    .isSubmitted(0)
+                    .isSubmitted(1) //Cannot submit now
                     .build();
         }
     }

@@ -101,5 +101,8 @@ public class PaymentOrderService {
     public PaymentOrder getPaymentOrderByRzpId(String rzpId){
         return paymentOrderRepository.findByPaymentRzpOrderId(rzpId);
     }
+    public PaymentOrder updatePaymentOrder(PaymentOrder order){
+        return paymentOrderRepository.save(order);
+    }
 }
 

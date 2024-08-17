@@ -200,5 +200,9 @@ public class ZoomSessionFormService {
     public Optional<ZoomSessionForm> getZoomSessionFormById(String id){
         return zoomSessionFormRepository.findByZoomSessionFormId(id);
     }
+
+    public ZoomSessionForm updateZoomSessionForm(ZoomSessionForm form){
+        return zoomSessionFormRepository.save(form);
+    }
 }
 
