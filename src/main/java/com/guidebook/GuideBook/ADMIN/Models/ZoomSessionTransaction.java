@@ -18,7 +18,7 @@ public class ZoomSessionTransaction {
 //    private String zoomSessionFeedbackFormId;
 
     private Double transactionAmount;
-
+    private Integer isSubscriptionActive;
     private String transactionStatus;
     private String userEmail;
     private String paymentOrderRzpId; //Directly use Razor pay order if instead of sql id

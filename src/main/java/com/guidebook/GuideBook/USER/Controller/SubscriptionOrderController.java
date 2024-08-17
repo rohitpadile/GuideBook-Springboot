@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
+import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Service.*;
 import com.guidebook.GuideBook.USER.dtos.CreateOrderSubscriptionRequest;
 import com.guidebook.GuideBook.USER.dtos.GetSubscriptionAmountRequest;
@@ -152,6 +153,28 @@ public class SubscriptionOrderController {
             throws SubscriptionNotFoundException {
         SubscriptionAmountResponse res = myUserService.getSubscriptionAmount(request);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/checkIsSubscriptionActive")
+    public ResponseEntity<Void> checkIsSubscriptionActive(HttpServletRequest request)
+            throws ClientAccountNotFoundException {
+        String userEmail = jwtUtil.extractEmailFromToken(request);
+        Integer accType = myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail);
+        if(accType == 1){
+            StudentMentorAccount studentMentorAccount = studentMentorAccountService.getAccountByEmail(userEmail);
+            if(studentMentorAccount.getStudentMentorAccountSubscription_Monthly() == 1)
+                return new ResponseEntity<>(HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else if(accType == 2){
+            ClientAccount clientAccount = clientAccountService.getAccountByEmail(userEmail);
+            if(clientAccount.getClientAccountSubscription_Monthly() == 1)
+                return new ResponseEntity<>(HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else {
+            throw new ClientAccountNotFoundException("Client account not found at checkIsSubscriptionActive() method");
+        }
     }
 }
 //GENERAL FORMAT OF ORDER RECEIVED IN MY PROJECT FROM RZP

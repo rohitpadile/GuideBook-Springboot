@@ -1,13 +1,16 @@
 package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.ADMIN.Models.Student;
+import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
 import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionForm;
 import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionTransaction;
+import com.guidebook.GuideBook.ADMIN.Services.StudentProfileService;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.ZoomSessionTransactionService;
 import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.ADMIN.Services.zoomsessionbook.ZoomSessionFormService;
 import com.guidebook.GuideBook.ADMIN.enums.ZoomSessionBookStatus;
+import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.ADMIN.exceptions.TransactionNotFoundException;
 import com.guidebook.GuideBook.ADMIN.exceptions.ZoomSessionNotFoundException;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
@@ -55,6 +58,7 @@ public class PaymentOrderController {
     private final ZoomSessionTransactionService zoomSessionTransactionService;
     private final ZoomSessionFormService zoomSessionFormService;
     private final EmailServiceImpl emailServiceImpl;
+    private final StudentProfileService studentProfileService;
     @Value("${razorpay_key_id}")
     private String razorpayKeyId;
     @Value("${razorpay_key_secret}")
@@ -66,6 +70,7 @@ public class PaymentOrderController {
 
     @Autowired
     public PaymentOrderController(PaymentOrderService paymentOrderService,
+                                  StudentProfileService studentProfileService,
                                   MyUserService myUserService,
                                   JwtUtil jwtUtil,
                                   EmailServiceImpl emailServiceImpl,
@@ -80,6 +85,7 @@ public class PaymentOrderController {
         this.jwtUtil = jwtUtil;
         this.studentMentorAccountService = studentMentorAccountService;
         this.emailServiceImpl = emailServiceImpl;
+        this.studentProfileService = studentProfileService;
         this.clientAccountService = clientAccountService;
         this.zoomSessionFormService = zoomSessionFormService;
         this.studentService = studentService;
@@ -219,7 +225,7 @@ public class PaymentOrderController {
     public ResponseEntity<Void> paymentSuccessForZoomSession(
             @RequestBody @Valid PaymentSucessForZoomSessionRequest paymentSucessForZoomSessionRequest,
             HttpServletRequest request
-    ) throws TransactionNotFoundException {
+    ) throws TransactionNotFoundException, StudentProfileContentNotFoundException {
 
         String loggedInUserEmail = jwtUtil.extractEmailFromToken(request);
         ZoomSessionTransaction transaction = zoomSessionTransactionService.getZoomSessionTransactionById(paymentSucessForZoomSessionRequest.getZoomSessionTransactionId());
@@ -239,49 +245,20 @@ public class PaymentOrderController {
 
                 // Update Zoom session form status
                 transaction.getZoomSessionForm().setZoomSessionBookStatus(ZoomSessionBookStatus.BOOKED.toString());
-//SEND EMAIL TO BOTH FOR LAST CONFIRMATION
 
-                // Fetch details for emails
-                ZoomSessionForm form = transaction.getZoomSessionForm();
-                Student student = transaction.getStudent();
-                String studentName = student.getStudentName();
-                String clientName = form.getClientFirstName() + " " + form.getClientLastName();
-                String clientEmail = form.getClientEmail();
-                String studentEmail = student.getStudentWorkEmail();
-
-                // Email content
-                String clientSubject = "Zoom Session final Confirmation";
-                String clientText = String.format(
-                        """
-                                Dear %s,
-
-                                Your payment has been successfully processed.
-                                You can proceed with the session now.
-                           
-                                Please find the details and links scheduled by %s in the previous sent mail.
-                                Have a great session. We look forward to hear from you.
-                                
-                                Best regards,
-                                GuidebookX Team""",
-                        clientName, studentName);
-
-                String studentSubject = "Zoom Session final Confirmation";
-                String studentText = String.format("""
-                                Your Zoom session with %s has been successfully confirmed.
-                                Please find the details and links in the previous sent mail
-
-                                Best regards,
-                                GuidebookX Team""",
-                        clientName);
-
-                // Send emails
-                emailServiceImpl.sendSimpleMessage(clientEmail, clientSubject, clientText);
-                emailServiceImpl.sendSimpleMessage(studentEmail, studentSubject, studentText);
+                // Send final confirmation emails at this point
+                paymentOrderService.sendFinalConfirmationEmails(transaction);
 
                 // Save updated entities
                 zoomSessionTransactionService.saveZoomSessionTransaction(transaction);
                 paymentOrderService.updatePaymentOrder(order);
-                zoomSessionFormService.updateZoomSessionForm(form);
+                zoomSessionFormService.updateZoomSessionForm(transaction.getZoomSessionForm());
+
+                // Increase the session count of student by 1
+                StudentProfile studentProfile = studentProfileService.getStudentProfileForGeneralPurpose(transaction.getStudent().getStudentWorkEmail());
+                studentProfile.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted() + 1);
+
+
 
                 return new ResponseEntity<>(HttpStatus.ACCEPTED);
             } else {
@@ -291,5 +268,35 @@ public class PaymentOrderController {
             throw new TransactionNotFoundException("Zoom Session Transaction not found at paymentSuccessForZoomSession() method");
         }
     }
+    @GetMapping("/sendFinalConfirmationMailsZoomSession/{transactionId}")
+    public ResponseEntity<Void> sendFinalConfirmationMailsZoomSession(
+            @PathVariable String transactionId,
+            HttpServletRequest request)
+            throws TransactionNotFoundException {
+        String loggedInUserEmail = jwtUtil.extractEmailFromToken(request);
+        ZoomSessionTransaction transaction = zoomSessionTransactionService.getZoomSessionTransactionById(transactionId);
+        if (transaction != null) {
+            String transactionUserEmail = transaction.getZoomSessionForm().getUserEmail();
+            if (transactionUserEmail.equals(loggedInUserEmail)) {
+                transaction.setIsSubscriptionActive(1);
+                transaction.setTransactionStatus("paid");
+                transaction.getZoomSessionForm().setZoomSessionBookStatus(ZoomSessionBookStatus.BOOKED.toString());
+
+                paymentOrderService.sendFinalConfirmationEmails(transaction);
+                zoomSessionTransactionService.saveZoomSessionTransaction(transaction);
+                zoomSessionFormService.updateZoomSessionForm(transaction.getZoomSessionForm());
+
+                return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            throw new TransactionNotFoundException("Zoom Session Transaction not found at paymentSuccessForZoomSession() method");
+        }
+    }
+
+
+
+
 
 }

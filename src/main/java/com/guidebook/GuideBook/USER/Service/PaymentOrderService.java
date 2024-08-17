@@ -1,7 +1,10 @@
 package com.guidebook.GuideBook.USER.Service;
 
+import com.guidebook.GuideBook.ADMIN.Models.Student;
+import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionForm;
 import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.ADMIN.Services.ZoomSessionTransactionService;
+import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.PaymentOrder;
 import com.guidebook.GuideBook.USER.Models.SubscriptionOrder;
@@ -26,6 +29,7 @@ public class PaymentOrderService {
     private final MyUserService myUserService;
     private final StudentMentorAccountService studentMentorAccountService;
     private final ClientAccountService clientAccountService;
+    private final EmailServiceImpl emailServiceImpl;
     private final ZoomSessionTransactionService zoomSessionTransactionService;
     @Autowired
     public PaymentOrderService(PaymentOrderRepository paymentOrderRepository,
@@ -33,13 +37,15 @@ public class PaymentOrderService {
                                MyUserService myUserService,
                                StudentMentorAccountService studentMentorAccountService,
                                ClientAccountService clientAccountService,
-                                ZoomSessionTransactionService zoomSessionTransactionService) {
+                                ZoomSessionTransactionService zoomSessionTransactionService,
+                               EmailServiceImpl emailServiceImpl) {
         this.paymentOrderRepository = paymentOrderRepository;
 //        this.subscriptionOrderRepository = subscriptionOrderRepository;
         this.myUserService = myUserService;
         this.studentMentorAccountService = studentMentorAccountService;
         this.clientAccountService = clientAccountService;
         this.zoomSessionTransactionService = zoomSessionTransactionService;
+        this.emailServiceImpl = emailServiceImpl;
     }
 
     @Transactional
@@ -103,6 +109,46 @@ public class PaymentOrderService {
     }
     public PaymentOrder updatePaymentOrder(PaymentOrder order){
         return paymentOrderRepository.save(order);
+    }
+
+    public void sendFinalConfirmationEmails(ZoomSessionTransaction transaction) {
+        // Fetch details for emails
+        ZoomSessionForm form = transaction.getZoomSessionForm();
+        Student student = transaction.getStudent();
+        String studentName = student.getStudentName();
+        String clientName = form.getClientFirstName() + " " + form.getClientLastName();
+        String clientEmail = form.getClientEmail();
+        String studentEmail = student.getStudentWorkEmail();
+
+        // Email content for client
+        String clientSubject = "Zoom Session final Confirmation";
+        String clientText = String.format(
+                """
+                        Dear %s,
+    
+                        Your session with %s is successfully booked.
+                        Session duration: %s minutes.
+                   
+                        Please find the details and links scheduled by %s in the previous sent mail.
+                        Have a great session. We look forward to hearing from you.
+    
+                        Best regards,
+                        GuidebookX Team""",
+                clientName, studentName, transaction.getZoomSessionForm().getZoomSessionDurationInMin(), studentName);
+
+        // Email content for student
+        String studentSubject = "Zoom Session final Confirmation";
+        String studentText = String.format("""
+                    Your Zoom session with %s has been successfully confirmed.
+                    Please find the details and links in the previously sent mail.
+
+                    Best regards,
+                    GuidebookX Team""",
+                clientName);
+
+        // Send emails to client and student
+        emailServiceImpl.sendSimpleMessage(clientEmail, clientSubject, clientText);
+        emailServiceImpl.sendSimpleMessage(studentEmail, studentSubject, studentText);
     }
 }
 

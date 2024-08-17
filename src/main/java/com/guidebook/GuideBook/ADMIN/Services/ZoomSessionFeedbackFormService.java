@@ -15,14 +15,17 @@ import com.guidebook.GuideBook.ADMIN.Repository.ZoomSessionFeedbackFormRepositor
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Service.ClientAccountService;
+import com.guidebook.GuideBook.USER.Service.MyUserService;
 import com.guidebook.GuideBook.USER.Service.StudentMentorAccountService;
 import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
 import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class ZoomSessionFeedbackFormService {
     private final ClientAccountService clientAccountService;
     private final StudentMentorAccountService studentMentorAccountService;
@@ -30,19 +33,22 @@ public class ZoomSessionFeedbackFormService {
     private final ZoomSessionFeedbackFormRepository zoomSessionFeedbackFormRepository;
     private final ZoomSessionTransactionService zoomSessionTransactionService;
     private final StudentProfileService studentProfileService;
+    private final MyUserService myUserService;
 
     @Autowired
     public ZoomSessionFeedbackFormService(ZoomSessionFeedbackFormRepository zoomSessionFeedbackFormRepository,
                                           ZoomSessionTransactionService zoomSessionTransactionService,
                                           StudentProfileService studentProfileService,
                                           ClientAccountService clientAccountService,
-                                          StudentMentorAccountService studentMentorAccountService
+                                          StudentMentorAccountService studentMentorAccountService,
+                                          MyUserService myUserService
                                           ) {
         this.zoomSessionFeedbackFormRepository = zoomSessionFeedbackFormRepository;
         this.zoomSessionTransactionService = zoomSessionTransactionService;
         this.studentProfileService = studentProfileService;
         this.clientAccountService = clientAccountService;
         this.studentMentorAccountService = studentMentorAccountService;
+        this.myUserService = myUserService;
     }
 
 //THIS CAN ALSO BE A @Transactional
@@ -69,29 +75,26 @@ public class ZoomSessionFeedbackFormService {
         ZoomSessionFeedbackForm savedForm = zoomSessionFeedbackFormRepository.save(feedbackForm);
         transaction.setZoomSessionFeedbackForm(savedForm);
 
-//        Increase the session count of student by 1
-        StudentProfile studentProfile = studentProfileService.getStudentProfileForGeneralPurpose(transaction.getStudent().getStudentWorkEmail());
-        studentProfile.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted() + 1);
-        //Increase the count of the Client by 1 (if another mentor has booked this session, increase his/her session count)
-        StudentMentorAccount studentMentorAccount = studentMentorAccountService.getAccountByEmail(
-                transaction.getZoomSessionForm().getUserEmail());
-        ClientAccount clientAccount = clientAccountService.getAccountByEmail(
-                transaction.getZoomSessionForm().getUserEmail());
-        if(studentMentorAccount!=null){
+        //Increase the count of the Client by 1
+        // (if another mentor has booked this session, increase his/her session count as a client)
+        Integer accType = myUserService.checkUserEmailAccountTypeGeneralPurpose(transaction.getZoomSessionForm().getUserEmail());
+        if(accType == 1){
+            //Student mentor account
+            StudentMentorAccount studentMentorAccount = studentMentorAccountService.getAccountByEmail(
+                    transaction.getZoomSessionForm().getUserEmail());
             studentMentorAccount.setStudentMentorAccountZoomSessionCount(
-                    studentMentorAccount.getStudentMentorAccountZoomSessionCount() + 1
-            );
-        } else if(clientAccount!=null){
+                    studentMentorAccount.getStudentMentorAccountZoomSessionCount() + 1);
+            studentMentorAccountService.updateStudentMentorAccount(studentMentorAccount);
+        } else if(accType == 2){
+            ClientAccount clientAccount = clientAccountService.getAccountByEmail(
+                    transaction.getZoomSessionForm().getUserEmail());
             clientAccount.setClientAccountZoomSessionCount(
                     clientAccount.getClientAccountZoomSessionCount() + 1
             );
-            //NOTE: IF SAME EMAIL PRESENT IN BOTH, FIRST MENTOR ACCOUNT IS CHECKED AND PROCEEDED
-            //IF MENTOR IS NOT PRESENT, THEN CLIENT ACCOUNT IS CHECKED AND PROCEEDED
-            //IT WONT HAPPEN THAT BOTH ACCOUNTS SESSIONS ARE INCREMENTED
+            clientAccountService.updateClientAccount(clientAccount);
         }else{
             throw new ClientAccountNotFoundException("student mentor as a client or client account not found at submitZoomSessionFeedbackForm() method");
         }
-        studentProfileService.updateStudentProfile(studentProfile);
         zoomSessionTransactionService.saveZoomSessionTransaction(transaction);
 
         //saved transaction with the feedback form id - that officially completes one session.
@@ -114,7 +117,8 @@ public class ZoomSessionFeedbackFormService {
         ZoomSessionTransaction transaction = zoomSessionTransactionService.getZoomSessionTransactionById(transactionId);
         //Directly check the transaction status is paid or not and set isSubmitted
         boolean paymentDone = transaction.getTransactionStatus().equalsIgnoreCase("paid");
-        if((paymentDone)){
+        if((paymentDone) && (transaction.getZoomSessionFeedbackForm()==null)){
+            log.info("Session is already paid and booked");
             return GetSubmittionStatusForFeedbackFormResponse.builder()
                     .isSubmitted(0) //let it submit form
                     .build();
