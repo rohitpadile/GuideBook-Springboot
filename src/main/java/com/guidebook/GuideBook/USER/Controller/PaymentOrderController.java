@@ -4,12 +4,13 @@ import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.ZoomSessionTransactionService;
 import com.guidebook.GuideBook.ADMIN.Services.zoomsessionbook.ZoomSessionFormService;
+import com.guidebook.GuideBook.ADMIN.enums.ZoomSessionBookStatus;
 import com.guidebook.GuideBook.ADMIN.exceptions.TransactionNotFoundException;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.PaymentOrder;
 import com.guidebook.GuideBook.USER.Service.*;
 import com.guidebook.GuideBook.USER.dtos.CreateOrderPaymentZoomSessionRequest;
-import com.guidebook.GuideBook.USER.dtos.CreateOrderSubscriptionRequest;
+import com.guidebook.GuideBook.USER.dtos.PaymentSucessForZoomSessionRequest;
 import com.guidebook.GuideBook.USER.dtos.VerifyUserWithTransactionResponse;
 import com.guidebook.GuideBook.USER.exceptions.*;
 import com.razorpay.Order;
@@ -95,7 +96,10 @@ public class PaymentOrderController {
         Order order = razorpay.orders.create(orderRequest);
         log.info("Order created is : {}", order);
 
-        paymentOrderService.addPaymentOrder(order,userEmail);
+        PaymentOrder savedOrder = paymentOrderService.addPaymentOrder(order,userEmail);
+        //Add this saved Order to the transaction entity also
+        zoomSessionTransactionService.getZoomSessionTransactionById(orderPaymentZoomSessionRequest.getZoomSessionTransactionId())
+                .setPaymentOrderRzpId(savedOrder.getPaymentRzpOrderId());
 
         return new ResponseEntity<>(order.toString(), HttpStatus.OK);
     }
@@ -174,6 +178,47 @@ public class PaymentOrderController {
             return new ResponseEntity<>(res, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/paymentSuccessForZoomSession")
+    @Transactional
+    public ResponseEntity<Void> paymentSuccessForZoomSession(
+            @RequestBody @Valid PaymentSucessForZoomSessionRequest paymentSucessForZoomSessionRequest,
+            HttpServletRequest request
+            )
+    throws TransactionNotFoundException
+
+    {
+
+        String loggedInUserEmail = jwtUtil.extractEmailFromToken(request);
+        ZoomSessionTransaction transaction = zoomSessionTransactionService.getZoomSessionTransactionById(paymentSucessForZoomSessionRequest.getZoomSessionTransactionId());
+
+        if(transaction != null){
+            String transactionUserEmail = transaction.getZoomSessionForm().getUserEmail();
+            if(transactionUserEmail.equals(loggedInUserEmail)){
+                transaction.setTransactionStatus("paid"); //TRANSACTION STATUS - PAID
+                transaction.setTransactionAmount(
+                        Double.valueOf(transaction.getZoomSessionForm().getZoomSessionDurationInMin().toString()
+                                .equalsIgnoreCase("15") ?
+                                this.individualZoomSessionAmount15Min :
+                                this.individualZoomSessionAmount30Min)
+                );
+                PaymentOrder order = paymentOrderService.getPaymentOrderByRzpId(transaction.getPaymentOrderRzpId());
+                order.setPaymentStatus("paid"); //STATUS - PAID
+                order.setPaymentId(paymentSucessForZoomSessionRequest.getPaymentId()); //PAYMENT ID ADDED
+
+                transaction.getZoomSessionForm().setZoomSessionBookStatus(ZoomSessionBookStatus.BOOKED.toString());
+                //STATUS  - BOOKED
+
+                //SEND EMAIL TO BOTH FOR LAST CONFIRMATION
+                return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+        } else {
+            throw new TransactionNotFoundException("Zoom Session Transaction not found at paymentSuccessForZoomSession() method");
         }
     }
     //Make a method to check if session is cancelled by himself only. If yes dont make him pay unnecessary and make our work hard

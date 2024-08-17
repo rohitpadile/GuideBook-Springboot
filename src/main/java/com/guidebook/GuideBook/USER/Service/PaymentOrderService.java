@@ -44,7 +44,7 @@ public class PaymentOrderService {
 
     @Transactional
     @NotNull
-    public void addPaymentOrder(Order order, String userEmail)
+    public PaymentOrder addPaymentOrder(Order order, String userEmail)
             throws PaymentOrderSaveFailedException {
 
         try {
@@ -82,8 +82,7 @@ public class PaymentOrderService {
                     myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)
             );
             log.info("PaymentOrder created is: {}", paymentOrder);
-            paymentOrderRepository.save(paymentOrder);
-
+            return paymentOrderRepository.save(paymentOrder);
         } catch (Exception e) {
             // Handle and log the exception
             throw new PaymentOrderSaveFailedException("Failed to save the payment order at addPaymentOrder() method. Rzp orderId = " + order.get("id"));
@@ -97,6 +96,10 @@ public class PaymentOrderService {
                 .zoomSessionDurationInMin(transaction.getZoomSessionForm().getZoomSessionDurationInMin().toString())
                 .studentMentorName(transaction.getStudent().getStudentName())
                 .build();
+    }
+
+    public PaymentOrder getPaymentOrderByRzpId(String rzpId){
+        return paymentOrderRepository.findByPaymentRzpOrderId(rzpId);
     }
 }
 

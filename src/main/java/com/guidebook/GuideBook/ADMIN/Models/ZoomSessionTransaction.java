@@ -21,6 +21,7 @@ public class ZoomSessionTransaction {
 
     private String transactionStatus;
     private String userEmail;
+    private String paymentOrderRzpId; //Directly use Razor pay order if instead of sql id
 
     @ManyToOne
     @JoinColumn(name = "fk_studentWorkEmail", referencedColumnName = "studentWorkEmail")
