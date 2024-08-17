@@ -432,19 +432,20 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         CancellationStatusZoomSessionResponse response = new CancellationStatusZoomSessionResponse();
 
 
-        //CHANGE HOW TRANSACTION IS TREATED HERE
+        //CHANGE HOW TRANSACTION IS TREATED HERE - DONE !
         if(
                 form.getZoomSessionBookStatus().equalsIgnoreCase(ZoomSessionBookStatus.CANCELLED.toString())
+
         ){
-            log.info("Cancellation or Booked status is 1");
+            log.info("Cancellation status is 1");
             response.setStatus(1);
-        }else if (
-                !(form.getZoomSessionTransaction().getZoomSessionFeedbackForm() ==null)
+        }else if(
+                form.getZoomSessionBookStatus().equalsIgnoreCase(ZoomSessionBookStatus.BOOKED.toString())
         ){
-            log.info("Transaction has completed: status is 2");
+            log.info("Booked status is 2");
             response.setStatus(2);
-        }else{
-            log.info("Pending transaction: status is 0");
+        } else {
+            log.info("Pending status is 0");
             response.setStatus(0);
         }
         return response;

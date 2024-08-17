@@ -1,11 +1,13 @@
 package com.guidebook.GuideBook.USER.Controller;
 
+import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionForm;
 import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.ZoomSessionTransactionService;
 import com.guidebook.GuideBook.ADMIN.Services.zoomsessionbook.ZoomSessionFormService;
 import com.guidebook.GuideBook.ADMIN.enums.ZoomSessionBookStatus;
 import com.guidebook.GuideBook.ADMIN.exceptions.TransactionNotFoundException;
+import com.guidebook.GuideBook.ADMIN.exceptions.ZoomSessionNotFoundException;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.PaymentOrder;
 import com.guidebook.GuideBook.USER.Service.*;
@@ -28,6 +30,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @CrossOrigin(origins = {
         "http://localhost:3000", "http://localhost:8080",
@@ -178,6 +182,29 @@ public class PaymentOrderController {
             return new ResponseEntity<>(res, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    @GetMapping("/verifyUserWithZoomSessionFormId/{zoomSessionFormId}")
+    @Transactional
+    public ResponseEntity<Void> verifyUserWithZoomSessionFormId(
+            @PathVariable String zoomSessionFormId,
+            HttpServletRequest request)
+            throws ZoomSessionNotFoundException
+    {
+//        log.info("zoomSessionFormId for cancellation is : {}" ,zoomSessionFormId);
+        String loggedInUserEmail = jwtUtil.extractEmailFromToken(request);
+        Optional<ZoomSessionForm> checkForm = zoomSessionFormService.getZoomSessionFormById(zoomSessionFormId);
+        if(checkForm.isPresent()){
+            ZoomSessionForm form = checkForm.get();
+            if(loggedInUserEmail.equals(form.getUserEmail())){
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            throw new ZoomSessionNotFoundException("Zoom Session form not found at verifyUserWithZoomSessionFormId() method");
         }
     }
 

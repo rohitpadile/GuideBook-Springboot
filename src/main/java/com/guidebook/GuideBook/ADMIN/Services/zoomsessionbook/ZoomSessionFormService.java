@@ -196,5 +196,9 @@ public class ZoomSessionFormService {
         // For example, generate a 6-digit random number
         return String.format("%06d", (int) (Math.random() * 1000000));
     }
+
+    public Optional<ZoomSessionForm> getZoomSessionFormById(String id){
+        return zoomSessionFormRepository.findByZoomSessionFormId(id);
+    }
 }
 
