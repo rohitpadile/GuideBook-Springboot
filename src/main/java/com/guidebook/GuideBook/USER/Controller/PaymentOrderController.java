@@ -269,10 +269,13 @@ public class PaymentOrderController {
         }
     }
     @GetMapping("/sendFinalConfirmationMailsZoomSession/{transactionId}")
+    //for subscribers
+    @Transactional
     public ResponseEntity<Void> sendFinalConfirmationMailsZoomSession(
             @PathVariable String transactionId,
             HttpServletRequest request)
-            throws TransactionNotFoundException {
+            throws TransactionNotFoundException,
+            StudentProfileContentNotFoundException {
         String loggedInUserEmail = jwtUtil.extractEmailFromToken(request);
         ZoomSessionTransaction transaction = zoomSessionTransactionService.getZoomSessionTransactionById(transactionId);
         if (transaction != null) {
@@ -281,11 +284,15 @@ public class PaymentOrderController {
                 transaction.setIsSubscriptionActive(1);
                 transaction.setTransactionStatus("paid");
                 transaction.getZoomSessionForm().setZoomSessionBookStatus(ZoomSessionBookStatus.BOOKED.toString());
-
+                //send mails
                 paymentOrderService.sendFinalConfirmationEmails(transaction);
+                //save entities
                 zoomSessionTransactionService.saveZoomSessionTransaction(transaction);
                 zoomSessionFormService.updateZoomSessionForm(transaction.getZoomSessionForm());
 
+                // Increase the session count of student by 1
+                StudentProfile studentProfile = studentProfileService.getStudentProfileForGeneralPurpose(transaction.getStudent().getStudentWorkEmail());
+                studentProfile.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted() + 1);
                 return new ResponseEntity<>(HttpStatus.ACCEPTED);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
