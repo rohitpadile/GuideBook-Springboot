@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.ADMIN.Controller.zoomsessionbook;
 
 //import com.guidebook.GuideBook.Services.zoomsessionbook.ZoomSessionBookService;
 
+import com.guidebook.GuideBook.ADMIN.dtos.CancellationStatusZoomSessionViaTransactionIdRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.*;
 import com.guidebook.GuideBook.ADMIN.exceptions.BookingBlockedException;
 import com.guidebook.GuideBook.ADMIN.exceptions.EncryptionFailedException;
@@ -9,6 +10,7 @@ import com.guidebook.GuideBook.ADMIN.exceptions.ZoomSessionNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Services.zoomsessionbook.ZoomSessionBookService;
 import com.guidebook.GuideBook.USER.Service.MyUserService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
         "https://diugkigakpnwm.cloudfront.net"})
 @RestController
 @RequestMapping("/api/v1/admin/")
+@Slf4j
 public class ZoomSessionBookController {
     private final ZoomSessionBookService zoomSessionBookService;
     private final MyUserService myUserService;
@@ -59,6 +62,16 @@ public class ZoomSessionBookController {
     ) throws ZoomSessionNotFoundException
     {
         CancellationStatusZoomSessionResponse res = zoomSessionBookService.cancelZoomSessionCheckStatus(request);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping("/cancelZoomSessionCheckStatusViaTransactionId")
+    public ResponseEntity<CancellationStatusZoomSessionResponse> cancelZoomSessionCheckStatusViaTransactionId(
+            @RequestBody @Valid CancellationStatusZoomSessionViaTransactionIdRequest request
+    ) throws ZoomSessionNotFoundException
+    {
+        log.info("I am here with transaction id: {}", request.getZoomSessionTransactionId());
+        CancellationStatusZoomSessionResponse res = zoomSessionBookService.cancelZoomSessionCheckStatusViaTransactionId(request);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

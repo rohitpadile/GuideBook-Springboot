@@ -5,6 +5,7 @@ import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionForm;
 import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.ADMIN.Services.BookingRestrictionService;
 import com.guidebook.GuideBook.ADMIN.Services.ZoomSessionTransactionService;
+import com.guidebook.GuideBook.ADMIN.dtos.CancellationStatusZoomSessionViaTransactionIdRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.zoomsessionbook.*;
 import com.guidebook.GuideBook.ADMIN.enums.ZoomSessionBookStatus;
 import com.guidebook.GuideBook.ADMIN.exceptions.BookingBlockedException;
@@ -446,6 +447,27 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             response.setStatus(2);
         } else {
             log.info("Pending status is 0");
+            response.setStatus(0);
+        }
+        return response;
+    }
+
+    public CancellationStatusZoomSessionResponse cancelZoomSessionCheckStatusViaTransactionId(CancellationStatusZoomSessionViaTransactionIdRequest request)
+            throws ZoomSessionNotFoundException
+    {
+        ZoomSessionForm form = zoomSessionTransactionService.getZoomSessionTransactionById(request.getZoomSessionTransactionId()).getZoomSessionForm();
+        CancellationStatusZoomSessionResponse response = new CancellationStatusZoomSessionResponse();
+        //CHANGE HOW TRANSACTION IS TREATED HERE - DONE !
+        if(
+                form.getZoomSessionBookStatus().equalsIgnoreCase(ZoomSessionBookStatus.CANCELLED.toString())
+                ||
+                form.getZoomSessionBookStatus().equalsIgnoreCase(ZoomSessionBookStatus.BOOKED.toString())
+
+        ){
+            log.info("Cancellation & booked status is 1");
+            response.setStatus(1); //disable payment
+        } else {
+            log.info("Pending status is 0 & status is {}", form.getZoomSessionBookStatus());
             response.setStatus(0);
         }
         return response;
