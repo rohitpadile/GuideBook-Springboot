@@ -23,7 +23,7 @@ public class ScheduledTasksForStudentProfile {
         this.studentProfileRepository = studentProfileRepository;
     }
 
-    @Scheduled(cron = "0 0 0 * * MON") // Every Monday at midnight
+    @Scheduled(fixedRate = 3600000) //Change this to 3600000 later //using it for production use now
     public void resetWeeklySessions() {
         // Fetch all student profiles or filter as needed
         List<StudentProfile> studentProfiles = studentProfileService.getAllStudentProfiles();
