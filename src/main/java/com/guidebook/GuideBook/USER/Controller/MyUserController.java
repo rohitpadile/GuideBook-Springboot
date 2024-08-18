@@ -168,16 +168,11 @@ public class MyUserController {
     }
 
     @PostMapping("/isUserAStudentMentor")
-    public ResponseEntity<Void> isUserAStudentMentor(@RequestBody Map<String, String> map,
+    public ResponseEntity<IsUserAStudentMentorResponse> isUserAStudentMentor(@RequestBody Map<String, String> map,
                                                      HttpServletRequest request){
         String userEmail = jwtUtil.extractEmailFromToken(request);
-        String studentWorkEmail = map.get("studentWorkEmail");
-        log.info("User email : {}, studentWorkEmail: {}", userEmail, studentWorkEmail);
-        if(userEmail.equals(studentWorkEmail)){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        IsUserAStudentMentorResponse res = myUserService.isUserAStudentMentor(map, userEmail);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }
 

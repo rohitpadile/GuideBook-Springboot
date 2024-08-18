@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -233,5 +234,15 @@ public class MyUserService {
         //But this will be a rare case.
         return 0;
 
+    }
+
+    public IsUserAStudentMentorResponse isUserAStudentMentor(Map<String, String> map, String userEmail) {
+
+        if(userEmail.equals(map.get("studentWorkEmail"))){
+            log.info("User email : {}, studentWorkEmail: {}", userEmail, map.get("studentWorkEmail"));
+            return IsUserAStudentMentorResponse.builder().isUserAStudentMentor(1).build();
+        } else {
+            return IsUserAStudentMentorResponse.builder().isUserAStudentMentor(0).build();
+        }
     }
 }
