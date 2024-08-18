@@ -55,6 +55,8 @@ public class SecurityConfig {
                                 "/api/v1/user/verifySignupOtp",
                                 "/api/v1/user/getClientProfileAccountDetails",
                                 "/api/v1/user/checkUserEmailAccountType",
+                                "/api/v1/user/forgot-password", // Exclude forgot password endpoint
+                                "/api/v1/user/reset-password", // Also exclude reset password endpoint
                                 "/api/v1/user/getStudentMentorProfileAccountDetails").permitAll() // Allow access to login and signup
                         .anyRequest().authenticated() // All other requests require authentication
                 )

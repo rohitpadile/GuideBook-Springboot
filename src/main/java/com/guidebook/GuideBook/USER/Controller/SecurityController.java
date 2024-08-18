@@ -2,18 +2,23 @@ package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.ADMIN.Repository.StudentRepository;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
+import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.MyUser;
+import com.guidebook.GuideBook.USER.Models.PasswordResetToken;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Repository.ClientAccountRepository;
 import com.guidebook.GuideBook.USER.Repository.MyUserRepository;
+import com.guidebook.GuideBook.USER.Repository.PasswordResetTokenRepository;
 import com.guidebook.GuideBook.USER.Repository.StudentMentorAccountRepository;
 import com.guidebook.GuideBook.USER.Service.CustomUserDetailsService;
 import com.guidebook.GuideBook.USER.Service.JwtUtil;
 import com.guidebook.GuideBook.USER.Service.TokenBlacklistService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +27,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
+
 @CrossOrigin(origins = {
         "http://localhost:3000", "http://localhost:8080",
         "https://www.guidebookx.com","https://guidebookx.com",
@@ -29,9 +38,12 @@ import org.springframework.web.bind.annotation.*;
         "https://diugkigakpnwm.cloudfront.net"})
 @RestController
 @RequestMapping("/api/v1/user/")
+@Slf4j
 public class SecurityController {
-
-
+    @Value("${websitedomainname}")
+    private String websiteDomainName;
+    private final EmailServiceImpl emailServiceImpl;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
@@ -45,7 +57,9 @@ public class SecurityController {
     @Autowired
     public SecurityController(AuthenticationManager authenticationManager,
                               CustomUserDetailsService userDetailsService,
+                              PasswordResetTokenRepository passwordResetTokenRepository,
                               JwtUtil jwtUtil,
+                              EmailServiceImpl emailServiceImpl,
                               MyUserRepository myUserRepository,
                               PasswordEncoder passwordEncoder,
                               TokenBlacklistService tokenBlacklistService,
@@ -56,6 +70,7 @@ public class SecurityController {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.myUserRepository = myUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenBlacklistService = tokenBlacklistService;
@@ -63,7 +78,53 @@ public class SecurityController {
         this.clientAccountRepository = clientAccountRepository;
         this.studentMentorAccountRepository = studentMentorAccountRepository;
         this.studentService = studentService;
+        this.emailServiceImpl = emailServiceImpl;
     }
+    @PostMapping("/forgot-password")
+    @Transactional
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> map) {
+        MyUser user = myUserRepository.findByUsername(map.get("email"));
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email address");
+        }
+        log.info("Email received: {}",map.get("email"));
+        // Generate token and save it
+        String token = UUID.randomUUID().toString();
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setToken(token);
+        resetToken.setUserEmail(user.getUsername());
+        resetToken.setExpiryDate(new Date(System.currentTimeMillis() + 1000 * 60 * 60)); // 1 hour validity
+        passwordResetTokenRepository.save(resetToken);
+
+        // Construct the reset URL
+        String resetUrl = websiteDomainName + "/reset-password?token=" + token;
+
+        // Send password reset email
+        String subject = "Password Reset Request";
+        String text = "You have requested to reset your password. Please click on the link below to reset your password:\n" + resetUrl;
+        emailServiceImpl.sendSimpleMessage(user.getUsername(), subject, text);
+
+        return ResponseEntity.ok("Password reset link sent to email");
+    }
+
+
+    @PostMapping("/reset-password")
+    @Transactional
+    public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @RequestBody Map<String, String> map) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token);
+
+        if (resetToken == null || resetToken.getExpiryDate().before(new Date())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token");
+        }
+
+        MyUser user = myUserRepository.findByUsername(resetToken.getUserEmail());
+        user.setPassword(passwordEncoder.encode(map.get("newPassword")));
+        myUserRepository.save(user);
+        passwordResetTokenRepository.delete(resetToken);
+
+        return ResponseEntity.ok("Password updated successfully");
+    }
+
 
     @PostMapping("/signup")
     @Transactional
