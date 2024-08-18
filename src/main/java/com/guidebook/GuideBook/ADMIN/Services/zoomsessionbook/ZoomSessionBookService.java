@@ -163,8 +163,11 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         content.append("Phone Number: ").append(form.getClientPhoneNumber()).append("\n");
         content.append("Age: ").append(form.getClientAge()).append("\n");
         content.append("College: ").append(form.getClientCollege()).append("\n");
-        content.append("Proof Document Link: \n").append(form.getClientProofDocLink()).append("\n");
-        content.append("\nIf you wish to cancel the session, please click on the link below:\n").append(cancelPageLink);
+        content.append("Session Duration: ").append(form.getZoomSessionDurationInMin()).append("\n");
+        content.append("Goals through the sessions: ").append(form.getZoomSessionClientGoals()).append("\n");
+        content.append("Expectations from the session: ").append(form.getZoomSessionClientExpectations()).append("\n\n");
+        content.append("Proof Document Link: \n").append(form.getClientProofDocLink()).append("\n\n");
+        content.append("If you wish to cancel the session, please click on the link below:\n").append(cancelPageLink);
         content.append("\n\nBest regards,\n");
         content.append("GuideBookX Team");
         return content.toString();
@@ -309,7 +312,11 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
             studentSubject = "Zoom Session Confirmation";
             studentText = String.format("Your Zoom meeting with %s is scheduled as per your given details:" +
                             "\n\nClient Name: %s\nClient Email: %s\nClient Phone Number: %s\nClient Age: %s" +
-                            "\nClient College: %s\nProof Document: \n%s\n\n1. Time: %s\n2. Meeting ID: %s\n" +
+                            "\nClient College: %s" +
+                            "\nSession Duration: %s" +
+                            "\nClient goals from the session: %s" +
+                            "\nClient expectations from the session: %s" +
+                            "\n\nProof Document: \n%s\n\n1. Time: %s\n2. Meeting ID: %s\n" +
                             "3. Passcode: %s\n4. Meeting Link: \n%s\n\n" +
                             "We will email you once the transaction is completed & the session is confirmed from the client." +
 //                            "You are helping someone in need. Keep up the great work and have a great session!" +
@@ -322,6 +329,9 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
                     form.getClientPhoneNumber(),
                     form.getClientAge(),
                     form.getClientCollege(),
+                    form.getZoomSessionDurationInMin(),
+                    form.getZoomSessionClientGoals(),
+                    form.getZoomSessionClientExpectations(),
                     form.getClientProofDocLink(),
                     convertTo12HourFormat(request.getZoomSessionTime()),
                     request.getZoomSessionMeetingId(),
@@ -414,6 +424,9 @@ public class ZoomSessionBookService { //HANDLES FROM CONFIRMATION PART FROM THE 
         content.append("Phone Number: ").append(form.getClientPhoneNumber()).append("\n");
         content.append("Age: ").append(form.getClientAge()).append("\n");
         content.append("College: ").append(form.getClientCollege()).append("\n");
+        content.append("Session Duration: ").append(form.getZoomSessionDurationInMin()).append("\n");
+        content.append("Goals through the sessions: ").append(form.getZoomSessionClientGoals()).append("\n");
+        content.append("Expectations from the session: ").append(form.getZoomSessionClientExpectations()).append("\n\n");
         content.append("Proof Document Link: \n").append(form.getClientProofDocLink()).append("\n");
         content.append("\nWe apologize for any inconvenience caused.\n\n");
         content.append("If you have any issues, please send an email to us at helpguidebookx@gmail.com");

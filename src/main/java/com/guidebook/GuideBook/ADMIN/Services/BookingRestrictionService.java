@@ -25,7 +25,7 @@ public class BookingRestrictionService {
     private int timeBeforeBookSessionNotAllowed; // Time in hours
 
     // Run this task every hour
-    @Scheduled(fixedRate = 30000) //Change this to 3600000 later //using it for production use now
+    @Scheduled(fixedRate = 1800000) //Change this to 3600000 later //using it for production use now
     @Transactional
     public void deleteExpiredEntries() {
         // Fetch the current time from the database server

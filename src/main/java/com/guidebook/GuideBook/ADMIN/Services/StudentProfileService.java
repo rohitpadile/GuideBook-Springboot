@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.ADMIN.Services;
 
+import com.guidebook.GuideBook.ADMIN.Repository.StudentRepository;
 import com.guidebook.GuideBook.ADMIN.dtos.AddStudentProfileRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.GetStudentProfileResponse;
 import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentProfileRequest;
@@ -23,11 +24,14 @@ public class StudentProfileService {
 
     private StudentProfileRepository studentProfileRepository;
     private final JwtUtil jwtUtil;
+    private final StudentRepository studentRepository;
     @Autowired
     public StudentProfileService(StudentProfileRepository studentProfileRepository,
-                                 JwtUtil jwtUtil) {
+                                 JwtUtil jwtUtil,
+                                 StudentRepository studentRepository) {
         this.studentProfileRepository = studentProfileRepository;
         this.jwtUtil = jwtUtil;
+        this.studentRepository = studentRepository;
     }
     @Transactional
     public GetStudentProfileResponse addStudentProfile(AddStudentProfileRequest request)
@@ -102,6 +106,7 @@ public class StudentProfileService {
                      .studentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted())
                  .zoomSessionsPerWeek(studentProfile.getZoomSessionsPerWeek())
                  .zoomSessionsRemainingPerWeek(studentProfile.getZoomSessionsRemainingPerWeek())
+                 .studentWorkEmail(studentWorkEmail)
                      .build();
 
 
@@ -241,6 +246,7 @@ public class StudentProfileService {
             StudentProfile profile = check.get();
             profile.setZoomSessionsRemainingPerWeek(request.getNewSessionsRemainingPerWeekValue());
             profile.setZoomSessionsPerWeek(request.getNewSessionsPerWeekValue());
+            studentProfileRepository.save(profile);
         } else {
             throw new StudentProfileContentNotFoundException("Student profile content not found at updateStudentProfileSessionsPerWeek() method");
         }

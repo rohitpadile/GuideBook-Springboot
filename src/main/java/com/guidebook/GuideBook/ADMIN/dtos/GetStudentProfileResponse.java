@@ -28,4 +28,6 @@ public class GetStudentProfileResponse {
 
     private Integer zoomSessionsPerWeek;
     private Integer zoomSessionsRemainingPerWeek;
+
+    private String studentWorkEmail;
 }

@@ -9,6 +9,7 @@ import com.guidebook.GuideBook.ADMIN.dtos.GetStudentProfileResponse;
 import com.guidebook.GuideBook.USER.Service.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
         "https://diugkigakpnwm.cloudfront.net"})
 @RestController
 @RequestMapping("/api/v1/admin/")
+@Slf4j
 public class StudentProfileController {
     private StudentProfileService studentProfileService;
     private final JwtUtil jwtUtil;
@@ -43,6 +45,15 @@ public class StudentProfileController {
             throws StudentProfileContentNotFoundException
     {
         GetStudentProfileResponse res = studentProfileService.getStudentProfile(studentWorkEmail);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+    @GetMapping("/studentProfile")
+    public ResponseEntity<GetStudentProfileResponse> getStudentProfile(HttpServletRequest request)
+            throws StudentProfileContentNotFoundException
+    {
+        String userEmail = jwtUtil.extractEmailFromToken(request);
+        log.info("Student work email : {}", userEmail);
+        GetStudentProfileResponse res = studentProfileService.getStudentProfile(userEmail);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
     @PutMapping("/updateStudentProfile/{studentWorkEmail}")

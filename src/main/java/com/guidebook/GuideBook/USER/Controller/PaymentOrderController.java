@@ -103,7 +103,7 @@ public class PaymentOrderController {
             SubscriptionNotFoundException,
             TransactionNotFoundException,
             PaymentOrderSaveFailedException,
-            StudentProfileContentNotFoundException {
+            StudentProfileContentNotFoundException, NullSessionRemainingException {
 
         //CHECK IF SESSIONS REMAINING PER WEEK IS AVAILABLE
         //Handle traffic here using synchronized block.
@@ -111,13 +111,18 @@ public class PaymentOrderController {
         StudentProfile profile = studentProfileService.getStudentProfileForGeneralPurpose(
                 zoomSessionTransactionService.getZoomSessionTransactionById(orderPaymentZoomSessionRequest.getZoomSessionTransactionId())
                         .getStudent().getStudentWorkEmail());
-        if(profile.getZoomSessionsRemainingPerWeek() <= 0){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else if(profile.getZoomSessionsRemainingPerWeek() == 1){
-            profile.setZoomSessionsRemainingPerWeek(0); //Assume he will book, because right now i can't code for
-            //locking mechanism and that will be complecated for me right now.
-            //I need to study that later and implement it.
+        if(profile.getZoomSessionsRemainingPerWeek() !=null){
+            if(profile.getZoomSessionsRemainingPerWeek() <= 0){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else if(profile.getZoomSessionsRemainingPerWeek() == 1){
+                profile.setZoomSessionsRemainingPerWeek(0); //Assume he will book, because right now i can't code for
+                //locking mechanism and that will be complecated for me right now.
+                //I need to study that later and implement it.
+            }
+        } else {
+            throw new NullSessionRemainingException("Null sessions remaining at createPaymentOrderZoomSession() method");
         }
+
 
         log.info("Recieved order DTO : {}", orderPaymentZoomSessionRequest);
         String userEmail = jwtUtil.extractEmailFromToken(request);
@@ -294,7 +299,7 @@ public class PaymentOrderController {
             @PathVariable String transactionId,
             HttpServletRequest request)
             throws TransactionNotFoundException,
-            StudentProfileContentNotFoundException {
+            StudentProfileContentNotFoundException, NullSessionRemainingException {
         String loggedInUserEmail = jwtUtil.extractEmailFromToken(request);
         ZoomSessionTransaction transaction = zoomSessionTransactionService.getZoomSessionTransactionById(transactionId);
 
@@ -304,14 +309,18 @@ public class PaymentOrderController {
 
                 StudentProfile profile = studentProfileService.getStudentProfileForGeneralPurpose(
                         transaction.getStudent().getStudentWorkEmail());
-
-                if(profile.getZoomSessionsRemainingPerWeek() <= 0){
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                } else if(profile.getZoomSessionsRemainingPerWeek() == 1){
-                    profile.setZoomSessionsRemainingPerWeek(0); //Assume he will book, because right now i can't code for
-                    //locking mechanism and that will be complecated for me right now.
-                    //I need to study that later and implement it.
+                if(profile.getZoomSessionsRemainingPerWeek() !=null){
+                    if(profile.getZoomSessionsRemainingPerWeek() <= 0){
+                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    } else if(profile.getZoomSessionsRemainingPerWeek() == 1){
+                        profile.setZoomSessionsRemainingPerWeek(0); //Assume he will book, because right now i can't code for
+                        //locking mechanism and that will be complecated for me right now.
+                        //I need to study that later and implement it.
+                    }
+                } else {
+                    throw new NullSessionRemainingException("Null sessions remaining at createPaymentOrderZoomSession() method");
                 }
+
 
                 //set subscription active in the transaction entity
                 transaction.setIsSubscriptionActive(1);
