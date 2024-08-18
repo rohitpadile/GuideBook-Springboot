@@ -30,4 +30,10 @@ public class MentorEmailController {
             return new ResponseEntity<>("Emails failed to send", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/setAllMentorSessionsPerWeekToZero")
+    public ResponseEntity<Void> setAllMentorSessionsPerWeekToZero(){
+        mentorEmailService.setAllMentorSessionsPerWeekToZero();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

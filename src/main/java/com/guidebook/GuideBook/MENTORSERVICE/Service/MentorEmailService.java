@@ -1,6 +1,8 @@
 package com.guidebook.GuideBook.MENTORSERVICE.Service;
 
 import com.guidebook.GuideBook.ADMIN.Models.Student;
+import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
+import com.guidebook.GuideBook.ADMIN.Services.StudentProfileService;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +14,15 @@ import java.util.List;
 public class MentorEmailService {
     private final EmailServiceImpl emailServiceImpl;
     private final StudentService studentService;
+    private final StudentProfileService studentProfileService;
 
     @Autowired
-    public MentorEmailService(EmailServiceImpl  emailServiceImpl, StudentService studentService) {
+    public MentorEmailService(EmailServiceImpl  emailServiceImpl,
+                              StudentService studentService,
+                              StudentProfileService studentProfileService) {
         this.emailServiceImpl = emailServiceImpl;
         this.studentService = studentService;
+        this.studentProfileService = studentProfileService;
     }
 
     public void sendEmailToAllMentors() {
@@ -43,6 +49,14 @@ public class MentorEmailService {
         for (Student student : students) {
             String email = student.getStudentWorkEmail();
             emailServiceImpl.sendSimpleMessage(email, "Regarding work email - important notice", emailBody);
+        }
+    }
+
+    public void setAllMentorSessionsPerWeekToZero() {
+        List<StudentProfile> list = studentProfileService.getAllStudentProfiles();
+        for(StudentProfile profile : list){
+            profile.setZoomSessionsPerWeek(7);
+            profile.setZoomSessionsRemainingPerWeek(7);
         }
     }
 }

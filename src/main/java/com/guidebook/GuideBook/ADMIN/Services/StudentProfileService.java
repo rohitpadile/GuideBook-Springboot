@@ -17,6 +17,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -222,21 +223,6 @@ public class StudentProfileService {
         return false;
     }
 
-    // Method to reset weekly session count if today is Monday
-    public void resetWeeklySessionsIfNeeded(StudentProfile studentProfile) {
-        // Get current date from database
-        Date currentDate = studentProfileRepository.getCurrentDatabaseDate();
-        LocalDate localDate = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        // Check if today is Monday
-        if (localDate.getDayOfWeek() == DayOfWeek.MONDAY) {
-            // Reset the zoomSessionsPerWeek count to initial value
-            studentProfile.setZoomSessionsRemainingPerWeek(studentProfile.getZoomSessionsPerWeek());
-            studentProfileRepository.save(studentProfile);
-        }
-    }
-
-
     public void updateStudentProfileSessionsPerWeek(
             UpdateStudentProfileSessionsPerWeekRequest request, String userEmail)
             throws StudentProfileContentNotFoundException
@@ -250,5 +236,9 @@ public class StudentProfileService {
         } else {
             throw new StudentProfileContentNotFoundException("Student profile content not found at updateStudentProfileSessionsPerWeek() method");
         }
+    }
+
+    public List<StudentProfile> getAllStudentProfiles(){
+        return studentProfileRepository.findAll();
     }
 }
