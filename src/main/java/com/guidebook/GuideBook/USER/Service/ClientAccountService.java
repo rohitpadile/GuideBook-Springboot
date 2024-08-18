@@ -4,7 +4,7 @@ import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Repository.ClientAccountRepository;
 import com.guidebook.GuideBook.USER.dtos.ClientAccountDetailsForZoomSessionFormResponse;
-import com.guidebook.GuideBook.USER.dtos.EditClientAccountRequest;
+import com.guidebook.GuideBook.USER.dtos.EditMentorAccountRequest;
 import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class ClientAccountService {
         return clientAccountRepository.findByClientAccountEmail(email);
     }
     @Transactional
-    public void editClientAccountDetails(EditClientAccountRequest request, String clientEmail)
+    public void editClientAccountDetails(EditMentorAccountRequest request, String clientEmail)
             throws ClientAccountNotFoundException {
         ClientAccount clientAccount = clientAccountRepository.findByClientAccountEmail(clientEmail);
 

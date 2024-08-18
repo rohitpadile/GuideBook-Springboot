@@ -27,6 +27,9 @@ public class StudentMentorProfileAccountDetailsResponse {
     String studentName;
 //    Long studentMis;
 
+    Integer zoomSessionsPerWeek;
+    Integer zoomSessionsRemainingPerWeek;
+
     //Student mentor as a client also
     private String clientFirstName;
     private String clientMiddleName;

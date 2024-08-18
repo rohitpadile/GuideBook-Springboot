@@ -1,10 +1,15 @@
 package com.guidebook.GuideBook.ADMIN.Controller;
 
 import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentProfileRequest;
+import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentProfileSessionsPerWeekRequest;
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Services.StudentProfileService;
 import com.guidebook.GuideBook.ADMIN.dtos.AddStudentProfileRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.GetStudentProfileResponse;
+import com.guidebook.GuideBook.USER.Service.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +24,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/admin/")
 public class StudentProfileController {
     private StudentProfileService studentProfileService;
+    private final JwtUtil jwtUtil;
     @Autowired
-    public StudentProfileController(StudentProfileService studentProfileService) {
+    public StudentProfileController(StudentProfileService studentProfileService,
+                                    JwtUtil jwtUtil) {
         this.studentProfileService = studentProfileService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/addStudentProfile")
@@ -46,5 +54,15 @@ public class StudentProfileController {
         GetStudentProfileResponse response = studentProfileService
                 .updateStudentProfile(studentWorkEmail, updateRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/updateStudentProfileSessionsPerWeek")
+    public ResponseEntity<Void> updateStudentProfileSessionsPerWeek(
+            @RequestBody @Valid UpdateStudentProfileSessionsPerWeekRequest updateRequest,
+            HttpServletRequest request
+            ) throws StudentProfileContentNotFoundException {
+        String userEmail = jwtUtil.extractEmailFromToken(request);
+        studentProfileService.updateStudentProfileSessionsPerWeek(updateRequest, userEmail);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

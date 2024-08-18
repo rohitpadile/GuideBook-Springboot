@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @CrossOrigin(origins = {
         "http://localhost:3000", "http://localhost:8080",
         "https://www.guidebookx.com","https://guidebookx.com",
@@ -162,6 +164,19 @@ public class MyUserController {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/isUserAStudentMentor")
+    public ResponseEntity<Void> isUserAStudentMentor(@RequestBody Map<String, String> map,
+                                                     HttpServletRequest request){
+        String userEmail = jwtUtil.extractEmailFromToken(request);
+        String studentWorkEmail = map.get("studentWorkEmail");
+        log.info("User email : {}, studentWorkEmail: {}", userEmail, studentWorkEmail);
+        if(userEmail.equals(studentWorkEmail)){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 }

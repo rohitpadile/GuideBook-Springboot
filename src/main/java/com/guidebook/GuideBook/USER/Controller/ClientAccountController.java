@@ -1,11 +1,10 @@
 package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
-import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Service.ClientAccountService;
 import com.guidebook.GuideBook.USER.Service.JwtUtil;
 import com.guidebook.GuideBook.USER.dtos.ClientAccountDetailsForZoomSessionFormResponse;
-import com.guidebook.GuideBook.USER.dtos.EditClientAccountRequest;
+import com.guidebook.GuideBook.USER.dtos.EditMentorAccountRequest;
 import com.guidebook.GuideBook.USER.exceptions.ClientAccountNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +33,10 @@ public class ClientAccountController {
 
     @PostMapping("/editClientAccountDetails")
     public ResponseEntity<Void> editClientAccountDetails(
-            @RequestBody EditClientAccountRequest editClientAccountRequest, HttpServletRequest request
+            @RequestBody EditMentorAccountRequest editMentorAccountRequest, HttpServletRequest request
             ) throws ClientAccountNotFoundException {
         String clientEmail = jwtUtil.extractEmailFromToken(request);
-        clientAccountService.editClientAccountDetails(editClientAccountRequest, clientEmail);
+        clientAccountService.editClientAccountDetails(editMentorAccountRequest, clientEmail);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 

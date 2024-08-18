@@ -1,10 +1,13 @@
 package com.guidebook.GuideBook.USER.Service;
 
-import com.guidebook.GuideBook.ADMIN.Models.Student;
+import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
 import com.guidebook.GuideBook.ADMIN.Repository.StudentRepository;
+import com.guidebook.GuideBook.ADMIN.Services.StudentProfileService;
+import com.guidebook.GuideBook.ADMIN.Services.StudentService;
+import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Repository.StudentMentorAccountRepository;
-import com.guidebook.GuideBook.USER.dtos.EditClientAccountRequest;
+import com.guidebook.GuideBook.USER.dtos.EditMentorAccountRequest;
 import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +20,14 @@ import java.util.List;
 public class StudentMentorAccountService {
     private final StudentMentorAccountRepository studentMentorAccountRepository;
     private final StudentRepository studentRepository;
+    private final StudentProfileService studentProfileService;
     @Autowired
     public StudentMentorAccountService(StudentMentorAccountRepository studentMentorAccountRepository,
-                                       StudentRepository studentRepository) {
+                                       StudentRepository studentRepository,
+                                       StudentProfileService studentProfileService) {
         this.studentMentorAccountRepository = studentMentorAccountRepository;
         this.studentRepository = studentRepository;
+        this.studentProfileService = studentProfileService;
     }
 
     public StudentMentorAccount getAccountByEmail(String email){
@@ -29,10 +35,11 @@ public class StudentMentorAccountService {
     }
 
     @Transactional
-    public void editStudentMentorAccountDetails(EditClientAccountRequest editStudentMentorAccountRequest, String studentMentorEmail)
-            throws StudentMentorAccountNotFoundException {
+    public void editStudentMentorAccountDetails(EditMentorAccountRequest editStudentMentorAccountRequest, String studentMentorEmail)
+            throws StudentMentorAccountNotFoundException,
+            StudentProfileContentNotFoundException {
         StudentMentorAccount studentMentorAccount = studentMentorAccountRepository.findByStudentMentorAccountWorkEmail(studentMentorEmail);
-
+        StudentProfile profile = studentProfileService.getStudentProfileForGeneralPurpose(studentMentorEmail);
         if(studentMentorAccount!=null){
             studentMentorAccount.setClientFirstName(editStudentMentorAccountRequest.getClientFirstName());
             studentMentorAccount.setClientMiddleName(editStudentMentorAccountRequest.getClientMiddleName());
@@ -40,12 +47,20 @@ public class StudentMentorAccountService {
             studentMentorAccount.setClientPhoneNumber(editStudentMentorAccountRequest.getClientPhoneNumber());
             studentMentorAccount.setClientAge(editStudentMentorAccountRequest.getClientAge());
             studentMentorAccount.setClientCollege(
+
+                    ///////IMPORTANT LESSON HERE.//////////
+                    //Lesson: Use mapping instead of autowiring service classes
+                    //because circular reference is giving errors.
+                    //That's why here I am using studentRepository for now.
+                    //Don't use studentService here, it will create errors
                     studentRepository.findByStudentWorkEmail(studentMentorEmail).getStudentCollege().getCollegeName()
             );
             studentMentorAccount.setClientZoomEmail(editStudentMentorAccountRequest.getClientZoomEmail());
             studentMentorAccount.setClientValidProof(editStudentMentorAccountRequest.getClientValidProof());
             //Set this manually here
-
+            //update sessions per week and remaining per week
+            profile.setZoomSessionsPerWeek(editStudentMentorAccountRequest.getZoomSessionsPerWeek());
+            profile.setZoomSessionsRemainingPerWeek(editStudentMentorAccountRequest.getZoomSessionsRemainingPerWeek());
             ////
             studentMentorAccountRepository.save(studentMentorAccount);
         } else {

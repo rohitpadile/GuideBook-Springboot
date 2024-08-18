@@ -102,7 +102,23 @@ public class PaymentOrderController {
             MyUserAccountNotExistsException,
             SubscriptionNotFoundException,
             TransactionNotFoundException,
-            PaymentOrderSaveFailedException {
+            PaymentOrderSaveFailedException,
+            StudentProfileContentNotFoundException {
+
+        //CHECK IF SESSIONS REMAINING PER WEEK IS AVAILABLE
+        //Handle traffic here using synchronized block.
+
+        StudentProfile profile = studentProfileService.getStudentProfileForGeneralPurpose(
+                zoomSessionTransactionService.getZoomSessionTransactionById(orderPaymentZoomSessionRequest.getZoomSessionTransactionId())
+                        .getStudent().getStudentWorkEmail());
+        if(profile.getZoomSessionsRemainingPerWeek() <= 0){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else if(profile.getZoomSessionsRemainingPerWeek() == 1){
+            profile.setZoomSessionsRemainingPerWeek(0); //Assume he will book, because right now i can't code for
+            //locking mechanism and that will be complecated for me right now.
+            //I need to study that later and implement it.
+        }
+
         log.info("Recieved order DTO : {}", orderPaymentZoomSessionRequest);
         String userEmail = jwtUtil.extractEmailFromToken(request);
         log.info("User email : {}", userEmail);
@@ -257,7 +273,10 @@ public class PaymentOrderController {
                 // Increase the session count of student by 1
                 StudentProfile studentProfile = studentProfileService.getStudentProfileForGeneralPurpose(transaction.getStudent().getStudentWorkEmail());
                 studentProfile.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted() + 1);
-
+                if(studentProfile.getZoomSessionsRemainingPerWeek() > 0){
+                    studentProfile.setZoomSessionsRemainingPerWeek(studentProfile.getZoomSessionsPerWeek() - 1);
+                }
+                studentProfileService.updateStudentProfile(studentProfile);
 
 
                 return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -268,7 +287,7 @@ public class PaymentOrderController {
             throw new TransactionNotFoundException("Zoom Session Transaction not found at paymentSuccessForZoomSession() method");
         }
     }
-    @GetMapping("/sendFinalConfirmationMailsZoomSession/{transactionId}")
+    @GetMapping("/SubscriptionPaymentForZoomSession/{transactionId}")
     //for subscribers
     @Transactional
     public ResponseEntity<Void> sendFinalConfirmationMailsZoomSession(
@@ -278,10 +297,25 @@ public class PaymentOrderController {
             StudentProfileContentNotFoundException {
         String loggedInUserEmail = jwtUtil.extractEmailFromToken(request);
         ZoomSessionTransaction transaction = zoomSessionTransactionService.getZoomSessionTransactionById(transactionId);
+
         if (transaction != null) {
             String transactionUserEmail = transaction.getZoomSessionForm().getUserEmail();
             if (transactionUserEmail.equals(loggedInUserEmail)) {
+
+                StudentProfile profile = studentProfileService.getStudentProfileForGeneralPurpose(
+                        transaction.getStudent().getStudentWorkEmail());
+
+                if(profile.getZoomSessionsRemainingPerWeek() <= 0){
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                } else if(profile.getZoomSessionsRemainingPerWeek() == 1){
+                    profile.setZoomSessionsRemainingPerWeek(0); //Assume he will book, because right now i can't code for
+                    //locking mechanism and that will be complecated for me right now.
+                    //I need to study that later and implement it.
+                }
+
+                //set subscription active in the transaction entity
                 transaction.setIsSubscriptionActive(1);
+                //set status paid - as user has taken subscription already
                 transaction.setTransactionStatus("paid");
                 transaction.getZoomSessionForm().setZoomSessionBookStatus(ZoomSessionBookStatus.BOOKED.toString());
                 //send mails
@@ -293,6 +327,10 @@ public class PaymentOrderController {
                 // Increase the session count of student by 1
                 StudentProfile studentProfile = studentProfileService.getStudentProfileForGeneralPurpose(transaction.getStudent().getStudentWorkEmail());
                 studentProfile.setStudentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted() + 1);
+                if(studentProfile.getZoomSessionsRemainingPerWeek() > 0){
+                    studentProfile.setZoomSessionsRemainingPerWeek(studentProfile.getZoomSessionsPerWeek() - 1);
+                }
+                studentProfileService.updateStudentProfile(studentProfile);
                 return new ResponseEntity<>(HttpStatus.ACCEPTED);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

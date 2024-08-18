@@ -39,7 +39,7 @@ public class StudentProfile {
     List<AboutSection> studentProfileAboutSection; //List<String> is needed.
     //Displaying city of coaching will help students/parents to instantly get help from students
     //living in same city as that
-    //Do not display name of coaching institute - that may voilate laws maybe. Just research on this.
+    //Do not display name of coaching institute - that may violate laws, maybe. Just research on this.
     @ElementCollection
     @CollectionTable(name = "studentprofile_CityOfCoaching", joinColumns = @JoinColumn(name = "studentProfileId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL) // Cascade delete
@@ -68,6 +68,8 @@ public class StudentProfile {
     Long studentProfileSessionsConducted; //Sessions conducted on our platform
     //THIS IS TO BE UPDATED INTERNALLY VIA ANOTHER DTO IN FUTURE WHEN WE WILL MAKE TRANSACTION TABLES
 
+    Integer zoomSessionsPerWeek;
+    Integer zoomSessionsRemainingPerWeek;
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore

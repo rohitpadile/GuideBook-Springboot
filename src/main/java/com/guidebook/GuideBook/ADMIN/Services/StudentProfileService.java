@@ -3,22 +3,31 @@ package com.guidebook.GuideBook.ADMIN.Services;
 import com.guidebook.GuideBook.ADMIN.dtos.AddStudentProfileRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.GetStudentProfileResponse;
 import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentProfileRequest;
+import com.guidebook.GuideBook.ADMIN.dtos.UpdateStudentProfileSessionsPerWeekRequest;
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
 import com.guidebook.GuideBook.ADMIN.Repository.StudentProfileRepository;
+import com.guidebook.GuideBook.USER.Service.JwtUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
 public class StudentProfileService {
 
     private StudentProfileRepository studentProfileRepository;
+    private final JwtUtil jwtUtil;
     @Autowired
-    public StudentProfileService(StudentProfileRepository studentProfileRepository) {
+    public StudentProfileService(StudentProfileRepository studentProfileRepository,
+                                 JwtUtil jwtUtil) {
         this.studentProfileRepository = studentProfileRepository;
+        this.jwtUtil = jwtUtil;
     }
     @Transactional
     public GetStudentProfileResponse addStudentProfile(AddStudentProfileRequest request)
@@ -91,6 +100,8 @@ public class StudentProfileService {
                      .studentProfileTutoringExperience(studentProfile.getStudentProfileTutoringExperience())
                      .studentProfileExternalLinks(studentProfile.getStudentProfileExternalLinks())
                      .studentProfileSessionsConducted(studentProfile.getStudentProfileSessionsConducted())
+                 .zoomSessionsPerWeek(studentProfile.getZoomSessionsPerWeek())
+                 .zoomSessionsRemainingPerWeek(studentProfile.getZoomSessionsRemainingPerWeek())
                      .build();
 
 
@@ -206,5 +217,32 @@ public class StudentProfileService {
         return false;
     }
 
+    // Method to reset weekly session count if today is Monday
+    public void resetWeeklySessionsIfNeeded(StudentProfile studentProfile) {
+        // Get current date from database
+        Date currentDate = studentProfileRepository.getCurrentDatabaseDate();
+        LocalDate localDate = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
+        // Check if today is Monday
+        if (localDate.getDayOfWeek() == DayOfWeek.MONDAY) {
+            // Reset the zoomSessionsPerWeek count to initial value
+            studentProfile.setZoomSessionsRemainingPerWeek(studentProfile.getZoomSessionsPerWeek());
+            studentProfileRepository.save(studentProfile);
+        }
+    }
+
+
+    public void updateStudentProfileSessionsPerWeek(
+            UpdateStudentProfileSessionsPerWeekRequest request, String userEmail)
+            throws StudentProfileContentNotFoundException
+    {
+        Optional<StudentProfile> check = studentProfileRepository.findStudentProfileByStudentWorkEmailIgnoreCase(userEmail);
+        if(check.isPresent()){
+            StudentProfile profile = check.get();
+            profile.setZoomSessionsRemainingPerWeek(request.getNewSessionsRemainingPerWeekValue());
+            profile.setZoomSessionsPerWeek(request.getNewSessionsPerWeekValue());
+        } else {
+            throw new StudentProfileContentNotFoundException("Student profile content not found at updateStudentProfileSessionsPerWeek() method");
+        }
+    }
 }

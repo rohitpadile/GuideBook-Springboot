@@ -1,9 +1,10 @@
 package com.guidebook.GuideBook.USER.Controller;
 
+import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.USER.Models.StudentMentorAccount;
 import com.guidebook.GuideBook.USER.Service.JwtUtil;
 import com.guidebook.GuideBook.USER.Service.StudentMentorAccountService;
-import com.guidebook.GuideBook.USER.dtos.EditClientAccountRequest;
+import com.guidebook.GuideBook.USER.dtos.EditMentorAccountRequest;
 import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,9 @@ public class StudentMentorAccountController {
 
     @PostMapping("/editStudentMentorAccountDetails")
     public ResponseEntity<Void> editStudentMentorAccountDetails(
-            @RequestBody EditClientAccountRequest editStudentMentorAccountRequest, HttpServletRequest request
-    ) throws StudentMentorAccountNotFoundException {
+            @RequestBody EditMentorAccountRequest editStudentMentorAccountRequest, HttpServletRequest request
+    ) throws StudentMentorAccountNotFoundException,
+            StudentProfileContentNotFoundException {
         String studentMentorEmail = jwtUtil.extractEmailFromToken(request);
         studentMentorAccountService.editStudentMentorAccountDetails(editStudentMentorAccountRequest, studentMentorEmail);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

@@ -181,6 +181,9 @@ public class MyUserService {
                     .studentMentorAccountZoomSessionCount(studentMentorAccount.getStudentMentorAccountZoomSessionCount())
                     .studentMentorAccountOfflineSessionCount(studentMentorAccount.getStudentMentorAccountOfflineSessionCount())
 
+                    .zoomSessionsRemainingPerWeek(profile.getZoomSessionsRemainingPerWeek())
+                    .zoomSessionsPerWeek(profile.getZoomSessionsPerWeek())
+
                     .clientFirstName(studentMentorAccount.getClientFirstName())
                     .clientMiddleName(studentMentorAccount.getClientMiddleName())
                     .clientLastName(studentMentorAccount.getClientLastName())

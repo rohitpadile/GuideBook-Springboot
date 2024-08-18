@@ -25,4 +25,7 @@ public class GetStudentProfileResponse {
     private List<TutoringExperience> studentProfileTutoringExperience;
     private List<ExternalLink> studentProfileExternalLinks;
     private Long studentProfileSessionsConducted;
+
+    private Integer zoomSessionsPerWeek;
+    private Integer zoomSessionsRemainingPerWeek;
 }

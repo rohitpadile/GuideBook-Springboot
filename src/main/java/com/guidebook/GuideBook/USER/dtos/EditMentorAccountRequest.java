@@ -3,7 +3,7 @@ package com.guidebook.GuideBook.USER.dtos;
 import lombok.Data;
 
 @Data
-public class EditClientAccountRequest {
+public class EditMentorAccountRequest {
     private String clientFirstName;
     private String clientMiddleName;
     private String clientLastName;
@@ -12,4 +12,7 @@ public class EditClientAccountRequest {
     private String clientCollege;
     private String clientValidProof;
     private String clientZoomEmail;
+
+    private Integer zoomSessionsPerWeek;
+    private Integer zoomSessionsRemainingPerWeek;
 }
