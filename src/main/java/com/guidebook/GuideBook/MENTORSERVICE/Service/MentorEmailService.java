@@ -22,19 +22,27 @@ public class MentorEmailService {
     public void sendEmailToAllMentors() {
         List<Student> students = studentService.getAllStudents();
         String emailBody =
-                "Dear Student Mentors,\n\n" +
-                "We hope this message finds you well.\n\n" +
-                "We are thrilled to announce that GuidebookX is expanding to include students from other colleges! This means more opportunities to connect with peers across different institutions, share your valuable insights, and help even more students succeed.\n\n" +
-                "In addition, we are excited to inform you that school students are eagerly waiting to book sessions with you. They are looking forward to receiving guidance on college admissions, entrance exams, study tips, and much more.\n\n" +
-                "We appreciate your continued support and commitment to making GuidebookX a success.\n\n" +
-                "Thank you for being a part of this journey with us. Let's continue to make a difference together!\n\n" +
-                "Best regards,\n" +
-                "GuidebookX Team";
+                """
+                        Dear Student Mentors,
+
+                        We hope this message finds you well.
+
+                        We are pleased to inform you that going forward, your earnings will be based on the number of sessions you conduct. You now have complete flexibility to manage your availability.
+
+                        To manage your public profiles and session availability, please log into your account using your GuidebookX work email. Once logged in, you can edit your public profile and set a limit on the number of sessions you wish to conduct per week.
+
+                        We appreciate your continued support and look forward to seeing you help more students achieve success.
+
+                        Thank you for being a part of the GuidebookX team!
+
+                        Best regards,
+                        GuidebookX Team""";
+
 
 
         for (Student student : students) {
             String email = student.getStudentWorkEmail();
-            emailServiceImpl.sendSimpleMessage(email, "Exciting News: GuidebookX is Expanding!", emailBody);
+            emailServiceImpl.sendSimpleMessage(email, "Important Notice to Mentors", emailBody);
         }
     }
 }
