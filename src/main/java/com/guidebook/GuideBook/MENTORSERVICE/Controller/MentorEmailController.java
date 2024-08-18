@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.MENTORSERVICE.Controller;
 
+import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.MENTORSERVICE.Service.MentorEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,8 @@ public class MentorEmailController {
     }
 
     @GetMapping("/setAllMentorSessionsPerWeekToZero")
-    public ResponseEntity<Void> setAllMentorSessionsPerWeekToZero(){
+    public ResponseEntity<Void> setAllMentorSessionsPerWeekToZero()
+            throws StudentProfileContentNotFoundException {
         mentorEmailService.setAllMentorSessionsPerWeekToZero();
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -5,6 +5,7 @@ import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
 import com.guidebook.GuideBook.ADMIN.Services.StudentProfileService;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
+import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,11 +53,13 @@ public class MentorEmailService {
         }
     }
 
-    public void setAllMentorSessionsPerWeekToZero() {
+    public void setAllMentorSessionsPerWeekToZero()
+            throws StudentProfileContentNotFoundException {
         List<StudentProfile> list = studentProfileService.getAllStudentProfiles();
         for(StudentProfile profile : list){
             profile.setZoomSessionsPerWeek(7);
             profile.setZoomSessionsRemainingPerWeek(7);
+            studentProfileService.updateStudentProfile(profile);
         }
     }
 }
