@@ -14,6 +14,8 @@ import com.guidebook.GuideBook.USER.Repository.StudentMentorAccountRepository;
 import com.guidebook.GuideBook.USER.Service.CustomUserDetailsService;
 import com.guidebook.GuideBook.USER.Service.JwtUtil;
 import com.guidebook.GuideBook.USER.Service.TokenBlacklistService;
+import com.guidebook.GuideBook.USER.dtos.ForgotPasswordRequest;
+import com.guidebook.GuideBook.USER.dtos.ResetPasswordRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -82,12 +84,12 @@ public class SecurityController {
     }
     @PostMapping("/forgot-password")
     @Transactional
-    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> map) {
-        MyUser user = myUserRepository.findByUsername(map.get("email"));
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        MyUser user = myUserRepository.findByUsername(request.getUserEmail());
         if (user == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email address");
         }
-        log.info("Email received: {}",map.get("email"));
+        log.info("Email received: {}",request.getUserEmail());
         // Generate token and save it
         String token = UUID.randomUUID().toString();
         PasswordResetToken resetToken = new PasswordResetToken();
@@ -110,7 +112,7 @@ public class SecurityController {
 
     @PostMapping("/reset-password")
     @Transactional
-    public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @RequestBody Map<String, String> map) {
+    public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordRequest request) {
         PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token);
 
         if (resetToken == null || resetToken.getExpiryDate().before(new Date())) {
@@ -118,7 +120,7 @@ public class SecurityController {
         }
 
         MyUser user = myUserRepository.findByUsername(resetToken.getUserEmail());
-        user.setPassword(passwordEncoder.encode(map.get("newPassword")));
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         myUserRepository.save(user);
         passwordResetTokenRepository.delete(resetToken);
 

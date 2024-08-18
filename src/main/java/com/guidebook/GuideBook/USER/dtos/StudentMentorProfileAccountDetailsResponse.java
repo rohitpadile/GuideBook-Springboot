@@ -16,19 +16,20 @@ public class StudentMentorProfileAccountDetailsResponse {
     private Long studentProfileSessionsConducted;
     private Long studentMentorAccountZoomSessionCount;
     private Long studentMentorAccountOfflineSessionCount;
-    String branch;
-    Double examScore;
-    Double grade;
-    String yearOfStudy;
-    List<String> languagesSpoken = new ArrayList<>();
-    String publicEmail;
-    String college;
+    private String branch;
+    private Double examScore;
+    private Double grade;
+    private String yearOfStudy;
+    @Builder.Default
+    private List<String> languagesSpoken = new ArrayList<>();
+    private String publicEmail;
+    private String college;
 //    String examName;
-    String studentName;
+    private String studentName;
 //    Long studentMis;
 
-    Integer zoomSessionsPerWeek;
-    Integer zoomSessionsRemainingPerWeek;
+    private Integer zoomSessionsPerWeek;
+    private Integer zoomSessionsRemainingPerWeek;
 
     //Student mentor as a client also
     private String clientFirstName;

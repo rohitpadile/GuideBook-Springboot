@@ -23,26 +23,26 @@ public class MentorEmailService {
         List<Student> students = studentService.getAllStudents();
         String emailBody =
                 """
-                        Dear Student Mentors,
+                Dear Student Mentors,
+        
+                We hope this message finds you well.
+        
+                We would like to inform you that we are now preferring Gmail as the standard work email for our communications. This change is due to ongoing issues with emails being sent to Outlook or other email services for booking sessions.
+        
+                To ensure smooth communication and booking process, please fill out the application form using a Gmail account dedicated to GuidebookX.
+        
+                We appreciate your cooperation in this matter and thank you for your continued support!
+        
+                Best regards,
+                GuidebookX Team
+                """;
 
-                        We hope this message finds you well.
-
-                        We are pleased to inform you that going forward, your earnings will be based on the number of sessions you conduct. You now have complete flexibility to manage your availability.
-
-                        To manage your public profiles and session availability, please log into your account using your GuidebookX work email. Once logged in, you can edit your public profile and set a limit on the number of sessions you wish to conduct per week.
-
-                        We appreciate your continued support and look forward to seeing you help more students achieve success.
-
-                        Thank you for being a part of the GuidebookX team!
-
-                        Best regards,
-                        GuidebookX Team""";
 
 
 
         for (Student student : students) {
             String email = student.getStudentWorkEmail();
-            emailServiceImpl.sendSimpleMessage(email, "Important Notice to Mentors", emailBody);
+            emailServiceImpl.sendSimpleMessage(email, "Regarding work email - important notice", emailBody);
         }
     }
 }

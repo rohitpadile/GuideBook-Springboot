@@ -229,9 +229,8 @@ public class StudentService {
         String profileEditLink = websiteDomainName + "/studentprofileedit/" + encryptedEmail;
         String emailBody = String.format("Dear %s,\n\n" +
                 "Congratulations on coming on this platform.\n" +
-                "We hope to see more of you and wish you well for your future\n\n" + 
-                "Please click the following link to edit your profile: " + profileEditLink +
-                "\n\nYou can signup on the website, login and edit profile too(use work email to signup)" +
+                "We hope to see more of you and wish you well for your future\n\n" +
+                "\n\nPlease signup on the website using work email, login and edit your profile(use work email to signup)" +
                 "\n\nFor any help, please contact mentorhelpguidebookx@gmail.com", newStudent.getStudentName());
         return emailBody;
     }
