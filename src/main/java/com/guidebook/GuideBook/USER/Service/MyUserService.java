@@ -6,6 +6,7 @@ import com.guidebook.GuideBook.ADMIN.Models.StudentProfile;
 import com.guidebook.GuideBook.ADMIN.Services.StudentProfileService;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
+import com.guidebook.GuideBook.USER.Models.MyUser;
 import com.guidebook.GuideBook.USER.dtos.GetSubscriptionAmountRequest;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
 import com.guidebook.GuideBook.USER.Models.Otp;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -244,5 +246,9 @@ public class MyUserService {
         } else {
             return IsUserAStudentMentorResponse.builder().isUserAStudentMentor(0).build();
         }
+    }
+
+    public List<MyUser> getAllMyUsers() {
+        return myUserRepository.findAll();
     }
 }

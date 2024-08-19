@@ -1,6 +1,7 @@
 package com.guidebook.GuideBook.USER.Controller;
 
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
+import com.guidebook.GuideBook.USER.Models.MyUser;
 import com.guidebook.GuideBook.USER.Service.*;
 import com.guidebook.GuideBook.USER.dtos.*;
 import com.guidebook.GuideBook.USER.exceptions.*;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = {
@@ -173,6 +175,11 @@ public class MyUserController {
         String userEmail = jwtUtil.extractEmailFromToken(request);
         IsUserAStudentMentorResponse res = myUserService.isUserAStudentMentor(map, userEmail);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllMyUsers")
+    public List<MyUser> getAllMyUsers(){
+        return myUserService.getAllMyUsers();
     }
 }
 
