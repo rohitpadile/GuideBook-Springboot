@@ -30,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -221,6 +222,51 @@ public class SecurityController {
             tokenBlacklistService.blacklistToken(token);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/signupUsersFromUs")
+    @Transactional
+    public String signup(@RequestBody List<MyUser> userList) {
+        for(MyUser user : userList){
+            if((studentRepository.findByStudentWorkEmail(user.getUsername())) != null){
+                //Student Mentor exists
+                if((studentMentorAccountRepository.findByStudentMentorAccountWorkEmail(user.getUsername())) == null){
+                    //Student Mentor account not exists.
+                    //Create one.
+                    StudentMentorAccount studentMentorAccount = new StudentMentorAccount();
+                    studentMentorAccount.setStudentMentorAccountWorkEmail(user.getUsername());
+                    studentMentorAccount.setStudentMentorAccountSubscription_Monthly(0);//monthly sub disabled initially
+                    studentMentorAccount.setClientCollege(studentService.getStudentByWorkEmail(user.getUsername()).getStudentCollege().getCollegeName());
+                    studentMentorAccount.setStudentMentorAccountZoomSessionCount(0L);
+                    studentMentorAccount.setStudentMentorAccountOfflineSessionCount(0L);
+                    studentMentorAccountRepository.save(studentMentorAccount);
+                } else {
+                    //Student Mentor account also exists
+                    //Student is trying to sign up twice - it can't because MyUser Entity will store only unique emails.
+                }
+
+            } else {
+                //Client
+                if((clientAccountRepository.findByClientAccountEmail(user.getUsername())) == null){
+                    //Client account not exists.
+                    //Create one
+                    ClientAccount clientAccount = new ClientAccount();
+                    clientAccount.setClientAccountSubscription_Monthly(0);//monthly sub disabled initially
+                    clientAccount.setClientAccountEmail(user.getUsername());
+                    clientAccount.setClientAccountZoomSessionCount(0L);
+                    clientAccount.setClientAccountOfflineSessionCount(0L);
+                    clientAccountRepository.save(clientAccount);
+                } else{
+                    //Client Account already exists.
+                    //Client is trying to sign up twice - it can't because MyUser Entity will store only unique emails.
+                }
+            }
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            myUserRepository.save(user); //It will only store unique emails.
+            //Those who are double signing up - to create both accounts maybe - won't be able to create.
+        }
+
+        return "Users registered successfully";
     }
 
 }

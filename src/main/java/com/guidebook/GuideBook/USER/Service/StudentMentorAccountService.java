@@ -10,6 +10,7 @@ import com.guidebook.GuideBook.USER.Repository.StudentMentorAccountRepository;
 import com.guidebook.GuideBook.USER.dtos.EditMentorAccountRequest;
 import com.guidebook.GuideBook.USER.exceptions.StudentMentorAccountNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class StudentMentorAccountService {
     private final StudentMentorAccountRepository studentMentorAccountRepository;
     private final StudentRepository studentRepository;
@@ -59,6 +61,7 @@ public class StudentMentorAccountService {
             studentMentorAccount.setClientValidProof(editStudentMentorAccountRequest.getClientValidProof());
             //Set this manually here
             //update sessions per week and remaining per week
+            log.info("I am near updating session per week but i removed them from frontend ");
             profile.setZoomSessionsPerWeek(editStudentMentorAccountRequest.getZoomSessionsPerWeek());
             profile.setZoomSessionsRemainingPerWeek(editStudentMentorAccountRequest.getZoomSessionsRemainingPerWeek());
             ////

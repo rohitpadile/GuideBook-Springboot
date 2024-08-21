@@ -2,13 +2,11 @@ package com.guidebook.GuideBook.MENTORSERVICE.Controller;
 
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.MENTORSERVICE.Service.MentorEmailService;
+import com.guidebook.GuideBook.MENTORSERVICE.dtos.SendMailToAllMentorsRequestMail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = {
         "http://localhost:3000", "http://localhost:8080",
@@ -25,6 +23,16 @@ public class MentorEmailController {
     public ResponseEntity<String> sendEmails() {
         try {
             mentorEmailService.sendEmailToAllMentors();
+            return new ResponseEntity<>("Emails sent successfully!", HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Emails failed to send", HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/sendEmailsToAllMentorsViaJSON")
+    public ResponseEntity<String> sendEmails(@RequestBody SendMailToAllMentorsRequestMail requestMail) {
+        try {
+            mentorEmailService.sendEmailToAllMentors(requestMail);
             return new ResponseEntity<>("Emails sent successfully!", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();

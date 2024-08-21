@@ -87,7 +87,11 @@ public class StudentService {
                 list.add(
                         new FilteredStudentDetails(
                                 student.getStudentName(),
-                                student.getStudentWorkEmail()
+                                student.getStudentWorkEmail(),
+                                student.getStudentCollege().getCollegeName(),
+                                student.getStudentBranch().getBranchName(),
+                                student.getCetPercentile().toString()
+
                         )
                 );
             }
@@ -229,7 +233,7 @@ public class StudentService {
         String profileEditLink = websiteDomainName + "/studentprofileedit/" + encryptedEmail;
         String emailBody = String.format("Dear %s,\n\n" +
                 "Congratulations on coming on this platform.\n" +
-                "We hope to see more of you and wish you well for your future\n\n" +
+                "We hope to see more of you and wish you well for your future" +
                 "\n\nPlease signup on the website using work email, login and edit your profile(use work email to signup)" +
                 "\n\nFor any help, please contact mentorhelpguidebookx@gmail.com", newStudent.getStudentName());
         return emailBody;
@@ -366,5 +370,19 @@ public class StudentService {
     public Student getStudentByWorkEmail(String workEmail){
         return studentRepository.findByStudentWorkEmail(workEmail);
     }
+
+//    public List<GetStudentBasicDetailsResponse> getStudentsWithName(String studentName) {
+//        List<GetStudentBasicDetailsResponse> list = new ArrayList<>();
+//        for(Student student : studentRepository.findByStudentNameIgnoreCase(studentName/*.replace(" ", "")*/)){
+//            GetStudentBasicDetailsResponse response = new GetStudentBasicDetailsResponse();
+//            log.info("Student found : {}",student.getStudentName() );
+//            response.setBranch(student.getStudentBranch().getBranchName());
+//            response.setCollege(student.getStudentCollege().getCollegeName());
+//            response.setCetPercentile(student.getCetPercentile());
+//            response.setStudentName(student.getStudentName());
+//            list.add(response);
+//        }
+//        return  list;
+//    }
 }
 

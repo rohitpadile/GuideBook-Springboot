@@ -17,8 +17,8 @@ public class StudentProfileMapper {
                 .studentWorkEmail(request.getStudentWorkEmail())
                 .studentMis(request.getStudentMis())
                 .studentProfileSessionsConducted(0L)
-                .zoomSessionsPerWeek(0)
-                .zoomSessionsRemainingPerWeek(0)
+                .zoomSessionsPerWeek(7)
+                .zoomSessionsRemainingPerWeek(7)
                 .build();
     }
 }

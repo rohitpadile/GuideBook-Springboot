@@ -66,6 +66,12 @@ public class StudentController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+//    @GetMapping("/getStudentsWithName/{studentName}")
+//    public ResponseEntity<List<GetStudentBasicDetailsResponse>> getStudentsWithName(@PathVariable String studentName){
+//        List<GetStudentBasicDetailsResponse> res = studentService.getStudentsWithName(studentName);
+//        return new ResponseEntity<>(res, HttpStatus.OK);
+//    }
+
     @PostMapping("/updateStudent")
     public ResponseEntity<GetStudentBasicDetailsResponse> updateStudent(@RequestBody @Valid UpdateStudentRequest updateStudentRequest)
             throws StudentClassTypeNotFoundException,

@@ -6,6 +6,7 @@ import com.guidebook.GuideBook.ADMIN.Services.StudentProfileService;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
+import com.guidebook.GuideBook.MENTORSERVICE.dtos.SendMailToAllMentorsRequestMail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,10 +34,12 @@ public class MentorEmailService {
                 Dear Student Mentors,
         
                 We hope this message finds you well.
+                
+                Please fill out the names in the spreadsheet those who have trouble signing up on the website.
+                We will try to sign you up from our side and give you a sample password which you need to
+                do change by doing forgot password.
         
-                We would like to inform you that we are now preferring Gmail as the standard work email for our communications. This change is due to ongoing issues with emails being sent to Outlook or other email services for booking sessions.
-        
-                To ensure smooth communication and booking process, please fill out the application form using a Gmail account dedicated to GuidebookX.
+                https://docs.google.com/spreadsheets/d/1QWg909PoQiZ_FhfShZRvJSOexiSpaR0VwSE9SNYKqGM/edit?usp=sharing
         
                 We appreciate your cooperation in this matter and thank you for your continued support!
         
@@ -50,6 +53,14 @@ public class MentorEmailService {
         for (Student student : students) {
             String email = student.getStudentWorkEmail();
             emailServiceImpl.sendSimpleMessage(email, "Regarding work email - important notice", emailBody);
+        }
+    }
+
+    public void sendEmailToAllMentors(SendMailToAllMentorsRequestMail requestMail) {
+        List<Student> students = studentService.getAllStudents();
+        for (Student student : students) {
+            String email = student.getStudentWorkEmail();
+            emailServiceImpl.sendSimpleMessage(email, requestMail.getMailSubject(), requestMail.getMailContent());
         }
     }
 

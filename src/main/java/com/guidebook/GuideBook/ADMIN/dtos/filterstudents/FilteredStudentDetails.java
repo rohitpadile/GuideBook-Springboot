@@ -11,4 +11,8 @@ import lombok.experimental.FieldDefaults;
 public class FilteredStudentDetails {
     String studentName;
     String studentWorkEmail;
+
+    String studentCollegeName;
+    String studentBranch;
+    String cetPercentile;
 }

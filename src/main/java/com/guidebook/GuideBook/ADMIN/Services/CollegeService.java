@@ -2,6 +2,7 @@ package com.guidebook.GuideBook.ADMIN.Services;
 
 import com.guidebook.GuideBook.ADMIN.Models.Branch;
 import com.guidebook.GuideBook.ADMIN.dtos.AddCollegeRequest;
+import com.guidebook.GuideBook.ADMIN.dtos.AddMoreBranchesToCollegeRequest;
 import com.guidebook.GuideBook.ADMIN.dtos.GetCollegeListForExamResponse;
 import com.guidebook.GuideBook.ADMIN.exceptions.BranchNotFoundException;
 import com.guidebook.GuideBook.ADMIN.exceptions.CollegeNotFoundException;
@@ -115,6 +116,18 @@ public class CollegeService {
             result.add(clg.getCollegeName());
         }
         return result;
+    }
+    @Transactional
+    public void addMoreBranchesToCollege(AddMoreBranchesToCollegeRequest request) {
+        College college = collegeRepository.findCollegeByCollegeNameIgnoreCase(request.getCollegeName());
+        for(String branchName : request.getBranchNameList()){
+            Branch branch = branchService.getBranchByBranchNameIgnoreCase(branchName);
+            if(branch!=null){
+                college.getCollegeBranchSet().add(branch);
+
+            }
+        }
+        collegeRepository.save(college);
     }
 
 //    public GetAllCollegeListForClubsResponse getCollegesForClubs() {
