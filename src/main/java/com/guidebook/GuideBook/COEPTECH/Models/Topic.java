@@ -1,6 +1,5 @@
 package com.guidebook.GuideBook.COEPTECH.Models;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,20 +11,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Comment {
+public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 1000)
-    private String text;
+    @Column(length = 500)
+    private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "topic_id")
-    private Topic topic;
+    @Column(length = 2000)
+    private String description;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "comment_id")
-    private List<Reply> replies;
-
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 }

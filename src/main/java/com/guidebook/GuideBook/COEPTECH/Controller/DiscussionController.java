@@ -5,6 +5,7 @@ import com.guidebook.GuideBook.COEPTECH.Models.Reply;
 import com.guidebook.GuideBook.COEPTECH.Services.DiscussionService;
 import com.guidebook.GuideBook.COEPTECH.dtos.CommentRequest;
 import com.guidebook.GuideBook.COEPTECH.dtos.ReplyRequest;
+import com.guidebook.GuideBook.COEPTECH.exceptions.TopicNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,15 +27,18 @@ public class DiscussionController {
         this.discussionService = discussionService;
     }
 
-    @GetMapping
+    @GetMapping("/{topicId}/comments")
     public List<Comment> getComments(@PathVariable Long topicId,
                                      @RequestParam int page,
                                      @RequestParam(defaultValue = "10") int size) {
         return discussionService.getComments(topicId, page, size);
     }
 
-    @PostMapping
-    public Comment postComment(@PathVariable Long topicId, @RequestBody CommentRequest request) {
+    @PostMapping("/{topicId}/comments")
+    public Comment postComment(
+            @PathVariable Long topicId,
+            @RequestBody CommentRequest request)
+            throws TopicNotFoundException {
         return discussionService.postComment(topicId, request.getText());
     }
 

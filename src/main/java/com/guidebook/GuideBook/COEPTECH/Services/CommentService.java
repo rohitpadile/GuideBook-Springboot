@@ -20,12 +20,15 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    public Comment saveComment(Comment comment) {
-        return commentRepository.save(comment);
+
+    // Method to fetch comments based on topicId with pagination
+    public Page<Comment> findByTopicId(Long topicId, PageRequest pageRequest) {
+        return commentRepository.findByTopicId(topicId, pageRequest);
     }
 
-    public Page<Comment> findAll(PageRequest pageRequest) {
-        return commentRepository.findAll(pageRequest);
+    // Method to save a new comment
+    public Comment saveComment(Comment comment) {
+        return commentRepository.save(comment);
     }
 }
 
