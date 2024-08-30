@@ -5,8 +5,11 @@ import com.guidebook.GuideBook.COEPTECH.Models.Reply;
 import com.guidebook.GuideBook.COEPTECH.Services.DiscussionService;
 import com.guidebook.GuideBook.COEPTECH.dtos.CommentRequest;
 import com.guidebook.GuideBook.COEPTECH.dtos.ReplyRequest;
+import com.guidebook.GuideBook.COEPTECH.exceptions.CommentNotFoundException;
+import com.guidebook.GuideBook.COEPTECH.exceptions.ReplyNotFoundException;
 import com.guidebook.GuideBook.COEPTECH.exceptions.TopicNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,25 +31,26 @@ public class DiscussionController {
     }
 
     @GetMapping("/{topicId}/comments")
-    public List<Comment> getComments(@PathVariable Long topicId,
+    public Page<Comment> getComments(@PathVariable Long topicId,
                                      @RequestParam int page,
                                      @RequestParam(defaultValue = "10") int size) {
+
         return discussionService.getComments(topicId, page, size);
     }
 
     @PostMapping("/{topicId}/comments")
-    public Comment postComment(
-            @PathVariable Long topicId,
-            @RequestBody CommentRequest request)
+    public Comment postComment(@PathVariable Long topicId,
+                               @RequestBody CommentRequest request)
             throws TopicNotFoundException {
         return discussionService.postComment(topicId, request.getText());
     }
 
-    @PostMapping("/{commentId}/replies")
+    @PostMapping("/{topicId}/comments/{commentId}/replies")
     public Reply postReply(@PathVariable Long topicId,
                            @PathVariable Long commentId,
                            @RequestParam(required = false) Long parentReplyId,
-                           @RequestBody ReplyRequest request) {
-        return discussionService.postReply(commentId, parentReplyId, request.getText());
+                           @RequestBody ReplyRequest request)
+            throws ReplyNotFoundException, CommentNotFoundException, TopicNotFoundException {
+        return discussionService.postReply(topicId, commentId, parentReplyId, request.getText());
     }
 }

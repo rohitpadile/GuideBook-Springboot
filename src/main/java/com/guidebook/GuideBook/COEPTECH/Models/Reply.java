@@ -1,5 +1,6 @@
 package com.guidebook.GuideBook.COEPTECH.Models;
 
+import com.guidebook.GuideBook.USER.Models.MyUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,8 +29,11 @@ public class Reply {
     @JoinColumn(name = "parent_reply_id")
     private Reply parentReply;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "parent_reply_id")
+    @OneToMany(mappedBy = "parentReply", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reply> replies;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private MyUser user;
 
 }
