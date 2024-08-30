@@ -39,6 +39,9 @@ public class EntranceExamService {
     }
 
     public GetAllEntranceExamResponse getAllEntranceExams() {
+        //Increase number of people visited count by 1
+
+
         List<EntranceExam> examList = entranceExamRepository.findAll();
         GetAllEntranceExamResponse response = new GetAllEntranceExamResponse();
         for(EntranceExam exam : examList){
