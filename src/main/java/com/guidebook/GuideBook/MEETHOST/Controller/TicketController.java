@@ -1,5 +1,7 @@
 package com.guidebook.GuideBook.MEETHOST.Controller;
 
+import com.guidebook.GuideBook.MEETHOST.Service.TicketService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,5 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/meethost/")
 public class TicketController {
+    private final TicketService ticketService;
+    @Autowired
+    public TicketController(TicketService ticketService) {
+        this.ticketService = ticketService;
+    }
+
 
 }

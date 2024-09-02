@@ -1,12 +1,10 @@
 package com.guidebook.GuideBook.MEETHOST.dtos;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
 
 @Data
-//@FieldDefaults(level = AccessLevel.PRIVATE)
-public class AddNewEventRequest {
+public class UpdateEventRequest {
+    private String eventId;
     private String eventName;
     private String eventType;//use enum.toString
     private String eventDescription;
@@ -16,6 +14,4 @@ public class AddNewEventRequest {
     private String zoomLink;
     private String dateAndTime;
 
-//    for ticket
-    private String ticketDescription;
 }

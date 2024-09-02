@@ -29,6 +29,7 @@ public class Event {
     private boolean isOnline;
     private String organizer;
     private String zoomLink;
+    private String dateAndTime; //Set manual date and time
     @ManyToMany(mappedBy = "eventList")
     @JsonIgnore
     private Set<MyUser> eventUserList = new HashSet<>();

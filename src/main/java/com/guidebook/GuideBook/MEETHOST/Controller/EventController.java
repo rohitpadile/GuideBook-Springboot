@@ -3,7 +3,10 @@ package com.guidebook.GuideBook.MEETHOST.Controller;
 import com.guidebook.GuideBook.MEETHOST.Service.EventService;
 import com.guidebook.GuideBook.MEETHOST.Service.TicketService;
 import com.guidebook.GuideBook.MEETHOST.dtos.AddNewEventRequest;
+import com.guidebook.GuideBook.MEETHOST.dtos.UpdateEventRequest;
+import com.guidebook.GuideBook.MEETHOST.exceptions.EventNotFoundException;
 import jakarta.validation.Valid;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +21,23 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/meethost/")
 public class EventController {
     private final EventService eventService;
-    private final TicketService ticketService;
     @Autowired
-    public EventController(EventService eventService, TicketService ticketService) {
+    public EventController(EventService eventService) {
         this.eventService = eventService;
-        this.ticketService = ticketService;
     }
 
-    @PostMapping
-    public ResponseEntity<Void> addNewEvent(@RequestBody AddNewEventRequest request){
+    @PostMapping("/addNewEvent")
+    public ResponseEntity<String> addNewEvent(@RequestBody AddNewEventRequest request){
         eventService.addNewEvent(request);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>("Event added sucessfully",HttpStatus.CREATED);
     }
+
+    @PostMapping("/updateEvent")
+    public ResponseEntity<Void> updateEvent(@RequestBody UpdateEventRequest request)
+            throws EventNotFoundException {
+        eventService.updateEvent(request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }
