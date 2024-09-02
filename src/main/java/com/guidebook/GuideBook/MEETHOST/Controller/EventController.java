@@ -1,12 +1,8 @@
 package com.guidebook.GuideBook.MEETHOST.Controller;
 
 import com.guidebook.GuideBook.MEETHOST.Service.EventService;
-import com.guidebook.GuideBook.MEETHOST.Service.TicketService;
-import com.guidebook.GuideBook.MEETHOST.dtos.AddNewEventRequest;
-import com.guidebook.GuideBook.MEETHOST.dtos.UpdateEventRequest;
+import com.guidebook.GuideBook.MEETHOST.dtos.*;
 import com.guidebook.GuideBook.MEETHOST.exceptions.EventNotFoundException;
-import jakarta.validation.Valid;
-import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,5 +35,26 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/getHomePageEventList") //take this via pageable
+    public ResponseEntity<ActiveEventListResponse> getHomePageEventList()
+            throws EventNotFoundException {
+        //Return the events in Page wise which are boolean isOnline = true;
+        ActiveEventListResponse res = eventService.getHomePageEventList();
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping("/activateEventsWithCode")
+    public ResponseEntity<String> activateEventsWithCode(@RequestBody ActivateEventsWithCodeRequest request)
+            throws EventNotFoundException {
+        eventService.activateEventsWithCode(request);
+        return new ResponseEntity<>("Events Activated Successfully", HttpStatus.OK);
+    }
+
+    @GetMapping("/getEventDetails/{eventCode}")
+    public ResponseEntity<GetEventDetailsResponse> getEventDetails(@PathVariable String eventCode)
+            throws EventNotFoundException {
+        GetEventDetailsResponse res = eventService.getEventDetails(eventCode);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
 }

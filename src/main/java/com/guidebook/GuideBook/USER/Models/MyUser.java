@@ -3,7 +3,9 @@ package com.guidebook.GuideBook.USER.Models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.guidebook.GuideBook.ADMIN.Models.College;
 import com.guidebook.GuideBook.ADMIN.Models.Language;
+import com.guidebook.GuideBook.ADMIN.Models.Student;
 import com.guidebook.GuideBook.MEETHOST.Model.Event;
+import com.guidebook.GuideBook.MEETHOST.Model.EventBookingTransaction;
 import com.guidebook.GuideBook.MEETHOST.Model.Ticket;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -92,4 +94,8 @@ public class MyUser implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "eventId")
     )
     private List<Event> eventList;//owning side
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "myUser")
+    private List<EventBookingTransaction> eventBookingTransactionsList;
 }

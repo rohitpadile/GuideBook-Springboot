@@ -23,13 +23,14 @@ public class PaymentOrder {
     private String paymentUserEmail;
     private Integer paymentUserEmailAccountType;//1 for mentor, 2 for client
     private String paymentUserGpayNumber;
+    private String paymentUserClientPhoneNumber;
     private String paymentUserName;
     private String paymentCreatedAt;
     private String paymentCurrency;
     private String paymentReceipt; //impt
     private String paymentRzpOrderId; //impt
     private String paymentStatus;
-
+    private String eventCode;
     private String paymentId; //impt
 
     @CreationTimestamp

@@ -15,12 +15,13 @@ public class TicketService {
     public TicketService(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
     }
-    @Transactional
+    @Transactional //search the ticket by EVENTCODE
     public void createNewTicket(AddNewEventRequest request){
         Ticket ticket = new Ticket();
         ticket.setTitle(request.getEventName());
         ticket.setDescription(request.getTicketDescription());
         ticket.setTicketStatus(TicketStatus.OPEN.toString());
+        ticket.setEventCode(request.getEventCode());
         ticketRepository.save(ticket);
     }
 }

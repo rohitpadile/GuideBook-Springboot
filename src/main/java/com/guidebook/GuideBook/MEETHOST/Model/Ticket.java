@@ -1,11 +1,9 @@
 package com.guidebook.GuideBook.MEETHOST.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.guidebook.GuideBook.ADMIN.Models.Student;
 import com.guidebook.GuideBook.USER.Models.MyUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,7 +24,7 @@ public class Ticket {
 
     private String title;
     private String description;
-
+    private String eventCode;
     private String ticketStatus; //use enum.toString
 
     @CreationTimestamp

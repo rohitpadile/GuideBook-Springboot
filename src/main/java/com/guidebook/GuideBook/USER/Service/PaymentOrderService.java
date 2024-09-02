@@ -150,5 +150,61 @@ public class PaymentOrderService {
         emailServiceImpl.sendSimpleMessage(clientEmail, clientSubject, clientText);
         emailServiceImpl.sendSimpleMessage(studentEmail, studentSubject, studentText);
     }
+
+
+
+    @Transactional
+    @NotNull
+    public PaymentOrder addPaymentOrderGeneral(Order order, String userEmail)
+            throws PaymentOrderSaveFailedException {
+
+        try {
+            PaymentOrder paymentOrder = new PaymentOrder();
+            // Convert the Order object to a JSON object for easier manipulation
+            JSONObject orderJson = new JSONObject(order.toString());
+
+            // Safely retrieve values from the JSON object
+            String orderId = orderJson.getString("id");
+            int amount = orderJson.getInt("amount");
+            String currency = orderJson.getString("currency");
+            String receipt = orderJson.getString("receipt");
+            String status = orderJson.getString("status");
+            String createdAt = String.valueOf(orderJson.getLong("created_at"));
+
+            // Get the nested notes JSON object
+            JSONObject notes = orderJson.getJSONObject("notes");
+            String customerUserEmail = notes.optString("customer_email", "");
+            String gpayPhone = notes.optString("gpay_phone", "");
+            String eventCode = notes.optString("EventCode", "");
+//            String zoomSessionAmountPaid = notes.optString("Zoom Session Amount paid", "");
+            String phoneNumber = notes.optString("customer_username", "");
+            String customerName = notes.optString("phone_number", "");
+
+            // Set values in the new SubscriptionOrder entity
+            paymentOrder.setPaymentRzpOrderId(orderId);
+            paymentOrder.setPaymentUserEmail(customerUserEmail);
+            paymentOrder.setPaymentUserGpayNumber(gpayPhone);
+            paymentOrder.setEventCode(eventCode); //event code
+            paymentOrder.setPaymentAmount(String.valueOf(amount));
+            paymentOrder.setPaymentCreatedAt(createdAt);
+            paymentOrder.setPaymentCurrency(currency);
+            paymentOrder.setPaymentReceipt(receipt);
+            paymentOrder.setPaymentStatus(status);
+            paymentOrder.setPaymentUserClientPhoneNumber(phoneNumber); //client phone number
+            paymentOrder.setPaymentUserName(customerName);
+            paymentOrder.setPaymentUserEmailAccountType(
+                    myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail)
+            );
+            log.info("PaymentOrder created is: {}", paymentOrder);
+            return paymentOrderRepository.save(paymentOrder);
+        } catch (Exception e) {
+            // Handle and log the exception
+            throw new PaymentOrderSaveFailedException("Failed to save the payment order at addPaymentOrder() method. Rzp orderId = " + order.get("id"));
+        }
+    }
+
+
+
+
 }
 
