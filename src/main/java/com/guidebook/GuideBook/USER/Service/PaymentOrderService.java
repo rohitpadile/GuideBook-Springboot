@@ -177,13 +177,13 @@ public class PaymentOrderService {
             String gpayPhone = notes.optString("gpay_phone", "");
             String eventCode = notes.optString("EventCode", "");
 //            String zoomSessionAmountPaid = notes.optString("Zoom Session Amount paid", "");
-            String phoneNumber = notes.optString("customer_username", "");
-            String customerName = notes.optString("phone_number", "");
+            String customerName= notes.optString("customer_username", "");
+            String phoneNumber = notes.optString("phone_number", "");
 
             // Set values in the new SubscriptionOrder entity
             paymentOrder.setPaymentRzpOrderId(orderId);
             paymentOrder.setPaymentUserEmail(customerUserEmail);
-            paymentOrder.setPaymentUserGpayNumber(gpayPhone);
+//            paymentOrder.setPaymentUserGpayNumber(gpayPhone);
             paymentOrder.setEventCode(eventCode); //event code
             paymentOrder.setPaymentAmount(String.valueOf(amount));
             paymentOrder.setPaymentCreatedAt(createdAt);

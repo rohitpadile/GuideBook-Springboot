@@ -12,11 +12,15 @@ import com.guidebook.GuideBook.ADMIN.enums.ZoomSessionBookStatus;
 import com.guidebook.GuideBook.ADMIN.exceptions.StudentProfileContentNotFoundException;
 import com.guidebook.GuideBook.ADMIN.exceptions.TransactionNotFoundException;
 import com.guidebook.GuideBook.ADMIN.exceptions.ZoomSessionNotFoundException;
+import com.guidebook.GuideBook.MEETHOST.Model.Event;
 import com.guidebook.GuideBook.MEETHOST.Model.EventBookingTransaction;
+import com.guidebook.GuideBook.MEETHOST.Model.Ticket;
 import com.guidebook.GuideBook.MEETHOST.Service.EventBookingTransactionService;
 import com.guidebook.GuideBook.MEETHOST.Service.EventService;
+import com.guidebook.GuideBook.MEETHOST.Service.TicketService;
 import com.guidebook.GuideBook.MEETHOST.dtos.PaymentSucessForEventBookingRequest;
 import com.guidebook.GuideBook.USER.Models.ClientAccount;
+import com.guidebook.GuideBook.USER.Models.MyUser;
 import com.guidebook.GuideBook.USER.Models.PaymentOrder;
 import com.guidebook.GuideBook.USER.Service.*;
 import com.guidebook.GuideBook.USER.dtos.CreateOrderPaymentZoomSessionRequest;
@@ -64,6 +68,7 @@ public class PaymentOrderController {
     private final StudentProfileService studentProfileService;
     private final EventBookingTransactionService eventBookingTransactionService;
     private final EventService eventService;
+    private final TicketService ticketService;
     @Value("${razorpay_key_id}")
     private String razorpayKeyId;
     @Value("${razorpay_key_secret}")
@@ -75,6 +80,7 @@ public class PaymentOrderController {
 
     @Autowired
     public PaymentOrderController(PaymentOrderService paymentOrderService,
+                                  TicketService ticketService,
                                   StudentProfileService studentProfileService,
                                   MyUserService myUserService,
                                   JwtUtil jwtUtil,
@@ -90,6 +96,7 @@ public class PaymentOrderController {
         this.paymentOrderService = paymentOrderService;
         this.myUserService = myUserService;
         this.jwtUtil = jwtUtil;
+        this.ticketService= ticketService;
         this.studentMentorAccountService = studentMentorAccountService;
         this.emailServiceImpl = emailServiceImpl;
         this.studentProfileService = studentProfileService;
@@ -360,7 +367,7 @@ public class PaymentOrderController {
 
 //    PAYMENT METHODS FOR EVENT BOOKING ///////////////////////////////////////////////////////
 
-    @PostMapping("/createPaymentOrderEventBooking/{eventCode}")
+    @GetMapping("/createPaymentOrderEventBooking/{eventCode}")
     @Transactional
     public ResponseEntity<String> createPaymentOrderForEventBooking(
             @PathVariable String eventCode,
@@ -394,7 +401,7 @@ public class PaymentOrderController {
             MyUserAccountNotExistsException,
             TransactionNotFoundException {
         JSONObject orderRequest = new JSONObject();
-        Long amt = null;
+        Long amt = 100L;
 
         log.info("I am going to put key-value pairs in the json object now");
         orderRequest.put("amount", amt * 100); // Converted to paise
@@ -418,7 +425,7 @@ public class PaymentOrderController {
             throw new MyUserAccountNotExistsException("MyUser has no account at getOrderRequestZoomSession() method");
         }
         notes.put("customer_email", userEmail); // Storing user email in notes
-        notes.put("phone number", ""); // Placeholder for GPay/Phone number. Add the actual number if available.
+//        notes.put("phone number", ""); // Placeholder for GPay/Phone number. Add the actual number if available.
         notes.put("EventCode", eventCode); // You can add more user-specific info, like the subscription type
 //        notes.put("Zoom Session Amount paid", amt);
 
@@ -437,6 +444,7 @@ public class PaymentOrderController {
             MyUserAccountNotExistsException {
 
         String loggedInUserEmail = jwtUtil.extractEmailFromToken(request);
+        MyUser user = myUserService.getMyUserRepository().findByUsername(loggedInUserEmail);
         EventBookingTransaction transaction = eventBookingTransactionService
                 .getByPaymentOrderRzpId(paymentSucessForEventBookingRequest.getRzpOrderId());
         if (transaction != null) {
@@ -444,12 +452,24 @@ public class PaymentOrderController {
             PaymentOrder order = paymentOrderService.getPaymentOrderByRzpId(transaction.getPaymentOrderRzpId());
             order.setPaymentStatus("paid");
             order.setPaymentId(paymentSucessForEventBookingRequest.getPaymentId());
-//             Send final confirmation emails at this point
-            eventService.sendFinalConfirmationEmailForEventBooking(loggedInUserEmail, transaction.getEventCode());
 
             // Save updated entities
             paymentOrderService.updatePaymentOrder(order);
             eventBookingTransactionService.saveTransaction(transaction);
+
+            //assign the user the ticket to the event
+            String eventCode = paymentSucessForEventBookingRequest.getEventCode();
+            if(eventService.getEventByEventCode(eventCode).isPresent()){
+                Event event = eventService.getEventByEventCode(eventCode).get();
+                event.getEventUserList().add(user);
+                Ticket ticket = ticketService.getTicketByEventCode(eventCode);
+                user.getTicketList().add(ticket);
+                eventService.saveEvent(event);
+                myUserService.saveMyUser(user);
+            }
+
+            //Send final confirmation emails at this point
+            eventService.sendFinalConfirmationEmailForEventBooking(loggedInUserEmail,eventCode);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

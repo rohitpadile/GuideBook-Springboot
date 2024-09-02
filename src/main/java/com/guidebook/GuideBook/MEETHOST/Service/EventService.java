@@ -1,8 +1,5 @@
 package com.guidebook.GuideBook.MEETHOST.Service;
 
-import com.guidebook.GuideBook.ADMIN.Models.Student;
-import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionForm;
-import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.ADMIN.Services.StudentService;
 import com.guidebook.GuideBook.ADMIN.Services.emailservice.EmailServiceImpl;
 import com.guidebook.GuideBook.MEETHOST.Model.Event;
@@ -14,15 +11,16 @@ import com.guidebook.GuideBook.USER.Service.ClientAccountService;
 import com.guidebook.GuideBook.USER.Service.MyUserService;
 import com.guidebook.GuideBook.USER.exceptions.MyUserAccountNotExistsException;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class EventService {
     private final EventRepository eventRepository;
     private final TicketService ticketService;
@@ -142,36 +140,44 @@ public class EventService {
     public void sendFinalConfirmationEmailForEventBooking(String userEmail, String eventCode)
             throws MyUserAccountNotExistsException {
         // Email content for client
-//        String clientName;
-//        if (myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail) == 1) {
-//            clientName = studentService.getStudentByWorkEmail(userEmail).getStudentName();
-//        } else if (myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail) == 2) {
-//            ClientAccount account = clientAccountService.getAccountByEmail(userEmail);
-//            clientName = account.getClientFirstName() + " " + account.getClientMiddleName() + " "  + account.getClientLastName();
-//        } else {
-//            throw new MyUserAccountNotExistsException("MyUser has no account at getOrderRequestZoomSession() method");
-//        }
-//        Optional<Event> checkEvent = eventRepository.findByEventCode(eventCode);
-//        String clientSubject = "Seat booked for Event: " + checkEvent.get().getEventName();
-//        String clientText = String.format(
-//                """
-//                        Dear %s,
-//                        Your seat for the event successfully booked.
-//
-//                        Following are the event details:-
-//                        Event Name:
-//
-//
-//                        Have a great session. We look forward to hearing from you.
-//
-//                        Best regards,
-//                        GuidebookX Team"""
-//        ,clientName, );
-//    }
-//
-//        // Send emails to client and student
-//        emailServiceImpl.sendSimpleMessage(clientEmail, clientSubject, clientText);
-//    }
-        return;
+        String clientName;
+        if (myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail) == 1) {
+            clientName = studentService.getStudentByWorkEmail(userEmail).getStudentName();
+        } else if (myUserService.checkUserEmailAccountTypeGeneralPurpose(userEmail) == 2) {
+            ClientAccount account = clientAccountService.getAccountByEmail(userEmail);
+            clientName = account.getClientFirstName() + " " + account.getClientMiddleName() + " "  + account.getClientLastName();
+        } else {
+            throw new MyUserAccountNotExistsException("MyUser has no account at sendFinalConfirmationEmailForEventBooking() method");
+        }
+
+        Optional<Event> checkEvent = eventRepository.findByEventCode(eventCode);
+        log.info("Event code: {}", eventCode);
+        String clientSubject = "Seat booked for Event: " + checkEvent.get().getEventName();
+        String clientText = String.format(
+                """
+                        Dear %s,
+                        Your seat for the event successfully booked.
+
+                        Following are the event details:-
+                        Event Name:
+                        Event Time:
+                        Ticket Number:
+
+                        Have a great session. We look forward to hearing from you.
+
+                        Best regards,
+                        GuidebookX Team"""
+        ,clientName);
+
+        // Send email to client
+        emailServiceImpl.sendSimpleMessage(userEmail, clientSubject, clientText);
+    }
+
+    public Optional<Event> getEventByEventCode(String eventCode){
+        return eventRepository.findByEventCode(eventCode);
+    }
+
+    public void saveEvent(Event event){
+        eventRepository.save(event);
     }
 }

@@ -1,8 +1,13 @@
 package com.guidebook.GuideBook.MEETHOST.Controller;
 
+import com.guidebook.GuideBook.MEETHOST.Model.Ticket;
 import com.guidebook.GuideBook.MEETHOST.Service.EventService;
 import com.guidebook.GuideBook.MEETHOST.dtos.*;
 import com.guidebook.GuideBook.MEETHOST.exceptions.EventNotFoundException;
+import com.guidebook.GuideBook.USER.Models.MyUser;
+import com.guidebook.GuideBook.USER.Service.JwtUtil;
+import com.guidebook.GuideBook.USER.Service.MyUserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +22,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/meethost/")
 public class EventController {
     private final EventService eventService;
+    private final JwtUtil jwtUtil;
+    private final MyUserService myUserService;
     @Autowired
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService,
+                           JwtUtil jwtUtil,
+                           MyUserService myUserService) {
         this.eventService = eventService;
+        this.jwtUtil = jwtUtil;
+        this.myUserService = myUserService;
     }
 
     @PostMapping("/addNewEvent")
@@ -55,6 +66,24 @@ public class EventController {
             throws EventNotFoundException {
         GetEventDetailsResponse res = eventService.getEventDetails(eventCode);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/checkIfEventBookedByUser/{eventCode}")
+    public ResponseEntity<checkEventBookedResponse> checkIfEventBookedByUser(
+            @PathVariable String eventCode,
+            HttpServletRequest request
+    ){
+        int isBooked = 0;
+        String userEmail = jwtUtil.extractEmailFromToken(request);
+        MyUser user = myUserService.getMyUserRepository().findByUsername(userEmail);
+        for(Ticket ticket :  user.getTicketList()){
+            if(ticket.getEventCode().equals(eventCode)){
+                isBooked = 1; //disable event book button in frontend
+            }
+        }
+        return new ResponseEntity<>(
+                checkEventBookedResponse.builder().isBooked(isBooked).build(),
+                HttpStatus.OK);
     }
 
 }

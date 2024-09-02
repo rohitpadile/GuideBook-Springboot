@@ -9,4 +9,6 @@ public class PaymentSucessForEventBookingRequest {
     private String rzpOrderId;
     @NotNull(message = "There is not payment without paymentId from razorpay")
     private String paymentId;
+    @NotNull
+    private String eventCode;
 }

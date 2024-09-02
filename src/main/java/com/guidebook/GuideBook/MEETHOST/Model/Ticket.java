@@ -26,6 +26,8 @@ public class Ticket {
     private String description;
     private String eventCode;
     private String ticketStatus; //use enum.toString
+    private String dateAndTime;
+    private String eventLocation;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

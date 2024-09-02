@@ -251,4 +251,8 @@ public class MyUserService {
     public List<MyUser> getAllMyUsers() {
         return myUserRepository.findAll();
     }
+
+    public void saveMyUser(MyUser user){
+        myUserRepository.save(user);
+    }
 }
