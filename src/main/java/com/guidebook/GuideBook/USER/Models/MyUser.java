@@ -1,6 +1,10 @@
 package com.guidebook.GuideBook.USER.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.guidebook.GuideBook.ADMIN.Models.College;
+import com.guidebook.GuideBook.ADMIN.Models.Language;
+import com.guidebook.GuideBook.MEETHOST.Model.Event;
+import com.guidebook.GuideBook.MEETHOST.Model.Ticket;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
@@ -70,4 +75,21 @@ public class MyUser implements UserDetails {
     @Version
     @JsonIgnore
     private Integer version;
+
+//    TICKET SYSTEM
+    @ManyToMany
+    @JoinTable(
+            name = "user_ticket",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "ticketId")
+    )
+    private List<Ticket> ticketList;//owning side
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_event",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "eventId")
+    )
+    private List<Event> eventList;//owning side
 }
