@@ -127,19 +127,37 @@
 <!--        </dependency>-->
 
         <!--		AMAZON AWS S3 DEPENDENCY-->
+		<!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.20.68</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/software.amazon.awssdk/auth -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>auth</artifactId>
+			<version>2.20.68</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/software.amazon.awssdk/sdk-core -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>sdk-core</artifactId>
+			<version>2.20.68</version>
+		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>software.amazon.awssdk</groupId>-->
-<!--			<artifactId>s3</artifactId>-->
-<!--			<version>2.17.89</version>-->
+<!--			<artifactId>bom</artifactId>-->
+<!--			<version>2.27.18</version>-->
 <!--		</dependency>-->
-		<!--		-->
-		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+
+
+<!--ENTIRE SDK FOR AWS-->
 <!--		<dependency>-->
-<!--			<groupId>com.amazonaws</groupId>-->
-<!--			<artifactId>aws-java-sdk-s3</artifactId>-->
-<!--			<version>1.12.761</version>-->
+<!--			<groupId>software.amazon.awssdk</groupId>-->
+<!--			<artifactId>aws-sdk-java</artifactId>-->
+<!--			<version>2.27.18</version>-->
 <!--		</dependency>-->
-<!--		-->
 	</dependencies>
 
 	<build>
@@ -166,7 +184,29 @@
 					<target>21</target>
 				</configuration>
 			</plugin>
+			<!--		TRYING A NEW PLUGIN FOR AWS LIBRARIES ERROR-->
+<!--			<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-assembly-plugin</artifactId>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<phase>package</phase>-->
+<!--						<goals>-->
+<!--							<goal>single</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--				<configuration>-->
+<!--					<descriptorRefs>-->
+<!--						<descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--					</descriptorRefs>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
 		</plugins>
+
+
+
+
 <!--FOR PROFILE SETTING-->
 		<resources>
 			<resource>
