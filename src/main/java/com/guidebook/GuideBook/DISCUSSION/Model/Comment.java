@@ -1,8 +1,6 @@
-package com.guidebook.GuideBook.MEETHOST.Model;
+package com.guidebook.GuideBook.DISCUSSION.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.guidebook.GuideBook.ADMIN.Models.College;
-import com.guidebook.GuideBook.ADMIN.Models.ZoomSessionTransaction;
 import com.guidebook.GuideBook.USER.Models.MyUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,26 +10,28 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class EventBookingTransaction {
+@AllArgsConstructor
+@Data
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String transactionId;
+    private String commentId;
+    @Lob
+    private String text;
 
-    private Double transactionAmount;
-    private String transactionStatus;
-    private String userEmail;
-    private String paymentOrderRzpId; //Directly use Razor pay order if instead of sql id
-    private String eventCode;
-
+    //map user
     @ManyToOne
-    @JoinColumn(name = "fk_transaction_useremail", referencedColumnName = "username")
-    private MyUser myUser; //owning side
+    @JoinColumn(name = "fk_commentId_userEmail", referencedColumnName = "username")
+    private MyUser user;
+    //map discussion
+    @ManyToOne
+    @JoinColumn(name = "fk_commentId_discussId", referencedColumnName = "discussionId")
+    private Discussion discussion;
+
+
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -41,5 +41,7 @@ public class EventBookingTransaction {
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
     Date updatedOn;
-
+    @Version
+    @JsonIgnore
+    private Integer version;
 }

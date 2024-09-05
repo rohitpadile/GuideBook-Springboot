@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.guidebook.GuideBook.ADMIN.Models.College;
 import com.guidebook.GuideBook.ADMIN.Models.Language;
 import com.guidebook.GuideBook.ADMIN.Models.Student;
+import com.guidebook.GuideBook.DISCUSSION.Model.Comment;
 import com.guidebook.GuideBook.MEETHOST.Model.Event;
 import com.guidebook.GuideBook.MEETHOST.Model.EventBookingTransaction;
 import com.guidebook.GuideBook.MEETHOST.Model.Ticket;
@@ -98,4 +99,8 @@ public class MyUser implements UserDetails {
     @JsonIgnore
     @OneToMany(mappedBy = "myUser")
     private List<EventBookingTransaction> eventBookingTransactionsList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    List<Comment> comments;
 }
