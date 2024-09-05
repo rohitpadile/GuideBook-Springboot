@@ -181,5 +181,17 @@ public class MyUserController {
     public List<MyUser> getAllMyUsers(){
         return myUserService.getAllMyUsers();
     }
+
+    @GetMapping("/getUserEmailForComponentUse")
+    public ResponseEntity<GetUserEmailForComponentUserRequest> getUserEmailForComponentUse(HttpServletRequest request){
+        log.info("Current logged in user for discussion page: {}",jwtUtil.extractEmailFromToken(request));
+        return new ResponseEntity<>(
+                GetUserEmailForComponentUserRequest
+                        .builder()
+                        .userEmail(jwtUtil.extractEmailFromToken(request))
+                        .build(),
+                HttpStatus.OK
+        );
+    }
 }
 

@@ -10,30 +10,26 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.List;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Discussion {
+public class CommentV1 {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String discussionId;
-
-    private String title;
-
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "discussion")
-//    List<Comment> comments;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "discussion")
-    List<CommentV1> comments;
-
+    private String commentId;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String text;
+    private Integer isVisible;
+    //map user
     @ManyToOne
-    @JoinColumn(name = "fk_discussId_ownerUserId", referencedColumnName = "userId")
-    private MyUser myUser;
+    @JoinColumn(name = "fk_commentId_userEmail", referencedColumnName = "username")
+    private MyUser user;
+    //map discussion
+    @ManyToOne
+    @JoinColumn(name = "fk_commentId_discussId", referencedColumnName = "discussionId")
+    private Discussion discussion;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

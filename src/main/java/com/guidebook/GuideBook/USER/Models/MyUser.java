@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.guidebook.GuideBook.ADMIN.Models.College;
 import com.guidebook.GuideBook.ADMIN.Models.Language;
 import com.guidebook.GuideBook.ADMIN.Models.Student;
-import com.guidebook.GuideBook.DISCUSSION.Model.Comment;
+//import com.guidebook.GuideBook.DISCUSSION.Model.Comment;
+import com.guidebook.GuideBook.DISCUSSION.Model.CommentV1;
+import com.guidebook.GuideBook.DISCUSSION.Model.Discussion;
 import com.guidebook.GuideBook.MEETHOST.Model.Event;
 import com.guidebook.GuideBook.MEETHOST.Model.EventBookingTransaction;
 import com.guidebook.GuideBook.MEETHOST.Model.Ticket;
@@ -17,10 +19,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -102,5 +101,9 @@ public class MyUser implements UserDetails {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    List<Comment> comments;
+    List<CommentV1> comments;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "myUser")
+    private Set<Discussion> discussions;
 }
