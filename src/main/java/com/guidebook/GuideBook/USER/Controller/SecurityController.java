@@ -37,7 +37,7 @@ import java.util.UUID;
 @CrossOrigin(origins = {
         "http://localhost:3000", "http://localhost:8080",
         "https://www.guidebookx.com","https://guidebookx.com",
-        "https://api.guidebookx.com",
+        "https://api.guidebookx.com", "https://a.guidebookx.com",
         "https://diugkigakpnwm.cloudfront.net"})
 @RestController
 @RequestMapping("/api/v1/user/")

@@ -21,6 +21,7 @@ public class WebConfigProd implements WebMvcConfigurer {
                         "https://www.guidebookx.com",
                         "https://guidebookx.com",
                         "https://api.guidebookx.com",
+                        "https://a.guidebookx.com",
                         "https://diugkigakpnwm.cloudfront.net"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
