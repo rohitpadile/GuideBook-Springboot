@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @Profile("prod")
+//api.guidebookx.com alias-> dualstack.guidebookx-alb-1586257955.ap-south-1.elb.amazonaws.com.
 public class WebConfigProd implements WebMvcConfigurer {
 
     @Override
@@ -22,6 +23,7 @@ public class WebConfigProd implements WebMvcConfigurer {
                         "https://guidebookx.com",
                         "https://api.guidebookx.com",
                         "https://a.guidebookx.com",
+                        "https://13.235.131.222",
                         "https://diugkigakpnwm.cloudfront.net"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")

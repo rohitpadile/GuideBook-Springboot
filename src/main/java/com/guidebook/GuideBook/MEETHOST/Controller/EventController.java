@@ -85,5 +85,4 @@ public class EventController {
                 checkEventBookedResponse.builder().isBooked(isBooked).build(),
                 HttpStatus.OK);
     }
-
 }

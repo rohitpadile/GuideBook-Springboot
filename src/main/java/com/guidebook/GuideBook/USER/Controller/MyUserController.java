@@ -21,6 +21,7 @@ import java.util.Map;
         "http://localhost:3000", "http://localhost:8080",
         "https://www.guidebookx.com","https://guidebookx.com",
         "https://api.guidebookx.com", "https://a.guidebookx.com",
+        "https://13.235.131.222",
         "https://diugkigakpnwm.cloudfront.net"})
 @RestController
 @RequestMapping("/api/v1/user/")
